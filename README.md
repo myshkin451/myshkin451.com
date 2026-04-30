@@ -35,5 +35,6 @@ This repository intentionally does not continue an older blog architecture. The 
 
 ## Current Status
 
-The repository is being initialized. Application scaffolding has not started yet.
+The repository is in foundation setup. Application scaffolding has not started yet.
 
+For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
