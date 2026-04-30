@@ -1,0 +1,39 @@
+# Myshkin 451
+
+Myshkin 451 is a personal digital platform built from scratch.
+
+It starts with writing, projects, and a public homepage, but it is not meant to remain a simple blog. The long-term shape is a modular personal platform for essays, project notes, portfolio work, knowledge entry points, discussions, small tools, and experimental pages.
+
+This repository intentionally does not continue an older blog architecture. The old site can be used as a feature reference, but this project should grow from a cleaner foundation.
+
+## Direction
+
+- Public writing: articles, essays, notes, and long-form work.
+- Project space: portfolio entries, retrospectives, demos, links, and screenshots.
+- Personal presence: homepage, profile, timeline, and public identity.
+- Knowledge entry points: curated paths into notes or research areas.
+- Future interaction: comments, messages, or discussion spaces when the core platform is stable.
+- Experiments: small tools, AI demos, and exploratory pages without polluting the core content model.
+
+## Engineering Stance
+
+- Build a modular monolith first, not microservices.
+- Keep content, admin, and public presentation boundaries clear.
+- Prefer durable foundations over throwaway demos.
+- Make every important development step reproducible by future agents.
+- Keep checks, setup commands, and operational assumptions explicit.
+- Avoid hidden state, undocumented conventions, and secret-dependent local behavior.
+- Do not overbuild community, workflow, or permission systems before the first platform loop works.
+
+## Planned Stack
+
+- Next.js for the public site and application shell.
+- Payload CMS for content models, admin UI, permissions, and media management.
+- PostgreSQL as the primary database.
+- S3/R2-compatible object storage for media.
+- GitHub as the public source-of-truth for the platform code.
+
+## Current Status
+
+The repository is being initialized. Application scaffolding has not started yet.
+
