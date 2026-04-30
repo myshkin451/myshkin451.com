@@ -38,3 +38,5 @@ This repository intentionally does not continue an older blog architecture. The 
 The repository is in foundation setup. Application scaffolding has not started yet.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
+
+The first product gate is the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.

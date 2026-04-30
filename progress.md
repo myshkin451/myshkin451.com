@@ -13,10 +13,15 @@ Phase 0: project foundation and governance kernel.
 - Initial `README.md` and `.gitignore` are committed.
 - Application scaffold has not started yet.
 - Governance kernel is being established before choosing exact framework versions and local development commands.
+- Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
 
 ## Active Direction
 
 Build Myshkin 451 as a personal digital platform, starting with public writing, project pages, profile/homepage, and media-backed content management. Keep the first implementation as a modular monolith, with room for future discussions, knowledge entry points, tools, AI demos, and experiments.
+
+## First Platform Loop
+
+Phase 1 is not complete until an operator can create or update an article or project in the CMS/admin surface, set slug/publication status/media, see it render on the public site at a stable route, and run the baseline repository checks successfully.
 
 ## Next Steps
 
@@ -36,9 +41,11 @@ Build Myshkin 451 as a personal digital platform, starting with public writing, 
 - Initial visual direction and design system posture.
 - Whether comments/messages ship in phase 1 or remain a reserved boundary.
 
+When any Open Decision is resolved, add or update a decision record under `docs/decisions/` and remove the item from this list in the same change.
+
 ## Handoff Notes
 
 - Keep this file as a high-signal state board, not a chronological log.
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
-
+- Phase 0 should close after the immediate governance compatibility additions are complete; the next major move should be application scaffolding.

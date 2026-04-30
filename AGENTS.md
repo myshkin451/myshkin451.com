@@ -30,7 +30,11 @@ Read task-specific code and docs after this startup path. Do not sweep the whole
 - Preserve user or other-agent edits that are unrelated to your task.
 - Update `progress.md` only for durable state changes, risks, decisions, or handoff notes. Do not turn it into a session diary.
 - Add or update a decision record when a choice affects future architecture, deployment, data ownership, module boundaries, or public contract.
-- Prefer small, reviewable commits with clear messages.
+- Prefer small, reviewable commits.
+- Use Conventional Commits for commit messages, such as `docs: define first platform loop`, `chore: add validation scripts`, or `feat: scaffold platform shell`.
+- An agent may commit and push completed work without asking when the scope is clear, the diff contains only intended changes, and relevant checks have been run or explicitly marked unavailable.
+- Ask the user before destructive operations, repository visibility changes, remote settings changes, deployment changes, secret handling, major dependency changes, or broad rewrites.
+- When resolving an item from `progress.md` Open Decisions, include a matching decision record in `docs/decisions/` and remove the item from Open Decisions in the same change.
 
 ## Parallel Work
 
@@ -54,4 +58,3 @@ The repository does not have an application scaffold yet. Once the stack is init
 - browser or screenshot verification for user-facing UI changes
 
 If a check cannot be run, explain why and record the residual risk in the final handoff.
-
