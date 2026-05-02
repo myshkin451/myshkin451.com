@@ -16,6 +16,7 @@ Read task-specific code and docs after this startup path. Do not sweep the whole
 
 ## Project Posture
 
+- The harness defines engineering responsibility, not fixed low-level implementation steps.
 - Build a modular monolith first.
 - Keep public presentation, CMS/admin, content models, and infrastructure concerns separated.
 - Prefer durable, boring engineering for the core platform.
@@ -35,6 +36,7 @@ Read task-specific code and docs after this startup path. Do not sweep the whole
 - An agent may commit and push completed work without asking when the scope is clear, the diff contains only intended changes, and relevant checks have been run or explicitly marked unavailable.
 - Ask the user before destructive operations, repository visibility changes, remote settings changes, deployment changes, secret handling, major dependency changes, or broad rewrites.
 - When resolving an item from `progress.md` Open Decisions, include a matching decision record in `docs/decisions/` and remove the item from Open Decisions in the same change.
+- Agents may challenge or improve the harness when it blocks better engineering. Record the reason, proposed replacement, and accepted outcome in `docs/HARNESS.md`, `progress.md`, or a decision record as appropriate.
 
 ## Parallel Work
 

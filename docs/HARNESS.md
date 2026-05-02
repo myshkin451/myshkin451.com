@@ -9,6 +9,74 @@ It should help future agents answer four questions quickly:
 3. What commands prove a change works?
 4. Which files or decisions must not be changed casually?
 
+## Philosophy
+
+The harness is an engineering operating model, not a cage for future models.
+
+As models improve, this repository should not depend on brittle instructions for every low-level move. The stable harness should define intent, ownership, evidence, boundaries, and decision lifecycle. The adaptive harness should be free to change as tools, models, frameworks, and project needs evolve.
+
+Good harness rules should:
+
+- preserve product intent
+- make state recoverable across sessions
+- make quality observable through checks and evidence
+- keep important decisions out of transient chat
+- expose risks and deferred work
+- keep documents trustworthy over time
+- leave implementation space for better agents to make better choices
+
+Bad harness rules should be removed or rewritten when they only preserve ceremony, duplicate stale facts, block better architecture, or encode outdated tool behavior.
+
+## Human and Agent Roles
+
+The human owner should retain final authority over:
+
+- product intent
+- taste and experience quality
+- priority tradeoffs
+- public identity and positioning
+- risk acceptance
+- major architecture direction
+
+Agents should own as much execution as possible:
+
+- technical exploration
+- architecture proposals
+- implementation
+- tests and validation
+- documentation updates
+- issue diagnosis
+- review reports
+- refactors and migration work
+
+An agent may autonomously execute, commit, and push scoped work when the repository rules allow it. The owner should be pulled in when a choice changes product direction, public posture, deployment risk, data ownership, security posture, or long-term architecture.
+
+## Stable and Adaptive Layers
+
+The stable layer should change slowly:
+
+- project identity and non-goals
+- module and ownership boundaries
+- phase gates such as the first platform loop
+- decision record requirements
+- validation and evidence expectations
+- document lifecycle rules
+- open decision and handoff mechanisms
+- agent autonomy and escalation boundaries
+
+The adaptive layer should change whenever the project or tools need it:
+
+- package manager and exact commands
+- framework versions
+- test runners and CI details
+- folder structure details
+- review report format
+- multi-agent ownership mechanics
+- local development and deployment scripts
+- automation and lint rules
+
+When a stable-layer change is accepted, record it in a decision record or the core governance docs. When an adaptive-layer detail changes, update the concrete command, script, or local doc that future agents will actually use.
+
 ## Method
 
 Harness engineering in this repository means turning agent work into a repeatable system, not adding ceremony for its own sake.
@@ -23,6 +91,7 @@ Harness engineering in this repository means turning agent work into a repeatabl
 - Optimize for restart: a new session should recover the project state from the repo in minutes.
 - Keep code clear enough to change and docs clear enough to trust.
 - Prefer lightweight enforcement over heavy process; add scripts and checks when repeated drift appears.
+- Let agents challenge the harness, but require the challenge to produce a clearer rule, a better check, or an explicit decision.
 
 ## First Platform Loop
 

@@ -1,6 +1,6 @@
 # Progress
 
-Last updated: 2026-04-30
+Last updated: 2026-05-02
 
 ## Current Phase
 
@@ -14,6 +14,7 @@ Phase 0: project foundation and governance kernel.
 - Application scaffold has not started yet.
 - Governance kernel is being established before choosing exact framework versions and local development commands.
 - Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
+- Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
 
 ## Active Direction
 
@@ -49,3 +50,4 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
 - Phase 0 should close after the immediate governance compatibility additions are complete; the next major move should be application scaffolding.
+- Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
