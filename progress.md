@@ -1,6 +1,6 @@
 # Progress
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ## Current Phase
 
@@ -43,6 +43,10 @@ Phase 1 is not complete until an operator can create or update an article or pro
 - Whether comments/messages ship in phase 1 or remain a reserved boundary.
 
 When any Open Decision is resolved, add or update a decision record under `docs/decisions/` and remove the item from this list in the same change.
+
+## Accepted Risks
+
+- No accepted risks yet.
 
 ## Handoff Notes
 

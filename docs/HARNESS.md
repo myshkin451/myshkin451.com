@@ -77,6 +77,16 @@ The adaptive layer should change whenever the project or tools need it:
 
 When a stable-layer change is accepted, record it in a decision record or the core governance docs. When an adaptive-layer detail changes, update the concrete command, script, or local doc that future agents will actually use.
 
+## Security Posture
+
+This is a public repository.
+
+- Do not commit credentials, tokens, cookies, private keys, production URLs with secrets, or personal data.
+- Use placeholders in examples and keep real values in local environment files or managed secret stores.
+- Agents must not print, summarize, or exfiltrate environment variable values or local secret files.
+- Fixtures and screenshots must not contain private user data, private notes, or internal-only references unless the owner explicitly approves publication.
+- Security, privacy, data ownership, and deployment-risk changes require owner escalation.
+
 ## Method
 
 Harness engineering in this repository means turning agent work into a repeatable system, not adding ceremony for its own sake.
@@ -92,6 +102,30 @@ Harness engineering in this repository means turning agent work into a repeatabl
 - Keep code clear enough to change and docs clear enough to trust.
 - Prefer lightweight enforcement over heavy process; add scripts and checks when repeated drift appears.
 - Let agents challenge the harness, but require the challenge to produce a clearer rule, a better check, or an explicit decision.
+
+## Evidence Shapes
+
+Evidence should be proportional to the change. Future agents should choose the lightest proof that makes the result trustworthy.
+
+Acceptable evidence includes:
+
+- command results for format, lint, typecheck, test, build, or migration checks
+- CI run links or summaries when CI exists
+- browser, screenshot, or visual notes for user-facing changes
+- API responses, database checks, or logs for integration behavior
+- phase review reports for larger milestones
+- explicit residual-risk notes when a check cannot run
+
+Final handoffs should name what was verified, what was not verified, and why.
+
+## Changing the Harness
+
+The harness may evolve.
+
+- Stable-layer changes should use a decision record or a clearly explained update to the core governance docs.
+- Adaptive-layer changes may directly update the concrete command, script, or local doc that future agents use.
+- Harness changes should explain the reason in the commit body, decision record, or nearby documentation.
+- If a rule blocks better engineering, replace it with a clearer rule, a better check, or an explicit decision.
 
 ## First Platform Loop
 
