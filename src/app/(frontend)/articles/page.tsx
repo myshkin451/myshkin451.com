@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic'
 
 export const metadata = createPageMetadata({
   pathname: '/articles',
-  description: 'Public writing from Myshkin 451.',
-  title: 'Writing',
+  description: 'Myshkin 451 的中文写作、长文和公共札记。',
+  title: '写作',
 })
 
 export default async function ArticlesPage() {
@@ -20,22 +20,21 @@ export default async function ArticlesPage() {
 
       <main className="site-main">
         <section className="page-heading">
-          <p className="eyebrow">Writing</p>
-          <h1>Essays, notes, and longer traces of thought.</h1>
+          <p className="eyebrow">写作 / Writing</p>
+          <h1>适合慢读的长文、札记和思考痕迹。</h1>
           <p>
-            A public archive for work that benefits from being read slowly: essays, technical notes,
-            study paths, and records of continued thinking.
+            这里收纳需要被认真展开的文字：文章、技术笔记、学习路径，以及持续思考留下的公共记录。
           </p>
         </section>
 
-        <section className="content-list" aria-label="Published articles">
+        <section className="content-list" aria-label="已发布文章">
           {articles.length > 0 ? (
             articles.map((article) => (
               <ContentCard
                 coverImage={article.coverImage}
                 href={`/articles/${article.slug}`}
                 key={article.id}
-                label="Article"
+                label="文章"
                 publishedAt={article.publishedAt}
                 summary={article.excerpt}
                 title={article.title}
@@ -43,8 +42,8 @@ export default async function ArticlesPage() {
             ))
           ) : (
             <div className="empty-panel">
-              <h2>No public articles yet.</h2>
-              <p>Published articles will appear here after the first CMS publishing pass.</p>
+              <h2>还没有公开文章。</h2>
+              <p>第一批通过 CMS 发布的文章会出现在这里。</p>
             </div>
           )}
         </section>

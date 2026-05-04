@@ -27,6 +27,7 @@ Phase 2: public site experience.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
 - Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, browser e2e, Payload/Postgres integration tests, and media-backed public route rendering.
 - Local dev server has been verified for the homepage, admin route, public media API route, and article/project index routes.
+- The first Phase 2 public-site implementation slice is in place: dual light/dark theme tokens, Chinese-first public chrome and homepage copy, a stronger four-surface index, and a new `/about` surface.
 
 ## Active Direction
 
@@ -39,7 +40,7 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 ## Next Steps
 
 1. Add basic GitHub Actions for the stable local checks.
-2. Implement the public-site experience design in small slices, starting with theme tokens, Chinese-first homepage copy, the four-surface map, and an About/profile surface.
+2. Continue implementing the public-site experience design by upgrading writing and project index/detail surfaces with the same theme tokens and dossier/reading patterns.
 3. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
 4. Continue toward deployment planning after the public site experience has a stronger baseline.
 
@@ -63,5 +64,6 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Phase 0 and Phase 1 are closed; next work should improve the public site experience on top of the verified article/project publishing loop.
 - SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
 - Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
+- The first public-site experience slice has shipped locally; future frontend work should reuse `src/app/(frontend)/styles.css` theme tokens and `SurfaceIndex`/platform surface copy instead of reintroducing one-off visual systems.
 - The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.

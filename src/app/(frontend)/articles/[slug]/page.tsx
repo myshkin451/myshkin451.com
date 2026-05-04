@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: ArticlePageProps) {
 
   if (!article) {
     return {
-      title: 'Article not found | Myshkin 451',
+      title: '文章未找到 | Myshkin 451',
     }
   }
 
@@ -48,7 +48,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <main className="article-main">
         <article className="entry">
           <header className="entry-header">
-            <p className="eyebrow">Article</p>
+            <p className="eyebrow">文章 / Article</p>
             <h1>{article.title}</h1>
             <p>{article.excerpt}</p>
             {article.publishedAt ? (

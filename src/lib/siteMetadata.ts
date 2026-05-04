@@ -19,8 +19,7 @@ type PageMetadataOptions = {
 }
 
 export const siteConfig = {
-  description:
-    'A personal digital platform for writing, projects, knowledge entry points, and experiments.',
+  description: 'Myshkin 451 是一个中文优先的个人数字平台，连接写作、项目、知识路径和实验。',
   githubUrl: 'https://github.com/myshkin451/myshkin451.com',
   name: 'Myshkin 451',
   url: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.myshkin451.com'),

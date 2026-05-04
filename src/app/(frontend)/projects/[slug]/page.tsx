@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: ProjectPageProps) {
 
   if (!project) {
     return {
-      title: 'Project not found | Myshkin 451',
+      title: '项目未找到 | Myshkin 451',
     }
   }
 
@@ -48,7 +48,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <main className="article-main">
         <article className="entry">
           <header className="entry-header">
-            <p className="eyebrow">Project</p>
+            <p className="eyebrow">项目 / Project</p>
             <h1>{project.title}</h1>
             <p>{project.summary}</p>
             <div className="entry-meta">
