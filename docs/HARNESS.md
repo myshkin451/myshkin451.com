@@ -164,14 +164,15 @@ To be added with the application scaffold.
 
 ### 3. Quality Harness
 
-To be added when the stack exists.
+Current layer.
 
 - Formatting.
 - Linting.
 - Type checking.
-- Unit or integration tests.
+- Integration tests against Payload and PostgreSQL.
 - Production build.
-- UI verification for public pages and CMS-driven rendering.
+- Browser verification for public pages and CMS-driven rendering.
+- GitHub Actions runs the stable checks on pull requests and pushes to `main`.
 
 ### 4. Operational Harness
 
@@ -248,3 +249,21 @@ Current scaffold commands:
 Use the lightest relevant proof for the change. Do not turn every small documentation or configuration change into a full phase review.
 
 Every final handoff should say which checks ran and what remains unverified.
+
+## Continuous Integration
+
+Basic CI lives in `.github/workflows/ci.yml`.
+
+It runs on pull requests and pushes to `main` with:
+
+- Node 22.
+- pnpm 10.33.2.
+- PostgreSQL 16 as a service container.
+- `pnpm format:check`.
+- `pnpm lint`.
+- `pnpm typecheck`.
+- `pnpm test:int`.
+- `pnpm build`.
+- `pnpm test:e2e`.
+
+The workflow sets local-only CI environment values for `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SITE_URL`, and `BASE_URL`. Failed browser runs upload Playwright reports and test results for debugging.

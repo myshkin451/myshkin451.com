@@ -29,6 +29,7 @@ Phase 2: public site experience.
 - Local dev server has been verified for the homepage, admin route, public media API route, and article/project index routes.
 - The first Phase 2 public-site implementation slice is in place: dual light/dark theme tokens, Chinese-first public chrome and homepage copy, a stronger four-surface index, and a new `/about` surface.
 - The writing and project public routes now extend the Phase 2 experience baseline: `/articles` uses a Chinese-first archive ledger, `/articles/[slug]` uses a reading rail and comfortable long-form measure, `/projects` uses project dossier/ledger patterns, and `/projects/[slug]` presents project metadata as a public case file.
+- Basic GitHub Actions CI now runs the stable checks on pull requests and pushes to `main`: format check, lint, typecheck, integration tests, production build, and browser e2e tests against a PostgreSQL service.
 
 ## Active Direction
 
@@ -40,10 +41,9 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 ## Next Steps
 
-1. Add basic GitHub Actions for the stable local checks.
-2. Add the public theme toggle and small UI copy dictionary before broader public-surface expansion.
-3. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
-4. Continue toward deployment planning after the public site experience has a stronger baseline.
+1. Add the public theme toggle and small UI copy dictionary before broader public-surface expansion.
+2. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
+3. Continue toward deployment planning after the public site experience has a stronger baseline.
 
 ## Open Decisions
 
