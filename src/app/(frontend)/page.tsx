@@ -1,48 +1,87 @@
 import Link from 'next/link'
-import React from 'react'
 
 import './styles.css'
+import { ContentCard } from './_components/ContentCard'
+import { SiteHeader } from './_components/SiteHeader'
+import { listPublishedArticles, listPublishedProjects } from '@/lib/publicContent'
+
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
+  const [articles, projects] = await Promise.all([listPublishedArticles(), listPublishedProjects()])
+  const latestArticle = articles[0]
+  const latestProject = projects[0]
+
   return (
     <div className="site-shell">
-      <header className="site-header">
-        <Link className="brand" href="/">
-          Myshkin 451
-        </Link>
-        <nav aria-label="Primary navigation">
-          <Link href="/admin">Admin</Link>
-          <a href="https://github.com/myshkin451/myshkin451.com">GitHub</a>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main className="site-main">
         <section className="intro">
           <p className="eyebrow">Personal digital platform</p>
-          <h1>A new foundation for writing, projects, knowledge, and experiments.</h1>
+          <h1>Writing, projects, knowledge, and experiments under one roof.</h1>
           <p className="summary">
-            Phase 1 is about the first platform loop: create content in the admin surface, publish
-            it with stable routes and media, and prove the workflow with repeatable checks.
+            Myshkin 451 is becoming a public working archive: essays, project records, research
+            paths, and small tools that can keep growing without being rebuilt from scratch.
           </p>
           <div className="actions">
-            <Link href="/admin">Open admin</Link>
-            <Link href="/api">Payload API</Link>
+            <Link href="/articles">Read writing</Link>
+            <Link href="/projects">Browse projects</Link>
           </div>
         </section>
 
+        <section className="feature-grid" aria-label="Latest public entries">
+          {latestArticle ? (
+            <ContentCard
+              coverImage={latestArticle.coverImage}
+              href={`/articles/${latestArticle.slug}`}
+              label="Latest writing"
+              publishedAt={latestArticle.publishedAt}
+              summary={latestArticle.excerpt}
+              title={latestArticle.title}
+            />
+          ) : (
+            <div className="empty-panel">
+              <p className="eyebrow">Writing</p>
+              <h2>No public articles yet.</h2>
+              <p>
+                The collection is ready; published essays will appear here after the first CMS run.
+              </p>
+            </div>
+          )}
+
+          {latestProject ? (
+            <ContentCard
+              coverImage={latestProject.coverImage}
+              href={`/projects/${latestProject.slug}`}
+              label="Latest project"
+              meta={latestProject.projectStatus}
+              publishedAt={latestProject.publishedAt}
+              summary={latestProject.summary}
+              title={latestProject.title}
+            />
+          ) : (
+            <div className="empty-panel">
+              <p className="eyebrow">Projects</p>
+              <h2>No public projects yet.</h2>
+              <p>Project records will appear here once they are published from Payload.</p>
+            </div>
+          )}
+        </section>
+
         <section className="status" aria-label="Platform status">
-          <div>
-            <span>Stack</span>
-            <strong>Next.js + Payload + Postgres</strong>
-          </div>
-          <div>
-            <span>Phase</span>
-            <strong>Scaffold</strong>
-          </div>
-          <div>
-            <span>Goal</span>
-            <strong>First platform loop</strong>
-          </div>
+          <Link href="/articles">
+            <span>Writing</span>
+            <strong>{articles.length} published</strong>
+          </Link>
+          <Link href="/projects">
+            <span>Projects</span>
+            <strong>{projects.length} published</strong>
+          </Link>
+          <Link href="/admin">
+            <span>Admin</span>
+            <strong>Payload CMS</strong>
+          </Link>
         </section>
       </main>
     </div>

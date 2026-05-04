@@ -5,7 +5,7 @@
 }
 
 html {
-  background: #f7f5ef;
+  background: #f4f1e8;
   color: #171717;
   -webkit-font-smoothing: antialiased;
 }
@@ -41,7 +41,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  border-bottom: 1px solid rgba(23, 23, 23, 0.14);
+  border-bottom: 1px solid rgba(30, 35, 32, 0.16);
 }
 
 .brand {
@@ -51,9 +51,19 @@ a {
 
 .site-header nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   font-size: 14px;
   color: #4b4b4b;
+}
+
+.site-header a:focus-visible,
+.actions a:focus-visible,
+.content-card a:focus-visible,
+.status a:focus-visible,
+.link-list a:focus-visible {
+  outline: 2px solid #8f3f2f;
+  outline-offset: 4px;
 }
 
 .site-main {
@@ -118,14 +128,105 @@ a {
   color: #171717;
 }
 
+.page-heading {
+  max-width: 780px;
+}
+
+.page-heading h1 {
+  margin: 0;
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.page-heading p:not(.eyebrow) {
+  margin: 20px 0 0;
+  color: #4b4b4b;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.content-list {
+  display: grid;
+  gap: 18px;
+}
+
+.content-card,
+.empty-panel {
+  border: 1px solid rgba(30, 35, 32, 0.16);
+  background: rgba(255, 253, 247, 0.78);
+}
+
+.content-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1fr);
+  min-height: 220px;
+}
+
+.content-card__body,
+.empty-panel {
+  padding: 24px;
+}
+
+.content-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+  color: #6b5f4b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.content-card h2,
+.empty-panel h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.content-card h2 a:hover {
+  color: #8f3f2f;
+}
+
+.content-card__body > p:last-child,
+.empty-panel p {
+  margin: 16px 0 0;
+  color: #4b4b4b;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.cover-image {
+  margin: 0;
+  min-height: 100%;
+  background: #d9dfd3;
+}
+
+.cover-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+}
+
 .status {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid rgba(23, 23, 23, 0.14);
-  border-bottom: 1px solid rgba(23, 23, 23, 0.14);
+  border-top: 1px solid rgba(30, 35, 32, 0.16);
+  border-bottom: 1px solid rgba(30, 35, 32, 0.16);
 }
 
-.status div {
+.status a {
   padding: 20px 0;
 }
 
@@ -140,6 +241,101 @@ a {
 .status strong {
   display: block;
   font-size: 16px;
+}
+
+.article-main {
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 56px 0 72px;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.entry-header h1 {
+  margin: 0;
+  font-size: 58px;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.entry-header p:not(.eyebrow) {
+  margin: 22px 0 0;
+  color: #4b4b4b;
+  font-size: 20px;
+  line-height: 1.65;
+}
+
+.entry-header time,
+.entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+  color: #6b5f4b;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.rich-text {
+  color: #242424;
+  font-size: 18px;
+  line-height: 1.78;
+}
+
+.rich-text > * {
+  margin-block: 0 1.25em;
+}
+
+.rich-text h2,
+.rich-text h3 {
+  margin-top: 1.8em;
+  color: #171717;
+  line-height: 1.15;
+}
+
+.rich-text a {
+  color: #8f3f2f;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.rich-text blockquote {
+  margin-left: 0;
+  padding-left: 20px;
+  border-left: 3px solid #87986a;
+  color: #3d4635;
+}
+
+.tag-list,
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.tag-list {
+  list-style: none;
+}
+
+.tag-list li,
+.link-list a {
+  border: 1px solid rgba(30, 35, 32, 0.18);
+  padding: 8px 10px;
+  background: rgba(255, 253, 247, 0.72);
+  color: #3d4635;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.link-list a {
+  color: #8f3f2f;
 }
 
 @media (max-width: 720px) {
@@ -157,11 +353,25 @@ a {
     line-height: 1;
   }
 
+  .page-heading h1,
+  .entry-header h1 {
+    font-size: 38px;
+  }
+
+  .feature-grid,
+  .content-card {
+    grid-template-columns: 1fr;
+  }
+
+  .content-card .cover-image {
+    min-height: 180px;
+  }
+
   .status {
     grid-template-columns: 1fr;
   }
 
-  .status div + div {
-    border-top: 1px solid rgba(23, 23, 23, 0.14);
+  .status a + a {
+    border-top: 1px solid rgba(30, 35, 32, 0.16);
   }
 }

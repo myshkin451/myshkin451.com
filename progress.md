@@ -16,10 +16,13 @@ Phase 1: platform scaffold and first platform loop.
 - Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
 - Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
 - Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
+- Initial article/project content models and public routes are accepted in `docs/decisions/0004-content-models-and-public-routes.md`.
+- Payload now has `articles` and `projects` collections with shared slug, publication status, publication time, and cover image fields.
+- Public routes exist for `/articles`, `/articles/[slug]`, `/projects`, and `/projects/[slug]`, filtering to published content only.
 - Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
-- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, and the Payload/Postgres integration test.
-- Local dev server has been verified for the homepage, admin route, and public media API route.
+- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, and Payload/Postgres integration tests covering published article/project visibility.
+- Local dev server has been verified for the homepage, admin route, public media API route, and article/project index routes.
 
 ## Active Direction
 
@@ -31,11 +34,10 @@ Phase 1 is not complete until an operator can create or update an article or pro
 
 ## Next Steps
 
-1. Model the first article and project collections.
-2. Render article/project data on public routes.
-3. Run the first platform loop through CMS/admin and public rendering.
-4. Add basic GitHub Actions once the app has stable checks.
-5. Add visual direction and design system notes after the first real pages exist.
+1. Run the first platform loop through CMS/admin: create or update an article and a project, attach media, publish them, and verify public rendering.
+2. Add basic GitHub Actions once the app has stable checks.
+3. Add visual direction and design system notes after the first real pages exist.
+4. Decide whether Phase 1 needs a small seed/fixture path for repeatable content-loop validation.
 
 ## Open Decisions
 
@@ -55,5 +57,5 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Do not update this file for every session; update it only for durable state changes needed by future agents.
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
-- Phase 0 is closed; next work should implement article/project collections and public routes for the first platform loop.
+- Phase 0 is closed; next work should run the first CMS/admin content loop against the article/project collections and public routes.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
