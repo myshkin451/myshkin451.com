@@ -44,22 +44,41 @@ test.describe('Frontend', () => {
     await expectImagesLoaded(homepageImages)
 
     await page.goto('/articles')
-    await expect(page.getByRole('link', { name: loopFixture.articleTitle })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: '把长文整理成可追踪的阅读账本。' }),
+    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: '按年份排布的公共写作。' })).toBeVisible()
+    await expect(
+      page.getByLabel('文章档案').getByRole('link', { name: loopFixture.articleTitle }),
+    ).toBeVisible()
+    await expect(page.getByText('分钟阅读').first()).toBeVisible()
     await expectImagesLoaded(page.locator(`.cover-image img[alt="${loopFixture.coverAlt}"]`))
 
     await page.goto(`/articles/${loopFixture.articleSlug}`)
     await expect(page.getByRole('heading', { name: loopFixture.articleTitle })).toBeVisible()
+    await expect(page.getByLabel('阅读轨道')).toContainText('阅读预期')
     await expect(
       page.getByText('Browser fixture article for the first platform loop.'),
     ).toBeVisible()
     await expectImagesLoaded(page.locator(`.cover-image img[alt="${loopFixture.coverAlt}"]`))
 
     await page.goto('/projects')
-    await expect(page.getByRole('link', { name: loopFixture.projectTitle })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: '把作品放成可以检查的案例档案。' }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: '每个项目都应该留下可检查的上下文。' }),
+    ).toBeVisible()
+    await expect(
+      page.getByLabel('项目档案').getByRole('link', { name: loopFixture.projectTitle }),
+    ).toBeVisible()
+    await expect(page.getByText('进行中').first()).toBeVisible()
     await expectImagesLoaded(page.locator(`.cover-image img[alt="${loopFixture.coverAlt}"]`))
 
     await page.goto(`/projects/${loopFixture.projectSlug}`)
     await expect(page.getByRole('heading', { name: loopFixture.projectTitle })).toBeVisible()
+    await expect(page.getByText(`项目卷宗 / Project Dossier`)).toBeVisible()
+    await expect(page.getByText(`/projects/${loopFixture.projectSlug}`)).toBeVisible()
     await expect(
       page.getByText('Browser fixture project for the first platform loop.'),
     ).toBeVisible()
