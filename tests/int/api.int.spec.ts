@@ -16,7 +16,7 @@ const publishedArticleSlug = `${testStamp}-article-published`
 const draftArticleSlug = `${testStamp}-article-draft`
 const publishedProjectSlug = `${testStamp}-project-published`
 const draftProjectSlug = `${testStamp}-project-draft`
-const publishedAt = new Date(Date.now() - 1000).toISOString()
+const publishedAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
 
 const richText: Article['content'] = {
   root: {

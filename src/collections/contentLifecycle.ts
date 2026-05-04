@@ -12,18 +12,9 @@ export const PUBLICATION_STATUS_OPTIONS = [
 ] as const
 
 const publishedWhere = (): Where => ({
-  and: [
-    {
-      status: {
-        equals: 'published',
-      },
-    },
-    {
-      publishedAt: {
-        less_than_equal: new Date().toISOString(),
-      },
-    },
-  ],
+  status: {
+    equals: 'published',
+  },
 })
 
 export const publishedOrAuthenticated: Access = ({ req }) => {
@@ -77,7 +68,7 @@ export const publishingFields: Field[] = [
       date: {
         pickerAppearance: 'dayAndTime',
       },
-      description: 'Published items become public when this time is in the past.',
+      description: 'Display publication date. It is auto-filled when an item is first published.',
     },
   },
   {

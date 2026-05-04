@@ -12,11 +12,6 @@ const publishedWhere = (slug?: string): Where => ({
         equals: 'published',
       },
     },
-    {
-      publishedAt: {
-        less_than_equal: new Date().toISOString(),
-      },
-    },
     ...(slug
       ? [
           {

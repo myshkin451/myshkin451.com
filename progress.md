@@ -21,7 +21,7 @@ Phase 1: platform scaffold and first platform loop.
 - Public routes exist for `/articles`, `/articles/[slug]`, `/projects`, and `/projects/[slug]`, filtering to published content only.
 - Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
-- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, and Payload/Postgres integration tests covering published article/project visibility.
+- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, browser e2e, and Payload/Postgres integration tests covering published article/project visibility.
 - Local dev server has been verified for the homepage, admin route, public media API route, and article/project index routes.
 
 ## Active Direction

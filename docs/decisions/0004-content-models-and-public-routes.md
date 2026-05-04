@@ -24,7 +24,9 @@ Both collections use the same public lifecycle fields:
 - `publishedAt`
 - `coverImage`
 
-Published public routes read only records with `status = published` and `publishedAt` in the past.
+Published public routes read records with `status = published`.
+
+`publishedAt` is a display and sorting date that is auto-filled when an item is first published. It is not a scheduling gate in Phase 1.
 
 Use these initial public routes:
 
@@ -37,6 +39,7 @@ Use these initial public routes:
 
 - Do not add comments, messages, discussion, or community behavior in this decision.
 - Do not add a full taxonomy, tagging system, search system, or editorial workflow yet.
+- Do not add scheduled publishing behavior yet.
 - Do not treat every future platform module as a Payload collection.
 - Do not lock final visual design in this decision.
 
