@@ -28,6 +28,10 @@ test.describe('Frontend', () => {
     const heading = page.locator('h1').first()
 
     await expect(heading).toContainText('Writing, projects, knowledge, and experiments')
+    await expect(
+      page.getByRole('heading', { name: 'Four surfaces, one working archive.' }),
+    ).toBeVisible()
+    await expect(page.getByText('Knowledge paths')).toBeVisible()
   })
 
   test('renders published article and project records with cover media', async ({ page }) => {

@@ -59,7 +59,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           </header>
 
-          <CoverImage image={project.coverImage} />
+          <CoverImage image={project.coverImage} priority sizes="(max-width: 720px) 100vw, 860px" />
 
           {project.technologies?.length ? (
             <ul className="tag-list" aria-label="Project technologies">

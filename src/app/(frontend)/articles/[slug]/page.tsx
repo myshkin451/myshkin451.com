@@ -56,7 +56,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             ) : null}
           </header>
 
-          <CoverImage image={article.coverImage} />
+          <CoverImage image={article.coverImage} priority sizes="(max-width: 720px) 100vw, 860px" />
           <RichTextView content={article.content} />
         </article>
       </main>

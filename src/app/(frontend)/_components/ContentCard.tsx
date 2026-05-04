@@ -10,6 +10,7 @@ type ContentCardProps = {
   label: string
   meta?: string
   publishedAt?: null | string
+  priorityImage?: boolean
   summary: string
   title: string
 }
@@ -20,12 +21,17 @@ export function ContentCard({
   label,
   meta,
   publishedAt,
+  priorityImage = false,
   summary,
   title,
 }: ContentCardProps) {
   return (
     <article className="content-card">
-      <CoverImage image={coverImage} />
+      <CoverImage
+        image={coverImage}
+        priority={priorityImage}
+        sizes="(max-width: 720px) 100vw, 420px"
+      />
       <div className="content-card__body">
         <p className="content-card__meta">
           <span>{label}</span>

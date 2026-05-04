@@ -13,9 +13,15 @@ type MediaLike =
 
 type CoverImageProps = {
   image: MediaLike
+  priority?: boolean
+  sizes?: string
 }
 
-export function CoverImage({ image }: CoverImageProps) {
+export function CoverImage({
+  image,
+  priority = false,
+  sizes = '(max-width: 720px) 100vw, 40vw',
+}: CoverImageProps) {
   if (!image || typeof image === 'number' || !image.url) {
     return null
   }
@@ -25,8 +31,9 @@ export function CoverImage({ image }: CoverImageProps) {
       <Image
         alt={image.alt ?? ''}
         height={image.height ?? 900}
+        priority={priority}
+        sizes={sizes}
         src={image.url}
-        sizes="(max-width: 720px) 100vw, 40vw"
         width={image.width ?? 1600}
       />
     </figure>

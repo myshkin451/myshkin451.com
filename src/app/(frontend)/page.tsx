@@ -30,6 +30,31 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <section className="platform-map" aria-label="Platform areas">
+          <div className="section-heading">
+            <p className="eyebrow">Public structure</p>
+            <h2>Four surfaces, one working archive.</h2>
+          </div>
+          <div className="platform-map__grid">
+            <Link className="platform-map__item" href="/articles">
+              <span>Writing</span>
+              <strong>Essays, notes, and longer arguments.</strong>
+            </Link>
+            <Link className="platform-map__item" href="/projects">
+              <span>Projects</span>
+              <strong>Artifacts, systems, demos, and retrospectives.</strong>
+            </Link>
+            <div className="platform-map__item platform-map__item--reserved">
+              <span>Knowledge paths</span>
+              <strong>Curated routes through research and study notes.</strong>
+            </div>
+            <div className="platform-map__item platform-map__item--reserved">
+              <span>Labs</span>
+              <strong>Small tools and experiments without crowding the core.</strong>
+            </div>
+          </div>
+        </section>
+
         <section className="feature-grid" aria-label="Latest public entries">
           {latestArticle ? (
             <ContentCard
@@ -37,6 +62,7 @@ export default async function HomePage() {
               href={`/articles/${latestArticle.slug}`}
               label="Latest writing"
               publishedAt={latestArticle.publishedAt}
+              priorityImage
               summary={latestArticle.excerpt}
               title={latestArticle.title}
             />
@@ -57,6 +83,7 @@ export default async function HomePage() {
               label="Latest project"
               meta={latestProject.projectStatus}
               publishedAt={latestProject.publishedAt}
+              priorityImage
               summary={latestProject.summary}
               title={latestProject.title}
             />
