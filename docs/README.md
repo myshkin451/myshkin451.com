@@ -9,6 +9,7 @@ This repository uses a small documentation system that should grow only when the
 - `progress.md`: current state board and handoff surface.
 - `docs/ROADMAP.md`: directional phase roadmap.
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
+- `docs/design/`: durable product and frontend design direction.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.
 - `docs/decisions/_template.md`: template for new decision records.
 

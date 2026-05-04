@@ -22,7 +22,7 @@ Phase 2: public site experience.
 - The Phase 1 first platform loop is complete: a local operator can upload media in Payload admin, publish an article and a project with that media, and see homepage, list, and detail routes render the published records.
 - Browser e2e coverage now seeds media-backed published article/project records and verifies homepage, list, detail, and image loading behavior.
 - Phase 2 now has a public metadata and URL hygiene baseline: shared site metadata config, canonical metadata, Open Graph/Twitter metadata, robots.txt, and sitemap.xml for published public routes.
-- Phase 2 now has an accepted initial visual system: restrained editorial archive, research-notebook edge, CSS design tokens, and a four-surface homepage map for Writing, Projects, Knowledge paths, and Labs.
+- Phase 2 now has an accepted public-site experience design: Chinese-first UI, a dark-forward dual-theme strategy, and a four-surface platform map for Writing, Projects, Knowledge paths, and Labs.
 - Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
 - Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, browser e2e, Payload/Postgres integration tests, and media-backed public route rendering.
@@ -39,7 +39,7 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 ## Next Steps
 
 1. Add basic GitHub Actions for the stable local checks.
-2. Add an About/profile surface that connects public identity to the Writing and Projects routes.
+2. Implement the public-site experience design in small slices, starting with theme tokens, Chinese-first homepage copy, the four-surface map, and an About/profile surface.
 3. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
 4. Continue toward deployment planning after the public site experience has a stronger baseline.
 
@@ -62,6 +62,6 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Record architecture-changing choices in `docs/decisions/`.
 - Phase 0 and Phase 1 are closed; next work should improve the public site experience on top of the verified article/project publishing loop.
 - SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
-- Initial visual direction and design system posture are accepted in `docs/decisions/0006-initial-visual-system.md`; keep future UI changes aligned unless a later decision replaces it.
+- Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
 - The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
