@@ -4,7 +4,7 @@ Last updated: 2026-05-03
 
 ## Current Phase
 
-Phase 0: project foundation and governance kernel.
+Phase 1: platform scaffold and first platform loop.
 
 ## Current State
 
@@ -12,9 +12,10 @@ Phase 0: project foundation and governance kernel.
 - Local repository is on `main` and tracks `origin/main`.
 - Initial `README.md` and `.gitignore` are committed.
 - Application scaffold has not started yet.
-- Governance kernel is being established before choosing exact framework versions and local development commands.
+- Governance kernel is established.
 - Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
 - Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
+- Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
 
 ## Active Direction
 
@@ -26,18 +27,16 @@ Phase 1 is not complete until an operator can create or update an article or pro
 
 ## Next Steps
 
-1. Confirm the first-phase stack shape and package manager.
-2. Scaffold Next.js + Payload CMS with PostgreSQL-oriented configuration.
-3. Add reproducible local development commands.
-4. Add baseline validation scripts.
-5. Add basic GitHub Actions once the app has real checks.
-6. Model the first content and project collections.
+1. Scaffold Next.js + Payload CMS with PostgreSQL-oriented configuration.
+2. Add reproducible local development commands.
+3. Add baseline validation scripts.
+4. Add basic GitHub Actions once the app has real checks.
+5. Model the first content and project collections.
+6. Run the first platform loop through CMS/admin and public rendering.
 
 ## Open Decisions
 
-- Package manager: `pnpm`, `npm`, or another tool.
 - Exact Next.js and Payload versions.
-- Local database approach for development.
 - Deployment target and timing.
 - Initial visual direction and design system posture.
 - Whether comments/messages ship in phase 1 or remain a reserved boundary.
