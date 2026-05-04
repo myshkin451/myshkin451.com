@@ -53,6 +53,8 @@ Before ending meaningful work, decide whether the repository state changed in a 
 
 Use commits, pull requests, issues, or future task plans for detailed execution history. Keep `progress.md` as the current state board.
 
+When a meaningful work slice is complete and the next task would be cleaner in a fresh context, tell the user directly that starting a new session is preferable to continuing through context compaction. Include a short handoff prompt only when it will make the restart easier.
+
 ## Parallel Work
 
 Parallel agents are welcome, but they must have disjoint ownership.
