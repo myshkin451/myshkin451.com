@@ -1,6 +1,6 @@
 # Progress
 
-Last updated: 2026-05-03
+Last updated: 2026-05-04
 
 ## Current Phase
 
@@ -11,11 +11,14 @@ Phase 1: platform scaffold and first platform loop.
 - Public GitHub repository exists at `https://github.com/myshkin451/myshkin451.com`.
 - Local repository is on `main` and tracks `origin/main`.
 - Initial `README.md` and `.gitignore` are committed.
-- Application scaffold has not started yet.
+- Application scaffold is in place with Next.js, Payload, PostgreSQL, Tailwind, pnpm, and Docker Compose.
 - Governance kernel is established.
 - Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
 - Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
 - Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
+- Local PostgreSQL starts successfully through `pnpm db:up`.
+- Baseline checks currently pass for format, lint, typecheck, webpack production build, and the Payload/Postgres integration test.
+- Local dev server has been verified for the homepage, admin route, and public media API route.
 
 ## Active Direction
 
@@ -27,16 +30,14 @@ Phase 1 is not complete until an operator can create or update an article or pro
 
 ## Next Steps
 
-1. Scaffold Next.js + Payload CMS with PostgreSQL-oriented configuration.
-2. Add reproducible local development commands.
-3. Add baseline validation scripts.
-4. Add basic GitHub Actions once the app has real checks.
-5. Model the first content and project collections.
-6. Run the first platform loop through CMS/admin and public rendering.
+1. Model the first article and project collections.
+2. Render article/project data on public routes.
+3. Run the first platform loop through CMS/admin and public rendering.
+4. Add basic GitHub Actions once the app has stable checks.
+5. Add visual direction and design system notes after the first real pages exist.
 
 ## Open Decisions
 
-- Exact Next.js and Payload versions.
 - Deployment target and timing.
 - Initial visual direction and design system posture.
 - Whether comments/messages ship in phase 1 or remain a reserved boundary.
@@ -45,12 +46,12 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 
 ## Accepted Risks
 
-- No accepted risks yet.
+- Next.js 16 Turbopack production build hung locally during scaffold validation. The `build` script uses `next build --webpack` until this is revisited after framework upgrades or CI validation.
 
 ## Handoff Notes
 
 - Keep this file as a high-signal state board, not a chronological log.
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
-- Phase 0 should close after the immediate governance compatibility additions are complete; the next major move should be application scaffolding.
+- Phase 0 is closed; next work should implement article/project collections and public routes for the first platform loop.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.

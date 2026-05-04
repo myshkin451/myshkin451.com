@@ -9,6 +9,7 @@ out/
 dist/
 build/
 .cache/
+*.tsbuildinfo
 
 # Test and coverage output
 coverage/
@@ -41,4 +42,3 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
-

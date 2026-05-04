@@ -33,9 +33,33 @@ This repository intentionally does not continue an older blog architecture. The 
 - S3/R2-compatible object storage for media.
 - GitHub as the public source-of-truth for the platform code.
 
+## Local Development
+
+The application scaffold uses pnpm, Next.js, Payload, and a local PostgreSQL database through Docker Compose.
+
+```bash
+pnpm install
+pnpm db:up
+cp .env.example .env
+pnpm dev
+```
+
+Then open:
+
+- `http://localhost:3000` for the public site
+- `http://localhost:3000/admin` for the Payload admin
+
+Baseline checks:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
 ## Current Status
 
-The repository is in foundation setup. Application scaffolding has not started yet.
+The repository is in Phase 1 scaffold. The first product gate is not complete yet.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 
