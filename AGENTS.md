@@ -38,6 +38,21 @@ Read task-specific code and docs after this startup path. Do not sweep the whole
 - When resolving an item from `progress.md` Open Decisions, include a matching decision record in `docs/decisions/` and remove the item from Open Decisions in the same change.
 - Agents may challenge or improve the harness when it blocks better engineering. Record the reason, proposed replacement, and accepted outcome in `docs/HARNESS.md`, `progress.md`, or a decision record as appropriate.
 
+## Session Handoff
+
+Do not write a session diary after every conversation.
+
+Before ending meaningful work, decide whether the repository state changed in a way a new agent must know. Update `progress.md` only when there is a durable change:
+
+- phase or roadmap movement
+- completed capability or failed/accepted risk
+- changed next-step guidance
+- added or resolved open decision
+- new validation evidence that changes confidence
+- handoff detail that would otherwise be lost outside chat
+
+Use commits, pull requests, issues, or future task plans for detailed execution history. Keep `progress.md` as the current state board.
+
 ## Parallel Work
 
 Parallel agents are welcome, but they must have disjoint ownership.

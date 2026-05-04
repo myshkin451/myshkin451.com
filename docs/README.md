@@ -7,6 +7,7 @@ This repository uses a small documentation system that should grow only when the
 - `README.md`: public identity, direction, and high-level engineering stance.
 - `AGENTS.md`: required startup path and operating rules for future agents.
 - `progress.md`: current state board and handoff surface.
+- `docs/ROADMAP.md`: directional phase roadmap.
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.
 - `docs/decisions/_template.md`: template for new decision records.

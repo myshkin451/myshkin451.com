@@ -16,6 +16,7 @@ Phase 1: platform scaffold and first platform loop.
 - Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
 - Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
 - Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
+- Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
 - Baseline checks currently pass for format, lint, typecheck, webpack production build, and the Payload/Postgres integration test.
 - Local dev server has been verified for the homepage, admin route, and public media API route.
@@ -51,6 +52,7 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 ## Handoff Notes
 
 - Keep this file as a high-signal state board, not a chronological log.
+- Do not update this file for every session; update it only for durable state changes needed by future agents.
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
 - Phase 0 is closed; next work should implement article/project collections and public routes for the first platform loop.

@@ -4,7 +4,9 @@ coverage/
 playwright-report/
 test-results/
 pnpm-lock.yaml
+next-env.d.ts
 src/payload-types.ts
+src/app/(payload)/admin/importMap.js
 *.md
 *.env
 test.env
