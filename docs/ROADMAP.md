@@ -16,7 +16,7 @@ Completion signals:
 
 ## Phase 1: First Platform Loop
 
-Status: Active
+Status: Closed
 
 Goal: make the platform genuinely usable for the first publishing workflow.
 
@@ -36,7 +36,7 @@ Non-goals:
 
 ## Phase 2: Public Site Experience
 
-Status: Planned
+Status: Active
 
 Goal: turn the scaffold into a coherent public website experience.
 

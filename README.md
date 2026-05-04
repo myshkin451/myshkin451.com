@@ -59,8 +59,8 @@ pnpm build
 
 ## Current Status
 
-The repository is in Phase 1 scaffold. The first product gate is not complete yet.
+The repository has completed the Phase 1 first platform loop locally.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 
-The first product gate is the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
+The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
