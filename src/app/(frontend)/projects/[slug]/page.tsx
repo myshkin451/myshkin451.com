@@ -5,6 +5,7 @@ import { RichTextView } from '../../_components/RichTextView'
 import { SiteHeader } from '../../_components/SiteHeader'
 import { formatDate } from '@/lib/formatDate'
 import { getPublishedProjectBySlug } from '@/lib/publicContent'
+import { createPageMetadata } from '@/lib/siteMetadata'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,10 +25,12 @@ export async function generateMetadata({ params }: ProjectPageProps) {
     }
   }
 
-  return {
+  return createPageMetadata({
     description: project.summary,
-    title: `${project.title} | Myshkin 451`,
-  }
+    image: project.coverImage,
+    pathname: `/projects/${project.slug}`,
+    title: project.title,
+  })
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

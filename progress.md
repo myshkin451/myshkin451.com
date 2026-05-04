@@ -21,6 +21,7 @@ Phase 2: public site experience.
 - Public routes exist for `/articles`, `/articles/[slug]`, `/projects`, and `/projects/[slug]`, filtering to published content only.
 - The Phase 1 first platform loop is complete: a local operator can upload media in Payload admin, publish an article and a project with that media, and see homepage, list, and detail routes render the published records.
 - Browser e2e coverage now seeds media-backed published article/project records and verifies homepage, list, detail, and image loading behavior.
+- Phase 2 now has a public metadata and URL hygiene baseline: shared site metadata config, canonical metadata, Open Graph/Twitter metadata, robots.txt, and sitemap.xml for published public routes.
 - Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
 - Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, browser e2e, Payload/Postgres integration tests, and media-backed public route rendering.
@@ -60,5 +61,6 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
 - Phase 0 and Phase 1 are closed; next work should improve the public site experience on top of the verified article/project publishing loop.
+- SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`; the initial visual direction remains open.
 - The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.

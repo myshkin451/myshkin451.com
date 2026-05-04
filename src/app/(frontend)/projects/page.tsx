@@ -1,13 +1,15 @@
 import { ContentCard } from '../_components/ContentCard'
 import { SiteHeader } from '../_components/SiteHeader'
 import { listPublishedProjects } from '@/lib/publicContent'
+import { createPageMetadata } from '@/lib/siteMetadata'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
+export const metadata = createPageMetadata({
+  pathname: '/projects',
   description: 'Projects and platform artifacts from Myshkin 451.',
-  title: 'Projects | Myshkin 451',
-}
+  title: 'Projects',
+})
 
 export default async function ProjectsPage() {
   const projects = await listPublishedProjects()

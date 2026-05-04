@@ -4,6 +4,11 @@ import {
   createPlatformLoopFixture,
 } from '../helpers/platformLoopFixture'
 
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.myshkin451.com').replace(
+  /\/+$/,
+  '',
+)
+
 test.describe('Frontend', () => {
   let loopFixture: Awaited<ReturnType<typeof createPlatformLoopFixture>>
 
@@ -56,6 +61,45 @@ test.describe('Frontend', () => {
       page.getByText('Browser fixture project for the first platform loop.'),
     ).toBeVisible()
     await expectImagesLoaded(page.locator(`.cover-image img[alt="${loopFixture.coverAlt}"]`))
+  })
+
+  test('exposes canonical metadata and crawl entry points', async ({ page, request }) => {
+    await page.goto('/')
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', siteUrl)
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+      'content',
+      'Myshkin 451',
+    )
+
+    await page.goto('/articles')
+    await expect(page).toHaveTitle('Writing | Myshkin 451')
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${siteUrl}/articles`,
+    )
+
+    await page.goto(`/articles/${loopFixture.articleSlug}`)
+    await expect(page).toHaveTitle(`${loopFixture.articleTitle} | Myshkin 451`)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${siteUrl}/articles/${loopFixture.articleSlug}`,
+    )
+    await expect(page.locator('meta[property="og:image"]')).toHaveCount(1)
+
+    const robots = await request.get('/robots.txt')
+    await expect(robots).toBeOK()
+    await expect(await robots.text()).toContain(`Sitemap: ${siteUrl}/sitemap.xml`)
+
+    const sitemap = await request.get('/sitemap.xml')
+    await expect(sitemap).toBeOK()
+    const sitemapXml = await sitemap.text()
+
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/articles</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/projects</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/articles/${loopFixture.articleSlug}</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/projects/${loopFixture.projectSlug}</loc>`)
   })
 })
 

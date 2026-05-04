@@ -5,6 +5,7 @@ import { RichTextView } from '../../_components/RichTextView'
 import { SiteHeader } from '../../_components/SiteHeader'
 import { formatDate } from '@/lib/formatDate'
 import { getPublishedArticleBySlug } from '@/lib/publicContent'
+import { createPageMetadata } from '@/lib/siteMetadata'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,10 +25,12 @@ export async function generateMetadata({ params }: ArticlePageProps) {
     }
   }
 
-  return {
+  return createPageMetadata({
     description: article.excerpt,
-    title: `${article.title} | Myshkin 451`,
-  }
+    image: article.coverImage,
+    pathname: `/articles/${article.slug}`,
+    title: article.title,
+  })
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
