@@ -18,7 +18,7 @@ Phase 1: platform scaffold and first platform loop.
 - Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
 - Directional phase roadmap lives in `docs/ROADMAP.md`.
 - Local PostgreSQL starts successfully through `pnpm db:up`.
-- Baseline checks currently pass for format, lint, typecheck, webpack production build, and the Payload/Postgres integration test.
+- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, and the Payload/Postgres integration test.
 - Local dev server has been verified for the homepage, admin route, and public media API route.
 
 ## Active Direction

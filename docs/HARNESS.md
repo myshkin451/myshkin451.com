@@ -226,18 +226,25 @@ Decision records should be short. Prefer a useful current explanation over a per
 
 Use `docs/decisions/_template.md` for new records. When an Open Decision in `progress.md` is resolved, add or update the related decision record and remove the item from `progress.md` in the same change.
 
-## Future Check Commands
+## Check Commands
 
-The exact commands will be filled in after the app scaffold exists. Expected categories:
+Current scaffold commands:
 
-```txt
-install
-dev
-format
-lint
-typecheck
-test
-build
-```
+| Purpose | Command |
+| --- | --- |
+| Install dependencies | `pnpm install` |
+| Start local PostgreSQL | `pnpm db:up` |
+| Stop local PostgreSQL | `pnpm db:down` |
+| Start local app | `pnpm dev` |
+| Format files | `pnpm format` |
+| Check formatting | `pnpm format:check` |
+| Lint | `pnpm lint` |
+| Typecheck | `pnpm typecheck` |
+| Run integration tests | `pnpm test:int` |
+| Run browser tests | `pnpm test:e2e` |
+| Run all tests | `pnpm test` |
+| Production build | `pnpm build` |
+
+Use the lightest relevant proof for the change. Do not turn every small documentation or configuration change into a full phase review.
 
 Every final handoff should say which checks ran and what remains unverified.
