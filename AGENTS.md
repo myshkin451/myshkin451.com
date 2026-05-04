@@ -59,11 +59,13 @@ When a meaningful work slice is complete and the next task would be cleaner in a
 
 Parallel agents are welcome, but they must have disjoint ownership.
 
+- A lead agent may start parallel sub-agents without asking the owner first when the task is scoped, non-destructive, and can be split into independent read or write areas.
 - Give each agent a clear responsibility and file/module ownership.
 - Avoid two agents editing the same file family at the same time.
 - Exploratory agents should return findings, paths, risks, and recommended next actions.
 - Implementation agents should list changed files and validation results.
 - One lead agent should integrate, resolve conflicts, and run the final checks.
+- Ask the owner before using parallel agents for product-direction changes, deployment or secret work, destructive operations, broad rewrites, or overlapping write scopes.
 
 ## Validation Expectations
 
