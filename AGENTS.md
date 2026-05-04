@@ -55,6 +55,8 @@ Use commits, pull requests, issues, or future task plans for detailed execution 
 
 When a meaningful work slice is complete and the next task would be cleaner in a fresh context, tell the user directly that starting a new session is preferable to continuing through context compaction. Include a short handoff prompt only when it will make the restart easier.
 
+When ending a completed work slice, close or explicitly hand off any local servers, browser sessions, sub-agents, or long-running commands that were started for that slice.
+
 ## Parallel Work
 
 Parallel agents are welcome, but they must have disjoint ownership.
