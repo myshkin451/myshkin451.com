@@ -1772,6 +1772,17 @@ a {
     min-height: 230px;
   }
 
+  .featured-entry > .cover-image,
+  .project-dossier > .cover-image {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .featured-entry > .cover-image img,
+  .project-dossier > .cover-image img {
+    min-height: 0;
+  }
+
   .reading-sheet .rich-text,
   .case-file__body .rich-text {
     font-size: 18px;
