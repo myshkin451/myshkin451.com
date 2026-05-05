@@ -36,11 +36,11 @@ Non-goals:
 
 ## Phase 2: Public Site Experience
 
-Status: Active
+Status: Closed
 
 Goal: turn the scaffold into a coherent public website experience.
 
-Likely scope:
+Completed scope:
 
 - Homepage structure and navigation.
 - Article list and detail experience.
@@ -48,6 +48,32 @@ Likely scope:
 - About/profile surface.
 - SEO metadata and public URL hygiene.
 - Initial visual direction and reusable UI patterns.
+
+## Deployment And Operations Planning
+
+Status: Active
+
+Goal: prepare the first production path without jumping straight into deployment automation.
+
+Likely scope:
+
+- Public content and test-record cleanup policy.
+- First deployment target comparison.
+- Production database ownership and migration approach.
+- S3/R2-compatible media storage direction.
+- Environment and secret handling.
+- Cache and revalidation strategy before production.
+- Manual launch, rollback, backup, and health-check runbook.
+
+Non-goals:
+
+- New CMS models.
+- Deployment automation.
+- Infrastructure-as-code before the deployment target is accepted.
+
+Planning document:
+
+- `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`
 
 ## Phase 3: Platform Expansion
 
@@ -68,11 +94,11 @@ Possible scope:
 
 Status: Planned
 
-Goal: make the platform durable outside the local development machine.
+Goal: make the platform durable outside the local development machine after the deployment plan is
+accepted.
 
 Likely scope:
 
-- A focused deployment and operations plan before infrastructure automation.
 - Cloud deployment target.
 - Managed PostgreSQL or migration strategy.
 - S3/R2-compatible media storage.
@@ -83,7 +109,8 @@ Likely scope:
 
 Entry signal:
 
-- Public site experience and core content loops are stable enough that deployment decisions can be made from real application needs, not guesses.
+- Deployment and operations planning has an accepted target, data policy, media-storage direction,
+  cache strategy, and manual launch runbook.
 
 ## Roadmap Rules
 

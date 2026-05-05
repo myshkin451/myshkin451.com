@@ -165,7 +165,7 @@ export const uiCopy = {
     statusLine: {
       ariaLabel: '平台状态',
       barLabel: 'STATUS LINE',
-      phase: 'Phase 2 / Public Site',
+      phase: 'Public Site / Ops Planning',
       items: {
         language: {
           label: '语言',
@@ -223,7 +223,7 @@ export const uiCopy = {
     surfacesLabel: 'Surfaces',
     systemStatus: {
       label: 'System',
-      status: 'Phase 2 public site experience',
+      status: 'Public site baseline ready',
     },
   },
   theme: {

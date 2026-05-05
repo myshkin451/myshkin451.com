@@ -59,8 +59,13 @@ pnpm build
 
 ## Current Status
 
-The repository has completed the Phase 1 first platform loop locally.
+The repository has completed the Phase 1 first platform loop and the Phase 2 public-site experience
+baseline locally.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 
 The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
+
+The next active workstream is deployment and operations planning. Start with
+`docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`; do not add deployment automation before the
+target, data, media, secrets, caching, backup, rollback, and health-check choices are clear.

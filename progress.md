@@ -4,7 +4,7 @@ Last updated: 2026-05-05
 
 ## Current Phase
 
-Phase 2: public site experience.
+Deployment and operations planning after Phase 2 public-site closeout.
 
 ## Current State
 
@@ -36,6 +36,8 @@ Phase 2: public site experience.
 - A small public UI copy dictionary centralizes shared public chrome, theme, surface-index, and homepage copy.
 - Reserved public routes now exist for `/knowledge` and `/labs`, turning Knowledge Paths and Labs into accessible Phase 2 boundary surfaces without adding new CMS models.
 - Public routes now share a footer with surface navigation, language posture, source link, and an honest RSS/feed placeholder.
+- Phase 2 public-site experience is closed as a baseline. The next active workstream is deployment and operations planning, documented in `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`.
+- Public readiness review found local proof records that must not become production seed content: the ad-hoc published article slug `test`, first-platform-loop article/project records, local proof media, and test-only admin users.
 
 ## Active Direction
 
@@ -47,9 +49,9 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 ## Next Steps
 
-1. Continue public-surface expansion from the established theme, copy, and reserved-route baseline; keep route-specific strings local until they become shared UI copy.
-2. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
-3. Continue toward deployment planning after the public site experience has a stronger baseline; the first deployment artifact should be a lightweight deployment and operations plan, not immediate automation.
+1. Compare first deployment targets and record the accepted target/timing in a decision record before implementation.
+2. Define the production data policy: prefer a clean production database, replace local proof records with real public content, and keep local test fixtures out of production data.
+3. Plan media storage, environment/secret handling, public-route caching, backups, rollback, and health checks before adding deployment automation.
 
 ## Open Decisions
 
@@ -68,7 +70,8 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Do not update this file for every session; update it only for durable state changes needed by future agents.
 - Prefer Git commits and task-specific execution plans for detailed process history.
 - Record architecture-changing choices in `docs/decisions/`.
-- Phase 0 and Phase 1 are closed; next work should improve the public site experience on top of the verified article/project publishing loop.
+- Phase 0, Phase 1, and Phase 2 are closed; next work should plan deployment and operations on top of the verified public-site baseline.
+- Phase 2 is closed as a public-site experience baseline; future public UI work should be driven by real content pressure or deployment-readiness needs.
 - SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
 - Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
 - Initial visual system decision `0006` is partially superseded by `0007`; use `0007` when the two records conflict.
@@ -78,3 +81,4 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Future public UI work should add shared chrome, theme, navigation, homepage, and surface-index text to `src/app/(frontend)/_lib/uiCopy.ts`; keep one-off article/project body copy in route components until it becomes reusable.
 - Knowledge Paths and Labs are intentionally route-level reserved surfaces for now. Do not add collections, graphs, lab registries, or interactive tooling until real content or experiments justify them.
 - The footer's feed label is only a placeholder. Do not link to or expose a feed URL until an actual RSS/Atom route exists and is tested.
+- Do not migrate the local development database as production content. Use the deployment plan's content inventory before creating any staging or production environment.
