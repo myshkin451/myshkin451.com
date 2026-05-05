@@ -34,6 +34,7 @@ test.describe('Frontend', () => {
     await expect(page.getByRole('link', { name: /实验室.*Labs/ }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: /关于 About/ }).first()).toBeVisible()
     await expect(page.getByRole('group', { name: '主题切换' })).toBeVisible()
+    await expect(page.getByRole('contentinfo', { name: '站点页脚' })).toContainText('RSS 计划中')
   })
 
   test('persists the public theme preference', async ({ page }) => {
@@ -169,6 +170,9 @@ test.describe('Frontend', () => {
     await expect(
       page.getByRole('heading', { name: '给工具、AI demo 和小型试验留一个有边界的场地。' }),
     ).toBeVisible()
+    await expect(page.getByRole('contentinfo', { name: '站点页脚' })).toContainText(
+      '中文优先，英文路径保留',
+    )
 
     const robots = await request.get('/robots.txt')
     await expect(robots).toBeOK()

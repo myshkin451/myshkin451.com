@@ -206,6 +206,26 @@ export const uiCopy = {
     sourceLabel: 'Source',
     statusAriaLabel: '站点状态',
   },
+  siteFooter: {
+    ariaLabel: '站点页脚',
+    brandLine: 'Myshkin 451 / www.myshkin451.com',
+    feed: {
+      label: 'Feed',
+      status: 'RSS 计划中',
+    },
+    language: {
+      label: 'Language',
+      status: '中文优先，英文路径保留',
+    },
+    source: {
+      label: 'Public Source',
+    },
+    surfacesLabel: 'Surfaces',
+    systemStatus: {
+      label: 'System',
+      status: 'Phase 2 public site experience',
+    },
+  },
   theme: {
     ariaLabel: '主题切换',
     options: themeOptions,

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { CoverImage } from '../../_components/CoverImage'
 import { RichTextView } from '../../_components/RichTextView'
+import { SiteFooter } from '../../_components/SiteFooter'
 import { SiteHeader } from '../../_components/SiteHeader'
 import { SurfaceIndex } from '../../_components/SurfaceIndex'
 import { getReadingMinutes } from '../../_lib/contentDisplay'
@@ -127,6 +128,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <SurfaceIndex compact />
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }

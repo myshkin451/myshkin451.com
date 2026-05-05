@@ -35,6 +35,7 @@ Phase 2: public site experience.
 - The public site now has a header theme toggle for `system`, `dark`, and `light`, with the visitor preference persisted in local storage and applied through the existing dual-theme token system.
 - A small public UI copy dictionary centralizes shared public chrome, theme, surface-index, and homepage copy.
 - Reserved public routes now exist for `/knowledge` and `/labs`, turning Knowledge Paths and Labs into accessible Phase 2 boundary surfaces without adding new CMS models.
+- Public routes now share a footer with surface navigation, language posture, source link, and an honest RSS/feed placeholder.
 
 ## Active Direction
 
@@ -76,3 +77,4 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
 - Future public UI work should add shared chrome, theme, navigation, homepage, and surface-index text to `src/app/(frontend)/_lib/uiCopy.ts`; keep one-off article/project body copy in route components until it becomes reusable.
 - Knowledge Paths and Labs are intentionally route-level reserved surfaces for now. Do not add collections, graphs, lab registries, or interactive tooling until real content or experiments justify them.
+- The footer's feed label is only a placeholder. Do not link to or expose a feed URL until an actual RSS/Atom route exists and is tested.

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { ContentCard } from './_components/ContentCard'
+import { SiteFooter } from './_components/SiteFooter'
 import { SiteHeader } from './_components/SiteHeader'
 import { SurfaceIndex } from './_components/SurfaceIndex'
 import { uiCopy } from './_lib/uiCopy'
@@ -142,6 +143,8 @@ export default async function HomePage() {
           </Link>
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }

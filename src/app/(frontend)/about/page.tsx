@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { SiteFooter } from '../_components/SiteFooter'
 import { SiteHeader } from '../_components/SiteHeader'
 import { SurfaceIndex } from '../_components/SurfaceIndex'
 import { createPageMetadata, siteConfig } from '@/lib/siteMetadata'
@@ -95,6 +96,8 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }

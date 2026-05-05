@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { CoverImage } from '../_components/CoverImage'
+import { SiteFooter } from '../_components/SiteFooter'
 import { SiteHeader } from '../_components/SiteHeader'
 import { SurfaceIndex } from '../_components/SurfaceIndex'
 import {
@@ -154,6 +155,8 @@ export default async function ArticlesPage() {
           <SurfaceIndex compact />
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }

@@ -314,6 +314,7 @@ a {
 }
 
 .site-header a:hover,
+.site-footer a:hover,
 .surface-card:hover,
 .content-card h2 a:hover,
 .featured-entry h2 a:hover,
@@ -330,6 +331,7 @@ a {
 }
 
 .site-header a:focus-visible,
+.site-footer a:focus-visible,
 .actions a:focus-visible,
 .surface-card:focus-visible,
 .content-card a:focus-visible,
@@ -353,6 +355,86 @@ a {
   display: flex;
   flex-direction: column;
   gap: 50px;
+}
+
+.site-footer {
+  width: min(var(--container-wide), calc(100% - var(--gutter)));
+  margin: 0 auto;
+  padding: 26px 0 34px;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(260px, auto) minmax(320px, 1fr);
+  align-items: start;
+  gap: 28px;
+  border-top: 1px solid var(--line-subtle);
+  color: var(--color-muted);
+}
+
+.site-footer__identity {
+  display: grid;
+  gap: 8px;
+}
+
+.site-footer__identity span {
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.site-footer__identity p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.site-footer__nav a {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-subtle);
+  background: var(--color-panel);
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.site-footer__status {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line-subtle);
+}
+
+.site-footer__status div {
+  min-height: 86px;
+  background: var(--color-panel);
+  padding: 14px;
+}
+
+.site-footer__status dt {
+  margin: 0 0 8px;
+  color: var(--color-subtle);
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.site-footer__status dd {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  font-weight: 720;
+  line-height: 1.5;
+}
+
+.site-footer__status a {
+  color: var(--color-accent-strong);
 }
 
 .home-hero {
@@ -1495,7 +1577,8 @@ a {
   }
 
   .site-nav,
-  .site-header__meta {
+  .site-header__meta,
+  .site-footer__nav {
     justify-content: flex-start;
   }
 
@@ -1510,6 +1593,7 @@ a {
   .case-file,
   .section-heading--split,
   .reserved-note,
+  .site-footer,
   .contact-panel {
     grid-template-columns: 1fr;
   }
@@ -1653,7 +1737,8 @@ a {
   .feature-grid--asymmetric,
   .content-card,
   .status-ledger,
-  .archive-status dl {
+  .archive-status dl,
+  .site-footer__status {
     grid-template-columns: 1fr;
   }
 

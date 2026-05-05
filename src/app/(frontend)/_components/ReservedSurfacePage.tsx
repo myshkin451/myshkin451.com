@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 import { SurfaceIndex } from './SurfaceIndex'
 
@@ -127,6 +128,8 @@ export function ReservedSurfacePage({
           <SurfaceIndex compact />
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   )
 }
