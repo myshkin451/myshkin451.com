@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ContentCard } from './_components/ContentCard'
 import { SiteHeader } from './_components/SiteHeader'
 import { SurfaceIndex } from './_components/SurfaceIndex'
+import { uiCopy } from './_lib/uiCopy'
 import { listPublishedArticles, listPublishedProjects } from '@/lib/publicContent'
 
 export const dynamic = 'force-dynamic'
@@ -19,55 +20,55 @@ export default async function HomePage() {
       <main className="site-main">
         <section className="home-hero" aria-labelledby="home-title">
           <div className="home-hero__copy">
-            <p className="eyebrow">中文优先的技术图谱 / Public Workshop</p>
-            <h1 id="home-title">把写作、项目和知识路径放回同一个工作台。</h1>
-            <p className="summary">
-              {
-                'Myshkin 451 是一个长期生长的个人数字平台：这里会放中文长文、公开项目、研究路径和小型实验，让思考与建造互相留下证据。'
-              }
-            </p>
+            <p className="eyebrow">{uiCopy.home.hero.eyebrow}</p>
+            <h1 id="home-title">{uiCopy.home.hero.title}</h1>
+            <p className="summary">{uiCopy.home.hero.summary}</p>
             <div className="actions">
-              <Link href="/articles">进入写作</Link>
-              <Link href="/projects">查看项目</Link>
-              <Link href="/about">了解这个平台</Link>
+              {uiCopy.home.actions.map((action) => (
+                <Link href={action.href} key={action.href}>
+                  {action.label}
+                </Link>
+              ))}
             </div>
           </div>
 
-          <aside className="hero-console" aria-label="平台状态">
+          <aside className="hero-console" aria-label={uiCopy.home.statusLine.ariaLabel}>
             <div className="hero-console__bar">
-              <span>STATUS LINE</span>
-              <strong>Phase 2 / Public Site</strong>
+              <span>{uiCopy.home.statusLine.barLabel}</span>
+              <strong>{uiCopy.home.statusLine.phase}</strong>
             </div>
             <dl>
               <div>
-                <dt>写作</dt>
-                <dd>{articles.length} 篇已发布</dd>
+                <dt>{uiCopy.home.statusLine.items.writing.label}</dt>
+                <dd>
+                  {articles.length} {uiCopy.home.statusLine.items.writing.valueSuffix}
+                </dd>
               </div>
               <div>
-                <dt>项目</dt>
-                <dd>{projects.length} 个已发布</dd>
+                <dt>{uiCopy.home.statusLine.items.projects.label}</dt>
+                <dd>
+                  {projects.length} {uiCopy.home.statusLine.items.projects.valueSuffix}
+                </dd>
               </div>
               <div>
-                <dt>语言</dt>
-                <dd>中文优先，保留英文路径</dd>
+                <dt>{uiCopy.home.statusLine.items.language.label}</dt>
+                <dd>{uiCopy.home.statusLine.items.language.value}</dd>
               </div>
               <div>
-                <dt>下一个面</dt>
-                <dd>知识路径与实验室预留</dd>
+                <dt>{uiCopy.home.statusLine.items.nextSurface.label}</dt>
+                <dd>{uiCopy.home.statusLine.items.nextSurface.value}</dd>
               </div>
             </dl>
           </aside>
         </section>
 
-        <section className="surface-index" aria-label="平台四个入口">
+        <section className="surface-index" aria-label={uiCopy.home.surfaceIndex.ariaLabel}>
           <div className="section-heading section-heading--split">
             <div>
-              <p className="eyebrow">Surface Index</p>
-              <h2>四个入口，不是四个孤岛。</h2>
+              <p className="eyebrow">{uiCopy.home.surfaceIndex.eyebrow}</p>
+              <h2>{uiCopy.home.surfaceIndex.title}</h2>
             </div>
-            <p>
-              首页先把平台结构说清楚：可阅读的文字、可检查的项目、将来可串联的知识路径，以及有边界的实验。
-            </p>
+            <p>{uiCopy.home.surfaceIndex.body}</p>
           </div>
           <SurfaceIndex />
         </section>
@@ -85,9 +86,9 @@ export default async function HomePage() {
             />
           ) : (
             <div className="empty-panel">
-              <p className="eyebrow">写作</p>
-              <h2>还没有公开文章。</h2>
-              <p>内容模型已经准备好；第一批通过 CMS 发布的中文长文会出现在这里。</p>
+              <p className="eyebrow">{uiCopy.home.emptyArticle.eyebrow}</p>
+              <h2>{uiCopy.home.emptyArticle.title}</h2>
+              <p>{uiCopy.home.emptyArticle.body}</p>
             </div>
           )}
 
@@ -104,25 +105,21 @@ export default async function HomePage() {
             />
           ) : (
             <div className="empty-panel">
-              <p className="eyebrow">项目</p>
-              <h2>还没有公开项目。</h2>
-              <p>通过 Payload 发布的作品记录会在这里成为可检查的案例面板。</p>
+              <p className="eyebrow">{uiCopy.home.emptyProject.eyebrow}</p>
+              <h2>{uiCopy.home.emptyProject.title}</h2>
+              <p>{uiCopy.home.emptyProject.body}</p>
             </div>
           )}
         </section>
 
         <section className="about-preview" aria-labelledby="about-preview-title">
-          <p className="eyebrow">About</p>
-          <h2 id="about-preview-title">这个平台由一个持续学习、写作和造工具的人维护。</h2>
-          <p>
-            {
-              '它不是简历页，也不是把旧博客换一层皮。Myshkin 451 会把公开表达、项目证据和长期知识整理放在同一个系统里，允许它们互相引用、互相修正。'
-            }
-          </p>
-          <Link href="/about">阅读关于页面</Link>
+          <p className="eyebrow">{uiCopy.home.aboutPreview.eyebrow}</p>
+          <h2 id="about-preview-title">{uiCopy.home.aboutPreview.title}</h2>
+          <p>{uiCopy.home.aboutPreview.body}</p>
+          <Link href="/about">{uiCopy.home.aboutPreview.linkLabel}</Link>
         </section>
 
-        <section className="status-ledger" aria-label="平台入口状态">
+        <section className="status-ledger" aria-label={uiCopy.home.statusLedgerAriaLabel}>
           <Link href="/articles">
             <span>写作</span>
             <strong>{articles.length} 篇已发布</strong>

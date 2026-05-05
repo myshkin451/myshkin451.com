@@ -32,6 +32,8 @@ Phase 2: public site experience.
 - Basic GitHub Actions CI now runs the stable checks on pull requests and pushes to `main`: format check, lint, typecheck, integration tests, production build, and browser e2e tests against a PostgreSQL service.
 - Phase 2 dynamic rendering is intentional and accepted in `docs/decisions/0008-phase-2-rendering-cache-strategy.md`; revisit caching before production deployment.
 - Public content visibility now requires both `status: published` and `publishedAt <= now`, so future-dated published records stay hidden until their publication time.
+- The public site now has a header theme toggle for `system`, `dark`, and `light`, with the visitor preference persisted in local storage and applied through the existing dual-theme token system.
+- A small public UI copy dictionary centralizes shared public chrome, theme, surface-index, and homepage copy.
 
 ## Active Direction
 
@@ -43,7 +45,7 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 ## Next Steps
 
-1. Add the public theme toggle and small UI copy dictionary before broader public-surface expansion.
+1. Continue public-surface expansion from the established theme and copy baseline; keep route-specific strings local until they become shared UI copy.
 2. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
 3. Continue toward deployment planning after the public site experience has a stronger baseline; the first deployment artifact should be a lightweight deployment and operations plan, not immediate automation.
 
@@ -71,3 +73,4 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - The first public-site experience slice has shipped locally; future frontend work should reuse `src/app/(frontend)/styles.css` theme tokens and `SurfaceIndex`/platform surface copy instead of reintroducing one-off visual systems.
 - The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
+- Future public UI work should add shared chrome, theme, navigation, homepage, and surface-index text to `src/app/(frontend)/_lib/uiCopy.ts`; keep one-off article/project body copy in route components until it becomes reusable.

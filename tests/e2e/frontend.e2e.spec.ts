@@ -31,6 +31,29 @@ test.describe('Frontend', () => {
     await expect(page.getByRole('heading', { name: '四个入口，不是四个孤岛。' })).toBeVisible()
     await expect(page.getByText('知识路径').first()).toBeVisible()
     await expect(page.getByRole('link', { name: /关于 About/ }).first()).toBeVisible()
+    await expect(page.getByRole('group', { name: '主题切换' })).toBeVisible()
+  })
+
+  test('persists the public theme preference', async ({ page }) => {
+    await page.goto('/')
+
+    await page.getByRole('button', { name: '使用亮色主题' }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'light')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+    await page.reload()
+    await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'light')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+    await page.getByRole('button', { name: '使用暗色主题' }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'dark')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+    await page.getByRole('button', { name: '跟随系统主题' }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'system')
+    expect(await page.evaluate(() => window.localStorage.getItem('myshkin451.theme'))).toBe(
+      'system',
+    )
   })
 
   test('renders published article and project records with cover media', async ({ page }) => {

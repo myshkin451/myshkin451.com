@@ -80,6 +80,54 @@
   color-scheme: dark;
 }
 
+:root[data-theme='light'],
+:root[data-theme='light'] .site-shell {
+  --color-paper: #f4f1e8;
+  --color-paper-soft: #fffdf7;
+  --color-panel: rgba(255, 253, 247, 0.86);
+  --color-panel-strong: #fffaf0;
+  --color-ink: #171717;
+  --color-ink-soft: #292622;
+  --color-muted: #55514a;
+  --color-subtle: #786a55;
+  --color-accent: #a54432;
+  --color-accent-strong: #7d2d21;
+  --color-accent-soft: rgba(165, 68, 50, 0.12);
+  --color-amber: #b57831;
+  --color-moss: #6f815d;
+  --color-moss-deep: #394534;
+  --color-cyan: #147c7a;
+  --color-media-wash: #dfe3d8;
+  --line-subtle: rgba(31, 34, 31, 0.14);
+  --line-strong: rgba(31, 34, 31, 0.28);
+  --shadow-panel: 0 24px 70px rgba(44, 37, 26, 0.08);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'],
+:root[data-theme='dark'] .site-shell {
+  --color-paper: #0f1210;
+  --color-paper-soft: #161b17;
+  --color-panel: rgba(24, 29, 25, 0.82);
+  --color-panel-strong: #1b221d;
+  --color-ink: #fbf3e6;
+  --color-ink-soft: #e9decc;
+  --color-muted: #b9b0a1;
+  --color-subtle: #d3a263;
+  --color-accent: #f06f4f;
+  --color-accent-strong: #ff916f;
+  --color-accent-soft: rgba(240, 111, 79, 0.16);
+  --color-amber: #d5a34b;
+  --color-moss: #8fa87b;
+  --color-moss-deep: #bcd0ad;
+  --color-cyan: #6acbc3;
+  --color-media-wash: #222b25;
+  --line-subtle: rgba(249, 236, 216, 0.14);
+  --line-strong: rgba(249, 236, 216, 0.3);
+  --shadow-panel: 0 26px 80px rgba(0, 0, 0, 0.34);
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -221,6 +269,48 @@ a {
 .site-header__meta a,
 .site-header__meta span {
   padding: 0 10px;
+}
+
+.theme-toggle {
+  min-height: 34px;
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(36px, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--line-subtle);
+  background: var(--color-panel);
+}
+
+.theme-toggle__option {
+  min-width: 36px;
+  min-height: 32px;
+  border: 0;
+  border-left: 1px solid var(--line-subtle);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.theme-toggle__option:first-child {
+  border-left: 0;
+}
+
+.theme-toggle__option:hover {
+  color: var(--color-accent-strong);
+}
+
+.theme-toggle__option[aria-pressed='true'] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.theme-toggle__option:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: var(--focus-ring);
+  outline-offset: -2px;
 }
 
 .site-header a:hover,

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import React from 'react'
 import './styles.css'
+import { ThemeScript } from './_components/ThemeScript'
 import { siteConfig } from '@/lib/siteMetadata'
 
 export const metadata: Metadata = {
@@ -32,7 +33,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body>{children}</body>
     </html>
   )

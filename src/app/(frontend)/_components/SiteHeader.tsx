@@ -1,6 +1,8 @@
 import Link from 'next/link'
 
+import { ThemeToggle } from './ThemeToggle'
 import { primaryNav } from '../_lib/platformSurfaces'
+import { uiCopy } from '../_lib/uiCopy'
 import { siteConfig } from '@/lib/siteMetadata'
 
 export function SiteHeader() {
@@ -10,10 +12,10 @@ export function SiteHeader() {
         <span className="brand__mark">M451</span>
         <span className="brand__text">
           <span className="brand__name">Myshkin 451</span>
-          <span className="brand__subtitle">技术图谱与公共工坊</span>
+          <span className="brand__subtitle">{uiCopy.siteChrome.brandSubtitle}</span>
         </span>
       </Link>
-      <nav aria-label="主导航" className="site-nav">
+      <nav aria-label={uiCopy.siteChrome.navAriaLabel} className="site-nav">
         {primaryNav.map((item) => (
           <Link href={item.href} key={item.href}>
             <span>{item.label}</span>
@@ -21,11 +23,12 @@ export function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <div className="site-header__meta" aria-label="站点状态">
-        <span>中文 / ZH</span>
-        <Link href="/admin">Admin</Link>
+      <div className="site-header__meta" aria-label={uiCopy.siteChrome.statusAriaLabel}>
+        <span>{uiCopy.siteChrome.languageLabel}</span>
+        <ThemeToggle />
+        <Link href="/admin">{uiCopy.siteChrome.adminLabel}</Link>
         <a href={siteConfig.githubUrl} rel="noreferrer" target="_blank">
-          Source
+          {uiCopy.siteChrome.sourceLabel}
         </a>
       </div>
     </header>
