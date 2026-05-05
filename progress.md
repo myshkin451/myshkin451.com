@@ -45,7 +45,7 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 1. Add the public theme toggle and small UI copy dictionary before broader public-surface expansion.
 2. Add an admin UI publishing e2e only if Payload admin selectors and the operator flow stay stable enough to justify the maintenance cost.
-3. Continue toward deployment planning after the public site experience has a stronger baseline.
+3. Continue toward deployment planning after the public site experience has a stronger baseline; the first deployment artifact should be a lightweight deployment and operations plan, not immediate automation.
 
 ## Open Decisions
 

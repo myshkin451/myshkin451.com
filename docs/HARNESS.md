@@ -179,10 +179,12 @@ Current layer.
 
 To be added closer to deployment.
 
+- Focused deployment and operations plan before automation.
 - Hosting target.
 - Environment ownership.
 - Database migration strategy.
 - Media storage configuration.
+- Infrastructure-as-code boundary if cloud resources become durable project infrastructure.
 - Backup and rollback expectations.
 - Monitoring and health checks.
 

@@ -72,12 +72,18 @@ Goal: make the platform durable outside the local development machine.
 
 Likely scope:
 
+- A focused deployment and operations plan before infrastructure automation.
 - Cloud deployment target.
 - Managed PostgreSQL or migration strategy.
 - S3/R2-compatible media storage.
 - Environment and secret management.
+- Infrastructure-as-code direction when the deployment target is stable enough.
 - Backups, rollback, health checks, and monitoring.
 - GitHub Actions and deployment checks.
+
+Entry signal:
+
+- Public site experience and core content loops are stable enough that deployment decisions can be made from real application needs, not guesses.
 
 ## Roadmap Rules
 
