@@ -7,6 +7,7 @@ import { defineConfig, devices } from '@playwright/test'
 import 'dotenv/config'
 
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000'
+const webServerCommand = process.env.CI ? 'pnpm start' : 'pnpm dev'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -36,8 +37,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
-    reuseExistingServer: true,
+    command: webServerCommand,
+    reuseExistingServer: !process.env.CI,
     url: baseURL,
   },
 })

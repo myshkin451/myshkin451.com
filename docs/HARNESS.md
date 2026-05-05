@@ -266,4 +266,4 @@ It runs on pull requests and pushes to `main` with:
 - `pnpm build`.
 - `pnpm test:e2e`.
 
-The workflow sets local-only CI environment values for `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SITE_URL`, and `BASE_URL`. Failed browser runs upload Playwright reports and test results for debugging.
+The workflow sets local-only CI environment values for `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SITE_URL`, and `BASE_URL`. Browser tests run against the production server because the CI job builds before running Playwright. Failed browser runs upload Playwright reports and test results for debugging.
