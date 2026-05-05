@@ -13,6 +13,7 @@ export type PlatformSurfaceCopy = {
   id: 'writing' | 'projects' | 'knowledge' | 'labs'
   label: string
   marker: string
+  reserved?: boolean
   signal: string
   status: string
 }
@@ -35,6 +36,16 @@ const primaryNavigation = [
     english: 'Projects',
     href: '/projects',
     label: '项目',
+  },
+  {
+    english: 'Knowledge',
+    href: '/knowledge',
+    label: '知识路径',
+  },
+  {
+    english: 'Labs',
+    href: '/labs',
+    label: '实验室',
   },
   {
     english: 'About',
@@ -67,20 +78,24 @@ const platformSurfaces = [
   {
     description: '围绕研究、备考和长期主题的路径入口，先预留清晰边界。',
     english: 'Knowledge Paths',
+    href: '/knowledge',
     id: 'knowledge',
     label: '知识路径',
     marker: '03',
+    reserved: true,
     signal: 'Maps / Study',
-    status: '预留',
+    status: '预留入口',
   },
   {
     description: '小工具、AI demo 和更有弹性的试验场，但不挤压核心内容模型。',
     english: 'Labs',
+    href: '/labs',
     id: 'labs',
     label: '实验室',
     marker: '04',
+    reserved: true,
     signal: 'Tools / Experiments',
-    status: '预留',
+    status: '预留入口',
   },
 ] satisfies readonly PlatformSurfaceCopy[]
 
@@ -158,7 +173,7 @@ export const uiCopy = {
         },
         nextSurface: {
           label: '下一个面',
-          value: '知识路径与实验室预留',
+          value: '知识路径与实验室预留入口',
         },
         projects: {
           label: '项目',
@@ -172,7 +187,7 @@ export const uiCopy = {
     },
     surfaceIndex: {
       ariaLabel: '平台四个入口',
-      body: '首页先把平台结构说清楚：可阅读的文字、可检查的项目、将来可串联的知识路径，以及有边界的实验。',
+      body: '首页先把平台结构说清楚：可阅读的文字、可检查的项目、将来可串联的知识路径，以及有边界的实验入口。',
       eyebrow: 'Surface Index',
       title: '四个入口，不是四个孤岛。',
     },

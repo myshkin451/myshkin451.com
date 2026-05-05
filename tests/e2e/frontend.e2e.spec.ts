@@ -30,6 +30,8 @@ test.describe('Frontend', () => {
     await expect(heading).toContainText('把写作、项目和知识路径放回同一个工作台')
     await expect(page.getByRole('heading', { name: '四个入口，不是四个孤岛。' })).toBeVisible()
     await expect(page.getByText('知识路径').first()).toBeVisible()
+    await expect(page.getByRole('link', { name: /知识路径.*Knowledge/ }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: /实验室.*Labs/ }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: /关于 About/ }).first()).toBeVisible()
     await expect(page.getByRole('group', { name: '主题切换' })).toBeVisible()
   })
@@ -151,6 +153,23 @@ test.describe('Frontend', () => {
       page.getByRole('heading', { name: '一个把学习、建造和写作留在公开处的个人平台。' }),
     ).toBeVisible()
 
+    await page.goto('/knowledge')
+    await expect(page).toHaveTitle('知识路径 | Myshkin 451')
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${siteUrl}/knowledge`,
+    )
+    await expect(
+      page.getByRole('heading', { name: '把分散的学习和研究整理成可进入的路线。' }),
+    ).toBeVisible()
+
+    await page.goto('/labs')
+    await expect(page).toHaveTitle('实验室 | Myshkin 451')
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${siteUrl}/labs`)
+    await expect(
+      page.getByRole('heading', { name: '给工具、AI demo 和小型试验留一个有边界的场地。' }),
+    ).toBeVisible()
+
     const robots = await request.get('/robots.txt')
     await expect(robots).toBeOK()
     await expect(await robots.text()).toContain(`Sitemap: ${siteUrl}/sitemap.xml`)
@@ -162,6 +181,8 @@ test.describe('Frontend', () => {
     expect(sitemapXml).toContain(`<loc>${siteUrl}/</loc>`)
     expect(sitemapXml).toContain(`<loc>${siteUrl}/articles</loc>`)
     expect(sitemapXml).toContain(`<loc>${siteUrl}/projects</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/knowledge</loc>`)
+    expect(sitemapXml).toContain(`<loc>${siteUrl}/labs</loc>`)
     expect(sitemapXml).toContain(`<loc>${siteUrl}/about</loc>`)
     expect(sitemapXml).toContain(`<loc>${siteUrl}/articles/${loopFixture.articleSlug}</loc>`)
     expect(sitemapXml).toContain(`<loc>${siteUrl}/projects/${loopFixture.projectSlug}</loc>`)

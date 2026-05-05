@@ -21,6 +21,7 @@ export function SurfaceIndex({ compact = false }: SurfaceIndexProps) {
 }
 
 function SurfaceCard({ surface }: { surface: PlatformSurface }) {
+  const className = surface.reserved ? 'surface-card surface-card--reserved' : 'surface-card'
   const children = (
     <>
       <span className="surface-card__marker">{surface.marker}</span>
@@ -36,11 +37,11 @@ function SurfaceCard({ surface }: { surface: PlatformSurface }) {
 
   if (surface.href) {
     return (
-      <Link className="surface-card" href={surface.href}>
+      <Link className={className} href={surface.href}>
         {children}
       </Link>
     )
   }
 
-  return <article className="surface-card surface-card--reserved">{children}</article>
+  return <article className={className}>{children}</article>
 }

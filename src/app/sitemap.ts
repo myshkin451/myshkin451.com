@@ -31,6 +31,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       lastModified: new Date(),
       priority: 0.7,
+      url: absoluteUrl('/knowledge'),
+    },
+    {
+      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      priority: 0.7,
+      url: absoluteUrl('/labs'),
+    },
+    {
+      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      priority: 0.7,
       url: absoluteUrl('/about'),
     },
     ...articles.map((article) => ({

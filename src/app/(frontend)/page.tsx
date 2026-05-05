@@ -128,6 +128,14 @@ export default async function HomePage() {
             <span>项目</span>
             <strong>{projects.length} 个已发布</strong>
           </Link>
+          <Link href="/knowledge">
+            <span>知识路径</span>
+            <strong>预留入口已开放</strong>
+          </Link>
+          <Link href="/labs">
+            <span>实验室</span>
+            <strong>预留入口已开放</strong>
+          </Link>
           <Link href="/about">
             <span>关于</span>
             <strong>平台说明已开放</strong>
