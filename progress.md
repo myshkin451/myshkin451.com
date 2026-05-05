@@ -39,6 +39,7 @@ Deployment and operations planning after Phase 2 public-site closeout.
 - Phase 2 public-site experience is closed as a baseline. The next active workstream is deployment and operations planning, documented in `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`.
 - Public readiness review found local proof records that must not become production seed content: the ad-hoc published article slug `test`, first-platform-loop article/project records, local proof media, and test-only admin users.
 - AWS is accepted as the first production cloud target in `docs/decisions/0009-aws-first-deployment-target.md`, with ECS Express Mode on Fargate as the intended compute path and manual ECS/Fargate as the fallback.
+- The manual AWS launch runbook and preflight checklist are drafted in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`; it is a planning gate, not deployment automation or resource creation.
 
 ## Active Direction
 
@@ -50,9 +51,10 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 ## Next Steps
 
-1. Write the manual AWS launch runbook and preflight checklist for the ECS/Fargate path.
-2. Define the production data policy: prefer a clean production database, replace local proof records with real public content, and keep local test fixtures out of production data.
-3. Plan S3 media storage, environment/secret handling, public-route caching, backups, rollback, and health checks before adding deployment automation.
+1. Define the production data policy: prefer a clean production database, replace local proof records with real public content, and keep local test fixtures out of production data.
+2. Plan and implement S3 media storage before any production launch uses Payload uploads.
+3. Add or confirm a stable runtime health-check path and production environment validation.
+4. Revisit public-route caching or revalidation before production traffic.
 
 ## Open Decisions
 
@@ -73,6 +75,7 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Record architecture-changing choices in `docs/decisions/`.
 - Phase 0, Phase 1, and Phase 2 are closed; next work should plan deployment and operations on top of the verified public-site baseline.
 - Phase 2 is closed as a public-site experience baseline; future public UI work should be driven by real content pressure or deployment-readiness needs.
+- Use the manual AWS launch runbook as the first deployment gate. Current launch blockers are the production container image path, S3 media storage, a stable health-check endpoint, and the final cache or revalidation decision.
 - SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
 - Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
 - Initial visual system decision `0006` is partially superseded by `0007`; use `0007` when the two records conflict.

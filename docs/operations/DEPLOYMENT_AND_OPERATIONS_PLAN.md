@@ -23,6 +23,10 @@ The next durable decisions should cover:
 The production cloud target is AWS. Decision `0009` accepts an AWS-first deployment direction,
 centered on Amazon ECS Express Mode over Fargate with manual ECS/Fargate as the fallback path.
 
+The manual launch runbook and preflight checklist now live in
+`docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`. Treat that document as the operating gate for the
+first AWS launch; it is still a manual plan, not a resource creation script.
+
 ## Public Readiness Review
 
 Phase 2 can close as a public-site experience baseline.
@@ -65,11 +69,12 @@ and `.local/` are not tracked by Git and should stay local.
 
 ## First Deployment Planning Slice
 
-Use this order for the next workstream:
+Use this order for the deployment planning workstream:
 
 1. Define the AWS launch runbook.
-   Start with ECS Express Mode on Fargate as the intended compute path. Keep manual ECS/Fargate plus
-   Application Load Balancer as the fallback if Express Mode does not fit during implementation.
+   Documented in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`. It starts with ECS Express Mode on
+   Fargate as the intended compute path and keeps manual ECS/Fargate plus Application Load Balancer
+   as the fallback if Express Mode does not fit during implementation.
 
 2. Define production data ownership.
    Prefer a clean production database for the first launch. If any local content is imported, review
@@ -88,9 +93,28 @@ Use this order for the next workstream:
    whether to keep dynamic rendering for launch or move to ISR, tag-based revalidation, or
    Payload-triggered revalidation.
 
-6. Define the launch runbook.
-   The first runbook should cover deploy, verify, rollback, database backup, media backup, and basic
-   health checks. It can stay manual until the target is stable.
+6. Keep the launch runbook manual until the target is stable.
+   It should cover deploy, verify, rollback, database backup, media backup, and basic health checks
+   before any CI/CD or infrastructure-as-code work begins.
+
+## Manual AWS Launch Runbook
+
+The second planning slice is documented in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`.
+
+It covers:
+
+- the preflight checklist that should block AWS resource creation until the launch prerequisites are
+  ready;
+- the preferred ECS Express Mode on Fargate path accepted by decision `0009`;
+- the manual ECS/Fargate plus Application Load Balancer fallback path;
+- the intended resource order for ECR, IAM, networking, RDS, S3, Secrets Manager or SSM Parameter
+  Store, CloudWatch, ECS, Route 53, and ACM;
+- the environment values that must be recorded before launch;
+- verification and rollback steps for compute, data, media, DNS, and secrets;
+- AWS SAA study points tied to the real platform launch.
+
+Known launch blockers remain outside the runbook itself: production container image shape, Payload S3
+media storage, a stable health-check endpoint, and the final cache or revalidation decision.
 
 ## AWS Target Architecture
 
@@ -134,13 +158,12 @@ are exam topics.
 
 After this first target decision, continue in these slices:
 
-1. Manual AWS launch runbook and preflight checklist.
-2. Production data and content policy.
-3. S3 media storage implementation plan, then implementation.
-4. Runtime health check and production environment validation.
-5. Cache and revalidation decision before production traffic.
-6. First manual AWS deployment.
-7. Only after the manual path is stable, consider CI/CD and infrastructure-as-code.
+1. Production data and content policy.
+2. S3 media storage implementation plan, then implementation.
+3. Runtime health check and production environment validation.
+4. Cache and revalidation decision before production traffic.
+5. First manual AWS deployment using the runbook gate.
+6. Only after the manual path is stable, consider CI/CD and infrastructure-as-code.
 
 ## Non-Goals For This Slice
 

@@ -11,6 +11,8 @@ This repository uses a small documentation system that should grow only when the
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
 - `docs/design/`: durable product and frontend design direction.
 - `docs/operations/`: deployment, operations, and production-readiness planning.
+- `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist
+  for the accepted ECS/Fargate path.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.
 - `docs/decisions/_template.md`: template for new decision records.
 
