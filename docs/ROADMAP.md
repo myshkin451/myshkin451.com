@@ -57,8 +57,8 @@ Goal: prepare the first production path without jumping straight into deployment
 
 Likely scope:
 
+- AWS-first deployment target decision.
 - Public content and test-record cleanup policy.
-- First deployment target comparison.
 - Production database ownership and migration approach.
 - S3/R2-compatible media storage direction.
 - Environment and secret handling.
@@ -74,6 +74,7 @@ Non-goals:
 Planning document:
 
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`
+- `docs/decisions/0009-aws-first-deployment-target.md`
 
 ## Phase 3: Platform Expansion
 
@@ -101,7 +102,7 @@ Likely scope:
 
 - Cloud deployment target.
 - Managed PostgreSQL or migration strategy.
-- S3/R2-compatible media storage.
+- Amazon S3 media storage.
 - Environment and secret management.
 - Infrastructure-as-code direction when the deployment target is stable enough.
 - Backups, rollback, health checks, and monitoring.

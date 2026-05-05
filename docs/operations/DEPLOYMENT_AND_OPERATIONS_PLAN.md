@@ -13,12 +13,15 @@ automation, or choosing infrastructure before the tradeoffs are visible.
 
 The next durable decisions should cover:
 
-- deployment target and timing;
+- AWS launch timing and readiness gate;
 - production database ownership and migration approach;
 - media storage ownership;
 - environment and secret handling;
 - cache and revalidation strategy for public CMS-backed routes;
 - backup, rollback, health check, and monitoring expectations.
+
+The production cloud target is AWS. Decision `0009` accepts an AWS-first deployment direction,
+centered on Amazon ECS Express Mode over Fargate with manual ECS/Fargate as the fallback path.
 
 ## Public Readiness Review
 
@@ -64,17 +67,17 @@ and `.local/` are not tracked by Git and should stay local.
 
 Use this order for the next workstream:
 
-1. Choose the first production target.
-   Compare a managed platform path against a VPS/container path. Record the accepted choice in a
-   decision record before implementation.
+1. Define the AWS launch runbook.
+   Start with ECS Express Mode on Fargate as the intended compute path. Keep manual ECS/Fargate plus
+   Application Load Balancer as the fallback if Express Mode does not fit during implementation.
 
 2. Define production data ownership.
    Prefer a clean production database for the first launch. If any local content is imported, review
    it as public content first and document the import path.
 
 3. Define media storage.
-   Local filesystem uploads are only a development default. Production should use an S3/R2-compatible
-   object store or a hosting-native durable media path before public launch.
+   Local filesystem uploads are only a development default. Production should use Amazon S3 for the
+   first AWS launch.
 
 4. Define environment and secret handling.
    Required production values include `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SITE_URL`, and
@@ -88,6 +91,56 @@ Use this order for the next workstream:
 6. Define the launch runbook.
    The first runbook should cover deploy, verify, rollback, database backup, media backup, and basic
    health checks. It can stay manual until the target is stable.
+
+## AWS Target Architecture
+
+The first AWS production shape should stay small but real:
+
+- Container registry: Amazon ECR.
+- Application runtime: Amazon ECS Express Mode on Fargate.
+- Fallback runtime: manual Amazon ECS on Fargate behind an Application Load Balancer.
+- Database: Amazon RDS for PostgreSQL.
+- Media: Amazon S3 for Payload uploads; CloudFront can be added after first-launch behavior is
+  understood.
+- DNS and TLS: Route 53 plus AWS Certificate Manager when the domain is ready to point at AWS.
+- Secrets and configuration: AWS Secrets Manager or SSM Parameter Store.
+- Observability: CloudWatch logs, metrics, and a small alarm set.
+
+This is feasible for the current app, but it requires later implementation slices before launch:
+
+- add a production container build path;
+- add or configure Payload S3 media storage;
+- decide how database migrations/schema changes are applied;
+- add a health-check endpoint or confirm a stable health-check path;
+- decide whether launch keeps dynamic rendering or introduces ISR/revalidation;
+- write a manual rollback and restore path.
+
+## AWS SAA Learning Thread
+
+This deployment path should double as a practical AWS SAA study map:
+
+- VPC and security groups: how the app reaches RDS and how public traffic reaches the load balancer.
+- IAM roles and policies: task execution, S3 media access, ECR image pulls, and secret reads.
+- Compute: ECS, Fargate, containers, autoscaling, and load balancing.
+- Storage: S3 object storage, optional CloudFront distribution, and media backup policy.
+- Database: RDS PostgreSQL, backups, snapshots, maintenance windows, and Multi-AZ tradeoffs.
+- DNS and TLS: Route 53 hosted zone records and ACM certificates.
+- Observability: CloudWatch logs, metrics, alarms, and runbook evidence.
+
+Keep the learning thread attached to real platform needs. Do not add AWS services only because they
+are exam topics.
+
+## Follow-Up Development Direction
+
+After this first target decision, continue in these slices:
+
+1. Manual AWS launch runbook and preflight checklist.
+2. Production data and content policy.
+3. S3 media storage implementation plan, then implementation.
+4. Runtime health check and production environment validation.
+5. Cache and revalidation decision before production traffic.
+6. First manual AWS deployment.
+7. Only after the manual path is stable, consider CI/CD and infrastructure-as-code.
 
 ## Non-Goals For This Slice
 

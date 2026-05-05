@@ -38,6 +38,7 @@ Deployment and operations planning after Phase 2 public-site closeout.
 - Public routes now share a footer with surface navigation, language posture, source link, and an honest RSS/feed placeholder.
 - Phase 2 public-site experience is closed as a baseline. The next active workstream is deployment and operations planning, documented in `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`.
 - Public readiness review found local proof records that must not become production seed content: the ad-hoc published article slug `test`, first-platform-loop article/project records, local proof media, and test-only admin users.
+- AWS is accepted as the first production cloud target in `docs/decisions/0009-aws-first-deployment-target.md`, with ECS Express Mode on Fargate as the intended compute path and manual ECS/Fargate as the fallback.
 
 ## Active Direction
 
@@ -49,13 +50,13 @@ Phase 1 is complete. The verified loop is: create or update an article and proje
 
 ## Next Steps
 
-1. Compare first deployment targets and record the accepted target/timing in a decision record before implementation.
+1. Write the manual AWS launch runbook and preflight checklist for the ECS/Fargate path.
 2. Define the production data policy: prefer a clean production database, replace local proof records with real public content, and keep local test fixtures out of production data.
-3. Plan media storage, environment/secret handling, public-route caching, backups, rollback, and health checks before adding deployment automation.
+3. Plan S3 media storage, environment/secret handling, public-route caching, backups, rollback, and health checks before adding deployment automation.
 
 ## Open Decisions
 
-- Deployment target and timing.
+- AWS launch timing and production readiness gate.
 - Whether comments/messages ship in an early expansion phase or remain a reserved boundary.
 
 When any Open Decision is resolved, add or update a decision record under `docs/decisions/` and remove the item from this list in the same change.

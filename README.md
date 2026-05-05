@@ -30,8 +30,9 @@ This repository intentionally does not continue an older blog architecture. The 
 - Next.js for the public site and application shell.
 - Payload CMS for content models, admin UI, permissions, and media management.
 - PostgreSQL as the primary database.
-- S3/R2-compatible object storage for media.
+- S3/R2-compatible object storage for media, with Amazon S3 as the first AWS production target.
 - GitHub as the public source-of-truth for the platform code.
+- AWS as the first production cloud target, starting from an ECS/Fargate deployment plan.
 
 ## Local Development
 
