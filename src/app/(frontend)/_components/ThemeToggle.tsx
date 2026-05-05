@@ -42,10 +42,7 @@ function subscribeToThemeChanges(onChange: () => void) {
   const syncTheme = () => {
     const currentMode = getStoredThemeMode()
 
-    if (currentMode === 'system') {
-      applyThemeMode(currentMode)
-    }
-
+    applyThemeMode(currentMode)
     onChange()
   }
 

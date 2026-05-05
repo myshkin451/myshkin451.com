@@ -54,6 +54,18 @@ test.describe('Frontend', () => {
     expect(await page.evaluate(() => window.localStorage.getItem('myshkin451.theme'))).toBe(
       'system',
     )
+
+    await page.evaluate(() => {
+      window.localStorage.setItem('myshkin451.theme', 'light')
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: 'myshkin451.theme',
+          newValue: 'light',
+        }),
+      )
+    })
+    await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'light')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   })
 
   test('renders published article and project records with cover media', async ({ page }) => {
