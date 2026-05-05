@@ -1,8 +1,12 @@
 # 0006: Initial Visual System
 
-Status: Accepted
+Status: Partially Superseded
 
 Date: 2026-05-04
+
+Superseded by: `0007-public-site-experience-design.md` where the two records conflict. This record
+remains useful as the historical first visual baseline and for early token/context decisions that
+0007 does not replace.
 
 ## Context
 

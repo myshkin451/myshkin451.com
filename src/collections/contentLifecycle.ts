@@ -1,4 +1,6 @@
-import type { Access, CollectionBeforeValidateHook, Field, Where } from 'payload'
+import type { Access, CollectionBeforeValidateHook, Field } from 'payload'
+
+import { publicVisibilityWhere } from '../lib/publicationVisibility'
 
 export const PUBLICATION_STATUS_OPTIONS = [
   {
@@ -11,18 +13,12 @@ export const PUBLICATION_STATUS_OPTIONS = [
   },
 ] as const
 
-const publishedWhere = (): Where => ({
-  status: {
-    equals: 'published',
-  },
-})
-
 export const publishedOrAuthenticated: Access = ({ req }) => {
   if (req.user) {
     return true
   }
 
-  return publishedWhere()
+  return publicVisibilityWhere()
 }
 
 export const normalizeContentLifecycle: CollectionBeforeValidateHook = ({ data }) => {
@@ -68,7 +64,8 @@ export const publishingFields: Field[] = [
       date: {
         pickerAppearance: 'dayAndTime',
       },
-      description: 'Display publication date. It is auto-filled when an item is first published.',
+      description:
+        'Public visibility starts at this timestamp. It is auto-filled when an item is first published.',
     },
   },
   {

@@ -4,14 +4,11 @@ import type { Where } from 'payload'
 import type { Article, Project } from '@/payload-types'
 
 import { getPayloadClient } from './payload'
+import { publicVisibilityConditions } from './publicationVisibility'
 
-const publishedWhere = (slug?: string): Where => ({
+const publishedWhere = (slug?: string, now = new Date().toISOString()): Where => ({
   and: [
-    {
-      status: {
-        equals: 'published',
-      },
-    },
+    ...publicVisibilityConditions(now),
     ...(slug
       ? [
           {

@@ -98,6 +98,7 @@ Harness engineering in this repository means turning agent work into a repeatabl
 - Preserve deferred work as explicit open decisions, issues, or handoff notes.
 - Review at phase boundaries and leave reports or summaries that can guide the next phase.
 - Keep document lifecycle visible: create, update, compress, archive, or delete stale docs.
+- When a current-state doc changes, update connected status markers such as dates, next steps, and superseded decision records in the same work slice.
 - Optimize for restart: a new session should recover the project state from the repo in minutes.
 - Keep code clear enough to change and docs clear enough to trust.
 - Prefer lightweight enforcement over heavy process; add scripts and checks when repeated drift appears.
@@ -154,13 +155,13 @@ Current layer.
 
 ### 2. Development Harness
 
-To be added with the application scaffold.
+Current layer.
 
-- Reproducible install command.
-- Local development command.
-- Environment variable template.
-- Local database setup path.
-- Seed or fixture strategy when the first CMS models exist.
+- Reproducible install through `pnpm install`.
+- Local development through `pnpm dev`.
+- Local PostgreSQL through `pnpm db:up` and `pnpm db:down`.
+- Environment defaults documented in `.env.example`.
+- Content-loop fixtures seed records through Payload Local API for integration and browser tests.
 
 ### 3. Quality Harness
 

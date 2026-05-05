@@ -30,6 +30,8 @@ Phase 2: public site experience.
 - The first Phase 2 public-site implementation slice is in place: dual light/dark theme tokens, Chinese-first public chrome and homepage copy, a stronger four-surface index, and a new `/about` surface.
 - The writing and project public routes now extend the Phase 2 experience baseline: `/articles` uses a Chinese-first archive ledger, `/articles/[slug]` uses a reading rail and comfortable long-form measure, `/projects` uses project dossier/ledger patterns, and `/projects/[slug]` presents project metadata as a public case file.
 - Basic GitHub Actions CI now runs the stable checks on pull requests and pushes to `main`: format check, lint, typecheck, integration tests, production build, and browser e2e tests against a PostgreSQL service.
+- Phase 2 dynamic rendering is intentional and accepted in `docs/decisions/0008-phase-2-rendering-cache-strategy.md`; revisit caching before production deployment.
+- Public content visibility now requires both `status: published` and `publishedAt <= now`, so future-dated published records stay hidden until their publication time.
 
 ## Active Direction
 
@@ -65,6 +67,7 @@ When any Open Decision is resolved, add or update a decision record under `docs/
 - Phase 0 and Phase 1 are closed; next work should improve the public site experience on top of the verified article/project publishing loop.
 - SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
 - Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
+- Initial visual system decision `0006` is partially superseded by `0007`; use `0007` when the two records conflict.
 - The first public-site experience slice has shipped locally; future frontend work should reuse `src/app/(frontend)/styles.css` theme tokens and `SurfaceIndex`/platform surface copy instead of reintroducing one-off visual systems.
 - The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
 - Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.

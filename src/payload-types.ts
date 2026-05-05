@@ -178,7 +178,7 @@ export interface Article {
   slug: string;
   status: 'draft' | 'published';
   /**
-   * Display publication date. It is auto-filled when an item is first published.
+   * Public visibility starts at this timestamp. It is auto-filled when an item is first published.
    */
   publishedAt?: string | null;
   coverImage?: (number | null) | Media;
@@ -217,7 +217,7 @@ export interface Project {
   slug: string;
   status: 'draft' | 'published';
   /**
-   * Display publication date. It is auto-filled when an item is first published.
+   * Public visibility starts at this timestamp. It is auto-filled when an item is first published.
    */
   publishedAt?: string | null;
   coverImage?: (number | null) | Media;

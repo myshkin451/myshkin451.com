@@ -13,10 +13,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 let payload: Payload
 const testStamp = 'platform-loop-int'
 const publishedArticleSlug = `${testStamp}-article-published`
+const futureArticleSlug = `${testStamp}-article-future`
 const draftArticleSlug = `${testStamp}-article-draft`
 const publishedProjectSlug = `${testStamp}-project-published`
+const futureProjectSlug = `${testStamp}-project-future`
 const draftProjectSlug = `${testStamp}-project-draft`
-const publishedAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
+const publishedAt = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+const futurePublishedAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
 
 const richText: Article['content'] = {
   root: {
@@ -66,7 +69,7 @@ describe('API', () => {
     expect(users).toBeDefined()
   })
 
-  it('exposes published articles and hides drafts from public queries', async () => {
+  it('exposes due published articles and hides drafts or future-dated records from public queries', async () => {
     await payload.create({
       collection: 'articles',
       data: {
@@ -90,17 +93,32 @@ describe('API', () => {
       },
     })
 
+    await payload.create({
+      collection: 'articles',
+      data: {
+        content: richText,
+        excerpt: 'A future-dated article that should stay out of public queries.',
+        publishedAt: futurePublishedAt,
+        slug: futureArticleSlug,
+        status: 'published',
+        title: 'Future article',
+      },
+    })
+
     const publishedArticle = await getPublishedArticleBySlug(publishedArticleSlug)
+    const futureArticle = await getPublishedArticleBySlug(futureArticleSlug)
     const draftArticle = await getPublishedArticleBySlug(draftArticleSlug)
     const articleSlugs = (await listPublishedArticles()).map((article) => article.slug)
 
     expect(publishedArticle?.slug).toBe(publishedArticleSlug)
+    expect(futureArticle).toBeNull()
     expect(draftArticle).toBeNull()
     expect(articleSlugs).toContain(publishedArticleSlug)
+    expect(articleSlugs).not.toContain(futureArticleSlug)
     expect(articleSlugs).not.toContain(draftArticleSlug)
   })
 
-  it('exposes published projects and hides drafts from public queries', async () => {
+  it('exposes due published projects and hides drafts or future-dated records from public queries', async () => {
     await payload.create({
       collection: 'projects',
       data: {
@@ -126,23 +144,43 @@ describe('API', () => {
       },
     })
 
+    await payload.create({
+      collection: 'projects',
+      data: {
+        content: richText,
+        projectStatus: 'active',
+        publishedAt: futurePublishedAt,
+        slug: futureProjectSlug,
+        status: 'published',
+        summary: 'A future-dated project that should stay out of public queries.',
+        title: 'Future project',
+      },
+    })
+
     const publishedProject = await getPublishedProjectBySlug(publishedProjectSlug)
+    const futureProject = await getPublishedProjectBySlug(futureProjectSlug)
     const draftProject = await getPublishedProjectBySlug(draftProjectSlug)
     const projectSlugs = (await listPublishedProjects()).map((project) => project.slug)
 
     expect(publishedProject?.slug).toBe(publishedProjectSlug)
+    expect(futureProject).toBeNull()
     expect(draftProject).toBeNull()
     expect(projectSlugs).toContain(publishedProjectSlug)
+    expect(projectSlugs).not.toContain(futureProjectSlug)
     expect(projectSlugs).not.toContain(draftProjectSlug)
   })
 })
 
 async function cleanupContentRecords() {
+  if (!payload) {
+    return
+  }
+
   await payload.delete({
     collection: 'articles',
     where: {
       slug: {
-        in: [publishedArticleSlug, draftArticleSlug],
+        in: [publishedArticleSlug, futureArticleSlug, draftArticleSlug],
       },
     },
   })
@@ -151,7 +189,7 @@ async function cleanupContentRecords() {
     collection: 'projects',
     where: {
       slug: {
-        in: [publishedProjectSlug, draftProjectSlug],
+        in: [publishedProjectSlug, futureProjectSlug, draftProjectSlug],
       },
     },
   })
