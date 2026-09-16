@@ -74,7 +74,10 @@ For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `d
 
 The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
 
-The next deliverable is a small set of distinct, high-fidelity interactive design studies using the
-same content, followed by one complete home/article/project experience. Deployment research can
-inform implementation, but provider selection and cloud setup come after that working slice. No
-production deployment or new visual implementation is claimed by this documentation update.
+Three [interactive design studies](docs/design/studies/restart-01/README.md) are now ready to compare:
+页间, 游乐室, and 线索. Open [the preview](docs/design/studies/restart-01/index.html) to try desktop/phone
+layouts, sample reading, an adjustable SVG sculpture, and connected-content browsing. No database is required.
+
+The next deliverable is one coherent home/article/project experience shaped by feedback on those studies.
+Deployment research can inform implementation, but provider selection and cloud setup come after that
+working slice. The studies have not replaced the existing public routes; no production deployment is claimed.

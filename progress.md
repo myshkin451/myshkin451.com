@@ -1,7 +1,7 @@
 # Progress
 
-Last updated: 2026-09-16
-Last implementation update: 2026-05-05
+Last updated: 2026-09-17
+Last implementation update: 2026-09-17 (design studies; production UI remains at its previous baseline)
 
 ## Current Phase
 
@@ -9,7 +9,8 @@ Active restart: design exploration before a small usable website and later hoste
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
-reopened; no new visual prototype or production deployment is claimed by the restart documentation.
+reopened. Three interactive design studies are ready for owner feedback; no final visual direction
+or production deployment is claimed.
 
 ## Current Direction
 
@@ -33,6 +34,10 @@ reopened; no new visual prototype or production deployment is claimed by the res
 - Theme preference supports system/dark/light. Knowledge and Labs remain reserved route-level surfaces.
 - RSS is a placeholder, not an implemented feed. No new collections or visitor/community features are active.
 - The current UI still implements the superseded Phase 2 design; aesthetic acceptance remains outstanding.
+- [Design study 01](docs/design/studies/restart-01/README.md) now provides three distinct, working
+  home-page directions: 页间 (editorial), 游乐室 (interactive work), and 线索 (connected content).
+  The standalone HTML/CSS/JS includes phone preview, sample reading, a visible next-step plan,
+  and browser-local feedback. It does not replace production routes or seed CMS data.
 - Uploads still use local filesystem storage. Production media, migrations, environment validation,
   and runtime health behavior need work before launch.
 - Public routes intentionally remain dynamic under decision 0008; choose launch caching from actual needs.
@@ -40,9 +45,10 @@ reopened; no new visual prototype or production deployment is claimed by the res
 
 ## Next Steps
 
-1. Prepare a small public-safe content pack and three distinct high-fidelity interactive design studies
-   using [the restart brief](docs/design/RESTART_BRIEF.md). Include desktop and phone layouts.
+1. Review [the working studies](docs/design/studies/restart-01/index.html). Use specific reactions to
+   composition, typography, reading, and interaction to identify what to retain or reject; no design vocabulary is required.
 2. Translate owner feedback into one principal visual direction; prove it with article and project detail pages.
+   Revise the candidates if none feels right. The studies are evidence for this choice, not an accepted identity.
 3. Implement that direction with the existing CMS and verify a comfortable publish/update/read/view loop.
 4. Validate one hosting candidate from [the deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
    then decide provider, budget, media, backups, and domain for a small launch.
@@ -68,8 +74,14 @@ with a matching decision record and remove it here in the same change.
 - The automated publishing fixture uses Payload Local API. Full admin-UI publishing was manually
   checked on 2026-05-04; it is not an automated end-to-end admin workflow.
 - These historical results are not current runtime, security, cloud-compatibility, or deployment proof.
-- The September restart changes documentation and decision status only; application and database state
-  have not been revalidated. New prototype and implementation slices must run their relevant checks.
+- Design study 01 passed scoped Prettier, ESLint, JavaScript syntax, and local-link checks on 2026-09-17.
+  Real-browser checks covered desktop/phone presentation, all three directions at 320 and 1280 CSS pixels
+  without horizontal page overflow, artwork flip, sample dialogs and Escape focus return, sculpture controls,
+  topic selection, phone preview, plan disclosure, and feedback persistence. No browser warnings/errors were observed.
+- A focused JSDOM execution verified reduced-motion handling, opt-in rotation, direction switching,
+  hidden-tab suspension, and live motion-preference changes. This is not OS-level motion-preference testing.
+- Application/CMS/database state and the full production build have not been revalidated during this isolated
+  study. No production dependencies, models, routes, or deployment configuration changed.
 - Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
 - Hosting comparisons were researched on 2026-09-16. No provider deployment, billing estimate based on
   measured usage, or owner-network access test has been performed.
@@ -91,4 +103,6 @@ the current branch cleanliness or restart direction:
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
+- Open the standalone study files directly, or serve only `docs/design/studies/restart-01` with a loopback
+  static server. The study needs no database or external assets. Its README explains interactions and feedback.
 - Keep detailed execution in commits and focused work artifacts, not a session diary here.

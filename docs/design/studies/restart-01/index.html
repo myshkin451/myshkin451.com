@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="color-scheme" content="light" />
+    <title>给自己的一块地方 — Myshkin 451 设计研究</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="study.css" />
+    <script src="study.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#preview">跳到设计预览</a>
+    <header class="workbench">
+      <div class="workbench-identity">
+        <span class="signal" aria-hidden="true"></span><strong>重启 · 视觉研究</strong
+        ><span class="sample-label">示例内容</span>
+      </div>
+      <div class="direction-controls" role="group" aria-label="设计方向">
+        <button type="button" data-direction="a" aria-pressed="true"><span>A</span> 页间</button>
+        <button type="button" data-direction="b" aria-pressed="false"><span>B</span> 游乐室</button>
+        <button type="button" data-direction="c" aria-pressed="false"><span>C</span> 线索</button>
+      </div>
+      <div class="workbench-actions">
+        <button type="button" id="phone-toggle" aria-pressed="false">手机预览</button>
+        <button type="button" id="plan-toggle" aria-expanded="false" aria-controls="next-plan">
+          下一步 <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="next-plan" id="next-plan" aria-labelledby="plan-title" hidden>
+      <div class="plan-intro">
+        <span class="small-label">从看见，到拥有</span>
+        <h2 id="plan-title">现在只做眼前这一步。</h2>
+        <p>先感受三种页面。喜欢哪一处、讨厌哪一处，都比说出一个设计风格更有用。</p>
+      </div>
+      <ol class="plan-steps">
+        <li class="current">
+          <span>现在 · 01</span>
+          <h3>找到感觉</h3>
+          <p>比较三版首页，试读、玩一玩、切到手机。不必马上选定。</p>
+        </li>
+        <li>
+          <span>接着 · 02</span>
+          <h3>做成自己的</h3>
+          <p>依据你的反馈收敛一版，补全文章、项目详情，接入现有发布后台。</p>
+        </li>
+        <li>
+          <span>之后 · 03</span>
+          <h3>让它上线</h3>
+          <p>实测一个轻量托管方案。先用临时地址，再选域名，开始放入自己的创作。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="study-context" aria-label="当前方向说明">
+      <div>
+        <strong id="study-name">A / 页间</strong
+        ><span id="study-description">让文字与作品像一本个人刊物，在同一页相遇。</span>
+      </div>
+      <button type="button" id="favorite" aria-pressed="false">♡ 这个方向有感觉</button>
+    </section>
+
+    <main id="preview" class="preview" data-device="desktop">
+      <section class="site site-a" id="direction-a" aria-labelledby="a-title">
+        <header class="a-header">
+          <a class="wordmark" href="#direction-a" data-home="a"
+            ><span class="asterisk" aria-hidden="true">✳</span> Myshkin 451</a
+          >
+          <nav aria-label="页间导航">
+            <button type="button" data-read="essay">文字</button
+            ><button type="button" data-read="project">作品</button
+            ><button type="button" data-read="about">关于</button>
+          </nav>
+          <span class="a-edition">一份不定期的个人刊物</span>
+        </header>
+        <div class="a-opening">
+          <span>写一点。做一点。慢慢长出自己的形状。</span><span>WRITING & MAKING</span>
+        </div>
+        <div class="a-feature">
+          <div class="a-lead">
+            <span class="a-kicker">从这里开始 / 一篇随笔</span>
+            <h1 id="a-title">重新拥有<br />一小块<span>互联网。</span></h1>
+            <p class="a-deck">
+              留一点地方，给尚未成形的念头，<br />给做了一半的东西，和无用的好奇心。
+            </p>
+            <button type="button" class="a-read" data-read="essay">
+              翻开这篇文字 <span aria-hidden="true">↗</span>
+            </button>
+            <div class="a-marginalia">
+              <span aria-hidden="true">↳</span>
+              <p>我想把一些东西留在这里。<br />它们不一定很重要，但属于我。</p>
+            </div>
+          </div>
+          <figure class="a-artwork">
+            <button
+              type="button"
+              class="print-object"
+              id="print-flip"
+              aria-pressed="false"
+              aria-label="翻看光的练习背面"
+            >
+              <span class="print-front">
+                <svg
+                  class="sun-print"
+                  viewBox="0 0 520 610"
+                  role="img"
+                  aria-label="原创图形：落日、弧线与折叠的光"
+                >
+                  <defs>
+                    <linearGradient id="sun-ink" x1="0" y1="0" x2="0.8" y2="1">
+                      <stop stop-color="#f96e3c" />
+                      <stop offset="1" stop-color="#bc382d" />
+                    </linearGradient>
+                    <clipPath id="sun-disc"><circle cx="260" cy="264" r="181" /></clipPath>
+                    <pattern id="paper-grain" width="9" height="9" patternUnits="userSpaceOnUse">
+                      <circle cx="2" cy="3" r="0.45" fill="#332919" opacity=".14" />
+                      <circle cx="7" cy="8" r=".3" fill="#332919" opacity=".16" />
+                    </pattern>
+                  </defs>
+                  <rect width="520" height="610" fill="#e8dcca" />
+                  <circle cx="260" cy="264" r="181" fill="url(#sun-ink)" />
+                  <g clip-path="url(#sun-disc)" fill="none" stroke="#efd8b6" stroke-width="1.8">
+                    <path
+                      d="M50 185Q260 325 470 185M50 199Q260 339 470 199M50 214Q260 354 470 214M50 230Q260 370 470 230M50 247Q260 387 470 247M50 265Q260 405 470 265M50 284Q260 424 470 284M50 304Q260 444 470 304M50 325Q260 465 470 325M50 347Q260 487 470 347M50 370Q260 510 470 370M50 394Q260 534 470 394"
+                    />
+                  </g>
+                  <path
+                    d="M43 459Q150 350 258 459T477 459"
+                    fill="none"
+                    stroke="#30392e"
+                    stroke-width="1.3"
+                  />
+                  <path
+                    d="M43 476Q150 367 258 476T477 476M43 493Q150 384 258 493T477 493M43 510Q150 401 258 510T477 510"
+                    fill="none"
+                    stroke="#30392e"
+                    stroke-width="1.3"
+                  />
+                  <path d="M259 54V504" stroke="#503021" stroke-width=".6" opacity=".3" />
+                  <rect width="520" height="610" fill="url(#paper-grain)" />
+                  <text x="37" y="41" font-size="11" letter-spacing="3" fill="#514636">
+                    STUDIES IN LIGHT
+                  </text>
+                  <text x="39" y="568" font-size="12" letter-spacing="2" fill="#514636">
+                    MYSHKIN 451
+                  </text>
+                  <text x="471" y="568" text-anchor="end" font-size="12" fill="#514636">I.</text>
+                </svg>
+                <span class="print-sticker">翻看背面 <span aria-hidden="true">↻</span></span>
+              </span>
+              <span class="print-back" aria-hidden="true"
+                ><span class="print-back-number">451 / 习作</span
+                ><span class="print-back-title">给无用之物<br />留个位置。</span
+                ><span class="print-back-copy"
+                  >用圆、弧线和一点颜色，<br />试着把一个下午留下来。</span
+                ><span class="print-back-end">光的练习 · 再点一下翻回正面 ↻</span></span
+              >
+            </button>
+            <figcaption>
+              <span><strong>光的练习</strong> / 一件可以玩的习作</span
+              ><button type="button" data-go="b">
+                去玩一会儿 <span aria-hidden="true">↗</span>
+              </button>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="a-bottom">
+          <span class="a-bottom-label">页边的念头<br /><em>IN THE MARGINS</em></span>
+          <button type="button" class="a-note" data-read="note">
+            <span>给无用之物留个位置。</span
+            ><small>一个尚未展开的念头 <span aria-hidden="true">↗</span></small>
+          </button>
+          <p>文字与作品，<br />都是好奇心留下的痕迹。</p>
+        </div>
+        <footer class="a-footer">
+          <span>Myshkin 451</span><span>此处允许慢慢来。</span
+          ><button type="button" data-read="about">关于这个地方 ↗</button>
+        </footer>
+      </section>
+
+      <section class="site site-b" id="direction-b" aria-labelledby="b-title" hidden>
+        <header class="b-header">
+          <a href="#direction-b" class="b-brand" data-home="b"
+            >m<span class="b-brand-dot">.</span><span class="b-brand-name">Myshkin 451</span></a
+          >
+          <nav aria-label="游乐室导航">
+            <button type="button" data-read="essay">文字</button
+            ><button type="button" data-read="project">作品</button
+            ><button type="button" data-read="about">
+              关于我 <span aria-hidden="true">↗</span>
+            </button>
+          </nav>
+        </header>
+        <div class="b-main">
+          <div class="b-intro">
+            <span class="b-eyebrow"
+              ><span aria-hidden="true">✦</span> 一个写东西、也做东西的人</span
+            >
+            <h1 id="b-title">好奇心，<br />还在<span class="b-outline">营业。</span></h1>
+            <p>一些念头变成文字。<br />另一些，先做出来看看。</p>
+            <button type="button" class="b-essay-link" data-read="essay">
+              <span>最近写下</span><strong>重新拥有一小块互联网</strong
+              ><span class="round-arrow" aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div class="b-playground">
+            <div class="b-art-caption">
+              <span>光的练习 / PLAYTHING 01</span
+              ><button type="button" id="motion-toggle" aria-pressed="false">让它转起来 ↻</button>
+            </div>
+            <div class="orb-stage" id="orb-stage">
+              <svg
+                id="light-orb"
+                viewBox="0 0 600 540"
+                role="img"
+                aria-label="光的练习：可以调整形状与颜色的线条雕塑"
+              >
+                <g id="orb-lines"></g></svg
+              ><span class="b-orb-note">没有正确的形状。<br />试着拨动一下。</span
+              ><span class="b-orb-star" aria-hidden="true">✳</span>
+            </div>
+            <div class="orb-controls">
+              <label for="orb-spread"
+                >松开一点 <input id="orb-spread" type="range" min="15" max="95" value="48" /><output
+                  id="orb-value"
+                  for="orb-spread"
+                  >48</output
+                ></label
+              ><button type="button" id="orb-color">
+                换一种颜色 <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="b-work-strip">
+          <button type="button" data-read="project">
+            <span class="b-work-index">01</span
+            ><span><small>交互习作</small><strong>光的练习</strong></span
+            ><span aria-hidden="true">↗</span></button
+          ><button type="button" data-read="note">
+            <span class="b-work-index">02</span
+            ><span><small>随手记</small><strong>给无用之物留个位置</strong></span
+            ><span aria-hidden="true">↗</span>
+          </button>
+        </div>
+        <footer class="b-footer">
+          <span>KEEP MAKING THINGS.</span
+          ><button type="button" data-read="about">这里还会长出什么？ ↗</button>
+        </footer>
+      </section>
+
+      <section class="site site-c" id="direction-c" aria-labelledby="c-title" hidden>
+        <aside class="c-sidebar">
+          <a href="#direction-c" class="c-brand" data-home="c">Myshkin<br /><span>451.</span></a>
+          <p>一些文字，一些作品。<br />还有连接它们的念头。</p>
+          <div class="c-side-rule"></div>
+          <nav aria-label="线索导航">
+            <button type="button" data-read="essay">文字 <span>↗</span></button
+            ><button type="button" data-read="project">作品 <span>↗</span></button
+            ><button type="button" data-read="about">关于 <span>↗</span></button>
+          </nav>
+          <div class="c-side-foot">
+            <span class="small-label">一条进行中的线索</span><span>自己的空间</span
+            ><svg viewBox="0 0 100 110" fill="none" aria-hidden="true">
+              <path
+                d="M16 15C96 16 13 111 68 89C113 66 21 51 51 15C77-16 77 123 91 96"
+                stroke="currentColor"
+                stroke-width="1.6"
+              />
+            </svg>
+          </div>
+        </aside>
+        <div class="c-content">
+          <header class="c-heading">
+            <span class="c-eyebrow">A SMALL ATLAS OF CURIOSITY</span>
+            <h1 id="c-title">想法总会<br /><em>找到彼此。</em></h1>
+            <p>从一个念头出发，看看它通向哪里。</p>
+          </header>
+          <div class="connections" aria-label="自己的空间：选择关联内容">
+            <svg
+              class="connection-lines"
+              viewBox="0 0 780 370"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path data-connection="essay" d="M361 175C270 168 272 80 126 80" />
+              <path data-connection="project" d="M361 175C445 168 478 70 613 70" />
+              <path data-connection="note" d="M361 175C373 265 473 286 593 286" />
+            </svg>
+            <div class="central-idea">
+              <span>正在想</span><strong>自己的<br />空间</strong
+              ><span class="idea-dot" aria-hidden="true"></span>
+            </div>
+            <button
+              type="button"
+              class="thought thought-essay"
+              data-topic="essay"
+              aria-pressed="true"
+            >
+              <span class="thought-type">一篇文字</span><strong>重新拥有<br />一小块互联网</strong
+              ><span class="thought-arrow" aria-hidden="true">↗</span>
+            </button>
+            <button
+              type="button"
+              class="thought thought-project"
+              data-topic="project"
+              aria-pressed="false"
+            >
+              <span class="thought-type">一个作品</span
+              ><span class="mini-sun" aria-hidden="true"></span><strong>光的练习</strong
+              ><span class="thought-arrow" aria-hidden="true">↗</span>
+            </button>
+            <button
+              type="button"
+              class="thought thought-note"
+              data-topic="note"
+              aria-pressed="false"
+            >
+              <span class="thought-type">一则片段</span><strong>给无用之物<br />留个位置</strong
+              ><span class="thought-arrow" aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div class="c-selected" aria-live="polite">
+            <span id="c-selected-type">文字 / 从这里开始</span>
+            <div>
+              <h2 id="c-selected-title">重新拥有一小块互联网</h2>
+              <p id="c-selected-copy">
+                当每个空间都在邀请我们表演，我想试试，为自己留一处可以慢慢写的地方。
+              </p>
+            </div>
+            <button type="button" id="c-open" data-read="essay">
+              读一读 <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <footer class="c-footer">
+            <span>想法可以暂时不完整。</span
+            ><button type="button" data-read="about">关于这个地方 ↗</button>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <section class="reflection" aria-labelledby="reflection-title">
+      <div>
+        <span class="small-label">看完以后，不用急着下结论</span>
+        <h2 id="reflection-title">哪一处，让你想多停一会儿？</h2>
+        <p id="tradeoff">
+          A 把阅读和版面节奏放在前面。它安静、有编辑感，代价是第一眼的互动冲动较弱。
+        </p>
+      </div>
+      <div class="feedback-form">
+        <label for="feedback">记下感受 <span>仅保存在当前浏览器</span></label
+        ><textarea
+          id="feedback"
+          rows="3"
+          placeholder="比如：喜欢 A 的排版，但更想保留 B 里可以玩的作品。"
+        ></textarea>
+        <div class="feedback-actions">
+          <span id="saved-choices" aria-live="polite">还没有偏向，也完全可以。</span
+          ><button type="button" id="copy-feedback">复制感受</button>
+        </div>
+        <p id="feedback-status" class="feedback-status" role="status"></p>
+      </div>
+    </section>
+    <footer class="study-footer">
+      <span>三版使用同一组虚构示例内容；名字、文案与作品都可以重新讨论。</span
+      ><button type="button" id="bottom-plan">看看下一步 ↑</button>
+    </footer>
+
+    <dialog id="reader" aria-labelledby="reader-title">
+      <div class="reader-top">
+        <span id="reader-label">示例文字 · 供版式试读</span>
+        <form method="dialog">
+          <button aria-label="关闭阅读" class="reader-close">
+            关闭 <span aria-hidden="true">×</span>
+          </button>
+        </form>
+      </div>
+      <div class="reader-content">
+        <span class="reader-eyebrow" id="reader-category"></span>
+        <h2 id="reader-title"></h2>
+        <p class="reader-intro" id="reader-intro"></p>
+        <div id="reader-body" class="reader-body"></div>
+      </div>
+      <form method="dialog" class="reader-bottom">
+        <button>回到刚才的地方 <span aria-hidden="true">↩</span></button>
+      </form>
+    </dialog>
+    <noscript
+      ><p class="noscript">
+        此设计预览需要 JavaScript 才能切换方向与使用交互；A 版仍可直接浏览。
+      </p></noscript
+    >
+  </body>
+</html>

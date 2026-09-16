@@ -10,6 +10,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/ROADMAP.md`: directional phase roadmap.
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
 - `docs/design/RESTART_BRIEF.md`: current creative goals, design hypotheses, and prototype deliverable.
+- [Design study 01](design/studies/restart-01/README.md): three standalone interactive previews and feedback guidance.
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: current hosting comparison and later launch gate.
 - `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist

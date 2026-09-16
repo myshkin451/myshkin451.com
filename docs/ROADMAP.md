@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 2026-09-16
+Updated: 2026-09-17
 
 The current sequence follows [decision 0010](decisions/0010-creator-first-restart.md): establish a
 creative direction, make a small site useful, then give it durable hosting. There is no traffic
@@ -17,7 +17,7 @@ does not establish the final visual identity or prove a current production deplo
 
 ## Step 1: Design Exploration
 
-Status: Active; brief established, new prototypes not yet implemented.
+Status: Active; three interactive studies delivered, awaiting owner feedback before convergence.
 
 Goal: find a visual and interactive direction the owner wants to inhabit and keep using.
 
@@ -31,7 +31,7 @@ Deliverable:
 Exit signal: one principal direction is chosen using visible, interactive evidence. Revisit the
 studies if none is convincing. Do not silently turn an agent's preference into the final identity.
 
-Start with [the design brief](design/RESTART_BRIEF.md).
+Compare [design study 01](design/studies/restart-01/README.md), guided by [the design brief](design/RESTART_BRIEF.md).
 
 ## Step 2: A Small Usable Website
 
