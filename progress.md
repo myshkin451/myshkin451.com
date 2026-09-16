@@ -9,13 +9,16 @@ Active restart: design exploration before a small usable website and later hoste
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
-reopened. Three interactive design studies are ready for owner feedback; no final visual direction
-or production deployment is claimed.
+reopened. The owner prefers B's visual effect over the other initial studies but rejects their overall
+copy and excessive emphasis. A reference-led second preview, built from a generated mockup, is ready
+for feedback. No final visual direction or production deployment is claimed.
 
 ## Current Direction
 
 - Serve personal creative expression, publishing, and future project presentation first.
 - Find a distinctive visual and interactive direction through concrete working examples.
+- Use direct titles and functional labels. Avoid slogans, invented creator personas, decorative English,
+  and repeated explanations. Keep design-process controls outside the proposed website.
 - Do not constrain exploration with the old platform-console brief or platform-specific skill.
 - Retain the Next.js/Payload/PostgreSQL foundation while rebuilding the public experience.
 - Build home, writing, projects, and a compact about surface before expanding empty future modules.
@@ -38,6 +41,10 @@ or production deployment is claimed.
   home-page directions: 页间 (editorial), 游乐室 (interactive work), and 线索 (connected content).
   The standalone HTML/CSS/JS includes phone preview, sample reading, a visible next-step plan,
   and browser-local feedback. It does not replace production routes or seed CMS data.
+- [Design study 02](docs/design/studies/restart-02/README.md) is the current preview: a dark,
+  image-led home page, image viewer, interactive SVG torus, article page, and compact about page.
+  A generated mockup and standalone image asset are preserved with prompts. Study 01 remains comparison
+  material; none of its designs was accepted. These previews do not yet connect to production publishing.
 - Uploads still use local filesystem storage. Production media, migrations, environment validation,
   and runtime health behavior need work before launch.
 - Public routes intentionally remain dynamic under decision 0008; choose launch caching from actual needs.
@@ -45,10 +52,10 @@ or production deployment is claimed.
 
 ## Next Steps
 
-1. Review [the working studies](docs/design/studies/restart-01/index.html). Use specific reactions to
-   composition, typography, reading, and interaction to identify what to retain or reject; no design vocabulary is required.
-2. Translate owner feedback into one principal visual direction; prove it with article and project detail pages.
-   Revise the candidates if none feels right. The studies are evidence for this choice, not an accepted identity.
+1. Review [the revised preview](docs/design/studies/restart-02/index.html) against its generated mockup.
+   Establish whether reduced copy, image-led composition, and direct labels address the owner's actual concerns.
+2. Refine the home, article, and project surfaces using that feedback. Do not restore the rejected slogans
+   or record B/the second preview as accepted without owner confirmation.
 3. Implement that direction with the existing CMS and verify a comfortable publish/update/read/view loop.
 4. Validate one hosting candidate from [the deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
    then decide provider, budget, media, backups, and domain for a small launch.
@@ -80,6 +87,10 @@ with a matching decision record and remove it here in the same change.
   topic selection, phone preview, plan disclosure, and feedback persistence. No browser warnings/errors were observed.
 - A focused JSDOM execution verified reduced-motion handling, opt-in rotation, direction switching,
   hidden-tab suspension, and live motion-preference changes. This is not OS-level motion-preference testing.
+- Study 02 passed scoped format/lint/syntax/link checks and real-browser desktop/mobile checks on 2026-09-17.
+  Home page checks at 1280/390/320 CSS pixels and article/about at 320 pixels found no page overflow.
+  Image viewing, navigation, pointer and keyboard interaction, controls, rotation, reset, and Escape/focus return
+  were checked. JSDOM exercised 87 geometry states plus animation lifecycle and motion-preference changes.
 - Application/CMS/database state and the full production build have not been revalidated during this isolated
   study. No production dependencies, models, routes, or deployment configuration changed.
 - Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
@@ -103,6 +114,6 @@ the current branch cleanliness or restart direction:
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
-- Open the standalone study files directly, or serve only `docs/design/studies/restart-01` with a loopback
-  static server. The study needs no database or external assets. Its README explains interactions and feedback.
+- Open the standalone study files directly, or serve only `docs/design/studies/restart-02` with a loopback
+  static server. The preview needs no database or external assets. Its README includes references and validation.
 - Keep detailed execution in commits and focused work artifacts, not a session diary here.

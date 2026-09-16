@@ -17,7 +17,8 @@ does not establish the final visual identity or prove a current production deplo
 
 ## Step 1: Design Exploration
 
-Status: Active; three interactive studies delivered, awaiting owner feedback before convergence.
+Status: Active; initial studies received feedback, with B's imagery preferred but overall copy rejected.
+A second preview based on reference research and a generated mockup is ready for evaluation.
 
 Goal: find a visual and interactive direction the owner wants to inhabit and keep using.
 
@@ -31,7 +32,8 @@ Deliverable:
 Exit signal: one principal direction is chosen using visible, interactive evidence. Revisit the
 studies if none is convincing. Do not silently turn an agent's preference into the final identity.
 
-Compare [design study 01](design/studies/restart-01/README.md), guided by [the design brief](design/RESTART_BRIEF.md).
+Review [design study 02](design/studies/restart-02/README.md), guided by [the updated design brief](design/RESTART_BRIEF.md).
+The [first studies](design/studies/restart-01/README.md) remain available for comparison.
 
 ## Step 2: A Small Usable Website
 
