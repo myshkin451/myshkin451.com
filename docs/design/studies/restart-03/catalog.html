@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex" />
+    <title>内容索引 — Myshkin 451</title>
+    <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="site.css" />
+    <script src="content.js" defer></script>
+    <script src="site.js" defer></script>
+  </head>
+  <body data-page="catalog" class="catalog-theme">
+    <a class="skip-link" href="#main">跳到内容</a>
+    <header class="site-header">
+      <a class="brand" href="catalog.html" aria-label="Myshkin 451 首页"
+        ><span class="brand-mark" aria-hidden="true">M</span><span>Myshkin 451</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="catalog.html" aria-current="page">内容</a
+        ><a class="about-link" href="about.html?view=catalog">关于</a
+        ><a href="https://github.com/myshkin451" target="_blank" rel="noopener noreferrer"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" class="catalog-main">
+      <section class="catalog-heading">
+        <h1>内容索引 <span id="catalog-count">06 项</span></h1>
+        <label class="search-box"
+          ><svg aria-hidden="true" viewBox="0 0 24 24">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 5 5" /></svg
+          ><input
+            id="search"
+            type="search"
+            placeholder="搜索标题"
+            aria-label="搜索标题"
+            autocomplete="off"
+        /></label>
+      </section>
+      <div class="catalog-layout">
+        <section class="catalog-list" aria-label="内容目录">
+          <div class="filters" role="group" aria-label="内容类型">
+            <button type="button" data-filter="all" aria-pressed="true">全部</button
+            ><button type="button" data-filter="writing" aria-pressed="false">文字</button
+            ><button type="button" data-filter="project" aria-pressed="false">项目</button
+            ><button type="button" data-filter="image" aria-pressed="false">影像</button>
+          </div>
+          <div id="index-rows" class="index-rows"></div>
+          <div id="empty-state" class="empty-state" hidden>
+            <h2>没有找到相关内容</h2>
+            <p>试试其他标题，或清除筛选。</p>
+            <button id="reset-search" class="text-button">显示全部</button>
+          </div>
+          <p class="sr-only" id="results-status" role="status"></p>
+        </section>
+        <aside id="preview-panel" class="preview-panel" aria-label="内容预览">
+          <div id="preview-content"></div>
+          <div class="preview-navigation">
+            <span id="preview-position"></span>
+            <div>
+              <button id="preview-prev" aria-label="预览上一项">←</button
+              ><button id="preview-next" aria-label="预览下一项">→</button>
+            </div>
+          </div>
+          <p class="sr-only" id="preview-status" role="status"></p>
+        </aside>
+      </div>
+    </main>
+    <footer class="site-footer"><span>Myshkin 451</span><span>设计样稿 · 2026</span></footer>
+    <nav class="study-switch" aria-label="设计对照">
+      <span>设计对照</span><a href="index.html">01 并排</a
+      ><a href="catalog.html" aria-current="page">02 目录</a
+      ><a href="concept-catalog.png" target="_blank">效果图 <span aria-hidden="true">↗</span></a>
+    </nav>
+    <noscript
+      ><p class="noscript-note">
+        此交互样稿需要 JavaScript。也可以查看<a href="concept-gallery.png">并排版效果图</a>或<a
+          href="concept-catalog.png"
+          >目录版效果图</a
+        >。
+      </p></noscript
+    >
+  </body>
+</html>

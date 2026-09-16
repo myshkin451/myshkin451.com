@@ -74,10 +74,13 @@ For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `d
 
 The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
 
-The current [design preview](docs/design/studies/restart-02/README.md) responds to feedback on the
-first three studies: retain the visual work, remove slogan-heavy copy, and simplify the page. It was
-built from a generated mockup after reviewing reference sites. Open [the webpage](docs/design/studies/restart-02/index.html)
-to view the work, operate the SVG experiment, or read the article page. No database is required.
+The current [design study](docs/design/studies/restart-03/README.md) compares two content-led layouts:
+[side-by-side browsing](docs/design/studies/restart-03/index.html) and an
+[index with previews](docs/design/studies/restart-03/catalog.html). Writing, projects, and images
+share the same six-item sample set, without a preferred medium. Both were implemented after reference
+research and generated mockups, with reading, image viewing, and a working color-sampling tool.
+The owner has not accepted an earlier direction; B's relative preference did not establish a dark or
+abstract visual identity. No database is required for these previews.
 
 The next deliverable is one accepted home/article/project direction shaped by feedback on this preview.
 Deployment research can inform implementation, but provider selection and cloud setup come after that

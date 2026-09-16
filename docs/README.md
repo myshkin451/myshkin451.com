@@ -11,7 +11,8 @@ This repository uses a small documentation system that should grow only when the
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
 - `docs/design/RESTART_BRIEF.md`: current creative goals, design hypotheses, and prototype deliverable.
 - [Design study 01](design/studies/restart-01/README.md): three standalone interactive previews and feedback guidance.
-- [Design study 02](design/studies/restart-02/README.md): current preview, reference research, generated mockup, assets, and prompts.
+- [Design study 02](design/studies/restart-02/README.md): historical image-led preview; its abstract imagery was not accepted.
+- [Design study 03](design/studies/restart-03/README.md): current comparison of mixed-content browsing and a preview index, with references, generated mockups, and functional details.
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: current hosting comparison and later launch gate.
 - `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist

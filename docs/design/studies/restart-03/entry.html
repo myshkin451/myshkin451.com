@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex" />
+    <title>内容详情 — Myshkin 451</title>
+    <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="site.css" />
+    <script src="content.js" defer></script>
+    <script src="site.js" defer></script>
+  </head>
+  <body data-page="entry" class="gallery-theme">
+    <a class="skip-link" href="#main">跳到内容</a>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Myshkin 451 首页"
+        ><span class="brand-mark" aria-hidden="true">M</span><span>Myshkin 451</span></a
+      >
+      <nav aria-label="主导航">
+        <a href="index.html">内容</a><a class="about-link" href="about.html">关于</a
+        ><a href="https://github.com/myshkin451" target="_blank" rel="noopener noreferrer"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" class="detail-main">
+      <a id="back-link" class="back-link" href="index.html">← 返回内容</a>
+      <article id="entry-content"></article>
+    </main>
+    <dialog id="image-viewer" class="image-viewer" aria-labelledby="viewer-title">
+      <div class="viewer-bar">
+        <div>
+          <h2 id="viewer-title"></h2>
+          <p>AI 生成样例</p>
+        </div>
+        <form method="dialog">
+          <button class="viewer-close" aria-label="关闭大图">
+            关闭 <span aria-hidden="true">×</span>
+          </button>
+        </form>
+      </div>
+      <div class="viewer-image-wrap"><img id="viewer-image" alt="" /></div>
+      <div class="viewer-bottom">
+        <span id="viewer-position"></span>
+        <div>
+          <button id="image-prev" aria-label="上一张图像">←</button
+          ><button id="image-next" aria-label="下一张图像">→</button>
+        </div>
+      </div>
+    </dialog>
+    <footer class="site-footer"><span>Myshkin 451</span><span>设计样稿 · 2026</span></footer>
+    <nav class="study-switch" aria-label="设计对照">
+      <span>设计对照</span><a href="index.html" aria-current="page">01 并排</a
+      ><a href="catalog.html">02 目录</a
+      ><a href="concept-gallery.png" target="_blank">效果图 <span aria-hidden="true">↗</span></a>
+    </nav>
+    <noscript
+      ><p class="noscript-note">
+        此交互样稿需要 JavaScript。也可以查看<a href="concept-gallery.png">并排版效果图</a>或<a
+          href="concept-catalog.png"
+          >目录版效果图</a
+        >。
+      </p></noscript
+    >
+  </body>
+</html>

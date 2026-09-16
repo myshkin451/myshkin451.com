@@ -17,14 +17,16 @@ does not establish the final visual identity or prove a current production deplo
 
 ## Step 1: Design Exploration
 
-Status: Active; initial studies received feedback, with B's imagery preferred but overall copy rejected.
-A second preview based on reference research and a generated mockup is ready for evaluation.
+Status: Active. B was only relatively better than the other initial studies; no palette or abstract
+visual identity was accepted. The owner wants meaningful content/interaction and equal coexistence
+of writing, projects, and imagery. A third study offers two layouts based on reference research
+and generated mockups, ready for evaluation.
 
 Goal: find a visual and interactive direction the owner wants to inhabit and keep using.
 
 Deliverable:
 
-- One small, public-safe content pack shared by three distinct high-fidelity design studies.
+- One small, public-safe content pack shared by distinct high-fidelity design studies.
 - Desktop and phone layouts, with one representative working interaction per study.
 - A short comparison of what each study expresses and its tradeoffs.
 - Owner feedback translated into concrete design choices rather than generic style adjectives.
@@ -32,8 +34,8 @@ Deliverable:
 Exit signal: one principal direction is chosen using visible, interactive evidence. Revisit the
 studies if none is convincing. Do not silently turn an agent's preference into the final identity.
 
-Review [design study 02](design/studies/restart-02/README.md), guided by [the updated design brief](design/RESTART_BRIEF.md).
-The [first studies](design/studies/restart-01/README.md) remain available for comparison.
+Review [design study 03](design/studies/restart-03/README.md), guided by [the updated design brief](design/RESTART_BRIEF.md).
+The first two studies remain available for historical comparison.
 
 ## Step 2: A Small Usable Website
 
