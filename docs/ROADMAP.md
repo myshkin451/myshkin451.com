@@ -1,121 +1,84 @@
 # Roadmap
 
-This roadmap is directional. It should help future sessions understand the project arc without pretending that every detail is already designed.
+Updated: 2026-09-16
 
-## Phase 0: Foundation And Governance
+The current sequence follows [decision 0010](decisions/0010-creator-first-restart.md): establish a
+creative direction, make a small site useful, then give it durable hosting. There is no traffic
+threshold, AWS course, or old-domain recovery requirement for starting.
 
-Status: Closed
+## Completed Foundation
 
-Goal: create the public repository, establish the project identity, and define a lightweight governance kernel for long-running agent work.
+- Phase 0: public repository, project identity, agent workflow, and engineering harness.
+- Phase 1: local CMS publishing loop for articles, projects, media, and stable public routes.
+- Phase 2: public page baseline, themes, metadata, publication visibility, and CI.
 
-Completion signals:
+These are historical implementation milestones. Phase 2's public design is reopened; its closeout
+does not establish the final visual identity or prove a current production deployment.
 
-- GitHub repository exists and tracks `main`.
-- `README.md`, `AGENTS.md`, `CLAUDE.md`, `progress.md`, `docs/HARNESS.md`, and decision records exist.
-- Agent workflow, evidence expectations, and decision lifecycle are documented.
+## Step 1: Design Exploration
 
-## Phase 1: First Platform Loop
+Status: Active; brief established, new prototypes not yet implemented.
 
-Status: Closed
+Goal: find a visual and interactive direction the owner wants to inhabit and keep using.
 
-Goal: make the platform genuinely usable for the first publishing workflow.
+Deliverable:
 
-Completion signals:
+- One small, public-safe content pack shared by three distinct high-fidelity design studies.
+- Desktop and phone layouts, with one representative working interaction per study.
+- A short comparison of what each study expresses and its tradeoffs.
+- Owner feedback translated into concrete design choices rather than generic style adjectives.
 
-- Payload admin can create or update articles and projects.
-- Articles and projects support stable slugs, publication status, and media.
-- Public routes render published content from Payload.
-- Baseline checks pass for format, lint, typecheck, build, and relevant integration tests.
+Exit signal: one principal direction is chosen using visible, interactive evidence. Revisit the
+studies if none is convincing. Do not silently turn an agent's preference into the final identity.
 
-Non-goals:
+Start with [the design brief](design/RESTART_BRIEF.md).
 
-- Full forum or community system.
-- Complex permissions or workflow engine.
-- Polished final visual design.
-- Production deployment.
+## Step 2: A Small Usable Website
 
-## Phase 2: Public Site Experience
+Status: Next, after direction selection.
 
-Status: Closed
+Goal: carry the selected design through real reading, project viewing, and publishing.
 
-Goal: turn the scaffold into a coherent public website experience.
+Scope:
 
-Completed scope:
+- Home, article list/detail, project list/detail, and a compact about surface.
+- Shared typography, layout, navigation, media handling, and selected interaction details.
+- Existing Payload publishing and stable routes; no speculative new content models.
+- Real or clearly labeled sample content; empty future modules need not dominate navigation.
 
-- Homepage structure and navigation.
-- Article list and detail experience.
-- Project list and detail experience.
-- About/profile surface.
-- SEO metadata and public URL hygiene.
-- Initial visual direction and reusable UI patterns.
+Exit signal: the owner can publish/update an article and a project, inspect both on desktop and
+phone, and feels the site is worth using. Run the relevant code, content-loop, and browser checks.
 
-## Deployment And Operations Planning
+## Step 3: A Small Hosted Launch
 
-Status: Active
+Status: Later; provider research available, vendor and budget undecided.
 
-Goal: prepare the first production path without jumping straight into deployment automation.
+Goal: make the working site accessible with little day-to-day infrastructure effort.
 
-Likely scope:
+Scope:
 
-- AWS-first deployment target decision.
-- Public content and test-record cleanup policy.
-- Production database ownership and migration approach.
-- S3/R2-compatible media storage direction.
-- Environment and secret handling.
-- Cache and revalidation strategy before production.
-- Manual launch, rollback, backup, and health-check runbook.
+- Evaluate the shortlisted host against the actual app and the owner's access network.
+- Select the full app/database/media combination and monthly cost boundary.
+- Use a provider URL for initial verification; select a custom domain when the identity is ready.
+- Configure durable uploads, production migrations, backups, secrets, and a small rollback procedure.
+- Test admin publishing, public media, cold access, and canonical URLs on the actual host.
 
-Non-goals:
+Exit signal: one reviewed article and project are live, updates survive redeployment, restore and
+rollback are understood, and the owner can publish without learning cloud infrastructure first.
 
-- New CMS models.
-- Deployment automation.
-- Infrastructure-as-code before the deployment target is accepted.
+Use [the deployment plan](operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md). The AWS runbook is historical.
 
-Planning document:
+## Step 4: Grow Through Use
 
-- `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`
-- `docs/decisions/0009-aws-first-deployment-target.md`
+Status: Deferred until the core site is being used.
 
-## Phase 3: Platform Expansion
-
-Status: Planned
-
-Goal: add platform capabilities that go beyond basic publishing once the core loop is stable.
-
-Possible scope:
-
-- Knowledge entry points.
-- Labs or experiments area.
-- Small tools.
-- AI demos or service integrations.
-- Comments, messages, or discussion boundaries.
-- Module-level ownership docs if parallel work becomes common.
-
-## Phase 4: Deployment And Operations
-
-Status: Planned
-
-Goal: make the platform durable outside the local development machine after the deployment plan is
-accepted.
-
-Likely scope:
-
-- Cloud deployment target.
-- Managed PostgreSQL or migration strategy.
-- Amazon S3 media storage.
-- Environment and secret management.
-- Infrastructure-as-code direction when the deployment target is stable enough.
-- Backups, rollback, health checks, and monitoring.
-- GitHub Actions and deployment checks.
-
-Entry signal:
-
-- Deployment and operations planning has an accepted target, data policy, media-storage direction,
-  cache strategy, and manual launch runbook.
+Possible additions include topic paths, small tools, interactive work, feeds, or comments. Add them
+when concrete content or usage warrants the work. Keep experiments bounded without prebuilding an
+entire lab registry, community system, or plugin platform.
 
 ## Roadmap Rules
 
-- Keep this file short and directional.
-- Record major architecture choices in `docs/decisions/`.
-- Keep current state in `progress.md`.
-- Split detailed phase plans into `docs/plans/` only when real implementation detail exists.
+- Keep this file directional; `progress.md` owns current implementation state.
+- Record decisions that affect identity, hosting, data ownership, or module boundaries.
+- Research real constraints early, but do not make a later phase block every earlier deliverable.
+- Stop each work slice at a usable, reviewable result.

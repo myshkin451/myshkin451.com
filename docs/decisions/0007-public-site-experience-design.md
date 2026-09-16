@@ -1,8 +1,13 @@
 # 0007: Public Site Experience Design
 
-Status: Accepted
+Status: Superseded as the public design target
 
 Date: 2026-05-04
+
+Superseded on 2026-09-16 by [decision 0010](0010-creator-first-restart.md). The console metaphor,
+dark-forward identity, fixed four-surface homepage, and signature details below are historical.
+Use [the restart brief](../design/RESTART_BRIEF.md) for new design work. Chinese reading quality,
+accessibility, and stable content routes remain useful technical foundations.
 
 ## Context
 

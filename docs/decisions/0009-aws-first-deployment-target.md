@@ -1,8 +1,12 @@
 # 0009: AWS-First Deployment Target
 
-Status: Accepted
+Status: Superseded
 
 Date: 2026-05-05
+
+Superseded on 2026-09-16 by [decision 0010](0010-creator-first-restart.md). AWS study is no longer a
+launch goal or prerequisite. This record preserves the earlier reasoning; provider statements below
+are historical and must be rechecked if AWS is considered again. No production provider is selected.
 
 ## Context
 

@@ -1,88 +1,94 @@
 # Progress
 
-Last updated: 2026-05-05
+Last updated: 2026-09-16
+Last implementation update: 2026-05-05
 
 ## Current Phase
 
-Deployment and operations planning after Phase 2 public-site closeout.
+Active restart: design exploration before a small usable website and later hosted launch.
 
-## Current State
+[Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
+goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
+reopened; no new visual prototype or production deployment is claimed by the restart documentation.
 
-- Public GitHub repository exists at `https://github.com/myshkin451/myshkin451.com`.
-- Local repository is on `main` and tracks `origin/main`.
-- Initial `README.md` and `.gitignore` are committed.
-- Application scaffold is in place with Next.js, Payload, PostgreSQL, Tailwind, pnpm, and Docker Compose.
-- Governance kernel is established.
-- Agent workflow uses Conventional Commits and allows autonomous commit/push for completed, verified, scoped work.
-- Harness operating model is defined as stable engineering responsibility plus adaptive implementation details.
-- Phase 1 platform stack is accepted in `docs/decisions/0003-phase-1-platform-stack.md`.
-- Initial article/project content models and public routes are accepted in `docs/decisions/0004-content-models-and-public-routes.md`.
-- Payload now has `articles` and `projects` collections with shared slug, publication status, publication time, and cover image fields.
-- Public routes exist for `/articles`, `/articles/[slug]`, `/projects`, and `/projects/[slug]`, filtering to published content only.
-- The Phase 1 first platform loop is complete: a local operator can upload media in Payload admin, publish an article and a project with that media, and see homepage, list, and detail routes render the published records.
-- Browser e2e coverage now seeds media-backed published article/project records and verifies homepage, list, detail, and image loading behavior.
-- Phase 2 now has a public metadata and URL hygiene baseline: shared site metadata config, canonical metadata, Open Graph/Twitter metadata, robots.txt, and sitemap.xml for published public routes.
-- Phase 2 now has an accepted public-site experience design: Chinese-first UI, a dark-forward dual-theme strategy, and a four-surface platform map for Writing, Projects, Knowledge paths, and Labs.
-- Directional phase roadmap lives in `docs/ROADMAP.md`.
-- Local PostgreSQL starts successfully through `pnpm db:up`.
-- Baseline checks passed in local validation on 2026-05-04 for format, lint, typecheck, webpack production build, browser e2e, Payload/Postgres integration tests, and media-backed public route rendering.
-- Local dev server has been verified for the homepage, admin route, public media API route, and article/project index routes.
-- The first Phase 2 public-site implementation slice is in place: dual light/dark theme tokens, Chinese-first public chrome and homepage copy, a stronger four-surface index, and a new `/about` surface.
-- The writing and project public routes now extend the Phase 2 experience baseline: `/articles` uses a Chinese-first archive ledger, `/articles/[slug]` uses a reading rail and comfortable long-form measure, `/projects` uses project dossier/ledger patterns, and `/projects/[slug]` presents project metadata as a public case file.
-- Basic GitHub Actions CI now runs the stable checks on pull requests and pushes to `main`: format check, lint, typecheck, integration tests, production build, and browser e2e tests against a PostgreSQL service.
-- Phase 2 dynamic rendering is intentional and accepted in `docs/decisions/0008-phase-2-rendering-cache-strategy.md`; revisit caching before production deployment.
-- Public content visibility now requires both `status: published` and `publishedAt <= now`, so future-dated published records stay hidden until their publication time.
-- The public site now has a header theme toggle for `system`, `dark`, and `light`, with the visitor preference persisted in local storage and applied through the existing dual-theme token system.
-- A small public UI copy dictionary centralizes shared public chrome, theme, surface-index, and homepage copy.
-- Reserved public routes now exist for `/knowledge` and `/labs`, turning Knowledge Paths and Labs into accessible Phase 2 boundary surfaces without adding new CMS models.
-- Public routes now share a footer with surface navigation, language posture, source link, and an honest RSS/feed placeholder.
-- Phase 2 public-site experience is closed as a baseline. The next active workstream is deployment and operations planning, documented in `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`.
-- Public readiness review found local proof records that must not become production seed content: the ad-hoc published article slug `test`, first-platform-loop article/project records, local proof media, and test-only admin users.
-- AWS is accepted as the first production cloud target in `docs/decisions/0009-aws-first-deployment-target.md`, with ECS Express Mode on Fargate as the intended compute path and manual ECS/Fargate as the fallback.
-- The manual AWS launch runbook and preflight checklist are drafted in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`; it is a planning gate, not deployment automation or resource creation.
+## Current Direction
 
-## Active Direction
+- Serve personal creative expression, publishing, and future project presentation first.
+- Find a distinctive visual and interactive direction through concrete working examples.
+- Do not constrain exploration with the old platform-console brief or platform-specific skill.
+- Retain the Next.js/Payload/PostgreSQL foundation while rebuilding the public experience.
+- Build home, writing, projects, and a compact about surface before expanding empty future modules.
+- Favor simple hosted operations appropriate to low traffic. Provider, budget, and final domain are open.
+- Keep Myshkin 451 and the GitHub repository name as working anchors; neither implies control of the old domain.
 
-Build Myshkin 451 as a personal digital platform, starting with public writing, project pages, profile/homepage, and media-backed content management. Keep the first implementation as a modular monolith, with room for future discussions, knowledge entry points, tools, AI demos, and experiments.
+## Current Implementation
 
-## First Platform Loop
-
-Phase 1 is complete. The verified loop is: create or update an article and project in the CMS/admin surface, set slug/publication status/media, see both render on public stable routes, and run the baseline repository checks successfully.
+- Public repository: `https://github.com/myshkin451/myshkin451.com`; local branch `main` tracks `origin/main`.
+- Stack: Next.js, Payload, PostgreSQL, Tailwind, pnpm, and Docker Compose for local PostgreSQL.
+- Article and project models support slugs, publication status/time, and cover media.
+- Public routes exist for home, about, article/project lists and details, knowledge, and labs.
+- Publication visibility requires `status: published` and `publishedAt <= now`.
+- Phase 1 proved the local CMS/media/public-page loop. Phase 2 added themes, Chinese-first chrome,
+  metadata, canonical URLs, robots, sitemap, shared UI copy, and public page patterns.
+- Theme preference supports system/dark/light. Knowledge and Labs remain reserved route-level surfaces.
+- RSS is a placeholder, not an implemented feed. No new collections or visitor/community features are active.
+- The current UI still implements the superseded Phase 2 design; aesthetic acceptance remains outstanding.
+- Uploads still use local filesystem storage. Production media, migrations, environment validation,
+  and runtime health behavior need work before launch.
+- Public routes intentionally remain dynamic under decision 0008; choose launch caching from actual needs.
+- Old-domain defaults and footer text remain in runtime code. Configure and verify the actual origin before launch.
 
 ## Next Steps
 
-1. Define the production data policy: prefer a clean production database, replace local proof records with real public content, and keep local test fixtures out of production data.
-2. Plan and implement S3 media storage before any production launch uses Payload uploads.
-3. Add or confirm a stable runtime health-check path and production environment validation.
-4. Revisit public-route caching or revalidation before production traffic.
+1. Prepare a small public-safe content pack and three distinct high-fidelity interactive design studies
+   using [the restart brief](docs/design/RESTART_BRIEF.md). Include desktop and phone layouts.
+2. Translate owner feedback into one principal visual direction; prove it with article and project detail pages.
+3. Implement that direction with the existing CMS and verify a comfortable publish/update/read/view loop.
+4. Validate one hosting candidate from [the deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
+   then decide provider, budget, media, backups, and domain for a small launch.
+
+Parallel product-direction work still requires owner approval under `AGENTS.md`. Do not turn this
+roadmap into cloud provisioning before the provider, budget, and launch scope are concrete.
 
 ## Open Decisions
 
-- AWS launch timing and production readiness gate.
-- Whether comments/messages ship in an early expansion phase or remain a reserved boundary.
+- Final visual/interaction direction after prototype feedback.
+- Production hosting combination, monthly budget, region, and launch acceptance after the usable slice.
+- Final domain and any public identity change beyond the current working name.
+- Whether comments/messages become useful in a later expansion; deferred during restart.
 
-When any Open Decision is resolved, add or update a decision record under `docs/decisions/` and remove the item from this list in the same change.
+The old AWS launch-timing decision is superseded by 0010 and removed. Resolve each remaining item
+with a matching decision record and remove it here in the same change.
 
-## Accepted Risks
+## Validation And Known Limits
 
-- Next.js 16 Turbopack production build hung locally during scaffold validation. The `build` script uses `next build --webpack` until this is revisited after framework upgrades or CI validation.
+- Historical baseline checks passed on 2026-05-04 for format, lint, typecheck, webpack build,
+  browser e2e, Payload/Postgres integration tests, and media-backed route rendering.
+- CI runs format, lint, typecheck, integration tests, build, and browser e2e against PostgreSQL.
+- The automated publishing fixture uses Payload Local API. Full admin-UI publishing was manually
+  checked on 2026-05-04; it is not an automated end-to-end admin workflow.
+- These historical results are not current runtime, security, cloud-compatibility, or deployment proof.
+- The September restart changes documentation and decision status only; application and database state
+  have not been revalidated. New prototype and implementation slices must run their relevant checks.
+- Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
+- Hosting comparisons were researched on 2026-09-16. No provider deployment, billing estimate based on
+  measured usage, or owner-network access test has been performed.
+- Local proof records, test media, and test-only users must not become production seed data.
 
-## Handoff Notes
+## Historical Parked Review — 2026-07-11
 
-- Keep this file as a high-signal state board, not a chronological log.
-- Do not update this file for every session; update it only for durable state changes needed by future agents.
-- Prefer Git commits and task-specific execution plans for detailed process history.
-- Record architecture-changing choices in `docs/decisions/`.
-- Phase 0, Phase 1, and Phase 2 are closed; next work should plan deployment and operations on top of the verified public-site baseline.
-- Phase 2 is closed as a public-site experience baseline; future public UI work should be driven by real content pressure or deployment-readiness needs.
-- Use the manual AWS launch runbook as the first deployment gate. Current launch blockers are the production container image path, S3 media storage, a stable health-check endpoint, and the final cache or revalidation decision.
-- SEO/public URL hygiene is accepted in `docs/decisions/0005-public-metadata-and-url-hygiene.md`.
-- Public site experience design is accepted in `docs/decisions/0007-public-site-experience-design.md` and detailed in `docs/design/PUBLIC_SITE_EXPERIENCE.md`; use it as the target for future public UI work.
-- Initial visual system decision `0006` is partially superseded by `0007`; use `0007` when the two records conflict.
-- The first public-site experience slice has shipped locally; future frontend work should reuse `src/app/(frontend)/styles.css` theme tokens and `SurfaceIndex`/platform surface copy instead of reintroducing one-off visual systems.
-- The repeatable browser fixture intentionally seeds via Payload Local API and verifies public rendering. The full admin UI publishing loop was manually verified locally on 2026-05-04 and is not automated yet.
-- Future harness changes should preserve implementation freedom while improving evidence, handoff, or decision quality.
-- Future public UI work should add shared chrome, theme, navigation, homepage, and surface-index text to `src/app/(frontend)/_lib/uiCopy.ts`; keep one-off article/project body copy in route components until it becomes reusable.
-- Knowledge Paths and Labs are intentionally route-level reserved surfaces for now. Do not add collections, graphs, lab registries, or interactive tooling until real content or experiments justify them.
-- The footer's feed label is only a placeholder. Do not link to or expose a feed URL until an actual RSS/Atom route exists and is tested.
-- Do not migrate the local development database as production content. Use the deployment plan's content inventory before creating any staging or production environment.
+Retained from the pre-existing local progress update. These statements describe that review, not
+the current branch cleanliness or restart direction:
+
+- No implementation, deployment, or cloud-resource changes were confirmed after the 2026-05-05 closeout.
+- The repository was clean on `main` and tracked `origin/main` at that review.
+- `progress.md`, `docs/ROADMAP.md`, and the deployment plan were identified as recovery anchors.
+- Work was parked pending a concrete deployment-readiness or product deliverable; no active AWS launch was claimed.
+
+## Handoff
+
+- Current authority: README, this board, decision 0010, and the restart design brief.
+- Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
+- Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
+- Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
+- Keep detailed execution in commits and focused work artifacts, not a session diary here.

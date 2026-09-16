@@ -1,5 +1,11 @@
 # Public Site Experience Design
 
+Status: Historical Phase 2 design, superseded as a target on 2026-09-16.
+
+Use [RESTART_BRIEF.md](RESTART_BRIEF.md) and [decision 0010](../decisions/0010-creator-first-restart.md)
+for current work. This document records the implemented baseline; its console metaphor, dark-first
+presentation, fixed module map, and implementation sequence no longer constrain new design.
+
 This document defines the target public-site experience for Myshkin 451. It guides future frontend
 implementation after Phase 1, but it does not add new CMS models or require every future module to
 exist immediately.

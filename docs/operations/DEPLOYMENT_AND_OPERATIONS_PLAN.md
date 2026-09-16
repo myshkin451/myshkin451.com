@@ -1,174 +1,125 @@
-# Deployment And Operations Plan
+# 部署与运维计划
 
-Status: Active planning
-Last updated: 2026-05-05
+更新与资料核查：2026-09-16
 
-This document is the first deployment and operations planning slice after the Phase 2 public-site
-readiness review. It is intentionally a plan, not deployment automation.
+状态：候选方案研究。尚未选择供应商、开通资源或验证实际部署。
 
-## Scope
+[决策 0010](../decisions/0010-creator-first-restart.md) 已取消 AWS 优先和 AWS 学习前置条件。
+先完成设计与可用网站，再按实际需求部署。[旧 AWS 手册](MANUAL_AWS_LAUNCH_RUNBOOK.md) 保留为历史参考。
 
-Plan the first production path for Myshkin 451 without changing the CMS model, adding deployment
-automation, or choosing infrastructure before the tradeoffs are visible.
+## 选择依据
 
-The next durable decisions should cover:
+当前网站首先服务个人创作和未来项目展示，初期访问量很小。优先考虑：
 
-- AWS launch timing and readiness gate;
-- production database ownership and migration approach;
-- media storage ownership;
-- environment and secret handling;
-- cache and revalidation strategy for public CMS-backed routes;
-- backup, rollback, health check, and monitoring expectations.
+1. 日常创作顺畅，作者无需先学习服务器运维。
+2. 应用、数据库、媒体合计成本适合个人使用，能够理解额度和超额行为。
+3. 现有技术栈能可靠运行，内容和图片可以备份、导出与迁移。
+4. 从作者实际使用的网络访问网站、后台和图片均可接受。
 
-The production cloud target is AWS. Decision `0009` accepts an AWS-first deployment direction,
-centered on Amazon ECS Express Mode over Fargate with manual ECS/Fargate as the fallback path.
+没有访问量不代表没有成本：常驻进程、数据库、媒体、构建、备份和域名都可能独立计费。
+暂不承诺每月总价，也不把免费额度等同于已验证的长期生产方案。
 
-The manual launch runbook and preflight checklist now live in
-`docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`. Treat that document as the operating gate for the
-first AWS launch; it is still a manual plan, not a resource creation script.
+## 现有应用的约束
 
-## Public Readiness Review
+仓库使用 Next.js 16.2.3、Payload 3.84.1、PostgreSQL；公开内容路由目前动态渲染。
+媒体仍是本地文件上传，没有生产对象存储适配、生产迁移流程或专用健康检查端点。
+因此不能把当前应用当作一个仅上传 HTML 即可运行的静态站点。
 
-Phase 2 can close as a public-site experience baseline.
+Payload 官方支持 Next.js 部署环境，但数据库和持久媒体存储需要一起安排。
+重新部署不能丢失上传内容。[Payload 部署文档](https://payloadcms.com/docs/production/deployment)
 
-The current codebase now has:
+## 候选方案与暂定判断
 
-- Chinese-first public chrome, homepage, footer, and route copy;
-- public routes for home, about, articles, projects, knowledge, and labs;
-- intentional reserved surfaces for Knowledge Paths and Labs without new CMS collections;
-- metadata, canonical URL, robots, and sitemap coverage for public routes;
-- published-content visibility guarded by both `status: published` and `publishedAt <= now`;
-- theme support for `system`, `dark`, and `light`;
-- CI coverage for formatting, linting, type checking, integration tests, production build, and browser
-  e2e tests.
+这是基于当前文档和本项目结构的工程判断，尚未进行这些平台的部署或网络实测。
 
-This does not mean the platform is production-deployed. It means the public experience is stable
-enough that deployment planning can use real application needs instead of guesses.
+| 方案                                            | 适合本项目的原因                                                       | 需要验证的代价                                                         | 当前位置                                   |
+| ----------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ |
+| Vercel + Neon PostgreSQL + Vercel Blob          | Next.js 托管、数据库和媒体各有现成服务；个人低流量阶段可先评估免费额度 | 多个服务的配置、函数限制、数据库连接、上传与图片处理、休眠后的首次访问 | 低成本优先的首个验证候选                   |
+| Railway 应用 + PostgreSQL + 对象存储            | 可沿用常规 Node 服务运行方式，相关资源能集中组织                       | 常驻资源费用；数据库维护与备份仍由我们负责；私有桶公开图片的交付路径   | 如果 Vercel 组合运行不理想，优先比较此方案 |
+| Render Web Service + Render Postgres + 对象存储 | 常规 Web 服务和托管数据库，职责比较清楚                                | 应用、数据库与媒体的合计费用；需要选择适当的付费资源规格               | 希望采用常驻应用和托管数据库时的备选       |
 
-## Local Content And Test Record Inventory
+### Vercel 组合
 
-The local development database contains proof records from the Phase 1/2 work. They are useful for
-local validation, but they are not production seed content.
+Vercel Hobby 面向个人非商业用途且有使用额度；当前个人创作方向适合进入评估。
+后续若用于商业服务或销售，需要重新核对用途与套餐。额度耗尽可能影响可用性，不能只看
+“免费”二字。[Hobby 说明](https://vercel.com/docs/plans/hobby)
 
-Before any production or staging environment is created:
+Neon 提供免费层和闲置时暂停计算的能力。具体数据库额度、恢复窗口与连接方式在部署时复核；
+不能只依赖免费层的短期恢复能力保存创作内容。
+[Neon 定价](https://neon.com/pricing)、[暂停计算说明](https://neon.com/docs/introduction/scale-to-zero)
 
-- Remove or replace the ad-hoc published article with slug `test`.
-- Replace the `first-platform-loop-*` article and project with real first public records, or start
-  production from a clean database and recreate content intentionally.
-- Treat the first-loop cover image under local `media/` storage as local proof media only.
-- Remove any `*.example.test` or test-only admin users from shared environments.
-- Do not migrate the local development database as the production source of truth.
+Vercel Blob 在 Hobby 下有媒体存储和传输额度。图片不是无限免费；需要配置 Payload 的存储
+适配器并验证上传大小、公开 URL 和图片处理流程。
+[Blob 定价与额度](https://vercel.com/docs/vercel-blob/usage-and-pricing)
 
-The test suite records are different. Keep the `platform-loop-*`, `platform-loop-int-*`, and
-`dev@payloadcms.com` fixtures in tests because they are created and cleaned by test helpers. If a
-failed local test run leaves fixture rows behind, clean them in the local database before judging
-public content readiness.
+### Railway
 
-Ignored local artifacts such as `media/`, `test-results/`, `output/playwright/`, `playwright-report/`,
-and `.local/` are not tracked by Git and should stay local.
+Hobby 当前最低月消费为 5 美元，包含等额资源用量；超出按用量计费。这不是本项目全套服务
+固定 5 美元的报价。[Railway 定价](https://railway.com/pricing)
 
-## First Deployment Planning Slice
+Railway 官方说明数据库模板属于自行管理的服务。平台提供运行与备份能力，但备份配置、
+恢复验证、安全和维护仍需我们安排。[数据库说明](https://docs.railway.com/databases)
 
-Use this order for the deployment planning workstream:
+自带对象存储兼容 S3，但桶是私有的。公开图片需要签名 URL 或应用代理；正式接入时必须验证
+Payload 媒体路由、缓存和服务流量费用，不能假定图片能直接通过永久公开桶地址访问。
+[对象存储说明](https://docs.railway.com/storage-buckets)
 
-1. Define the AWS launch runbook.
-   Documented in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`. It starts with ECS Express Mode on
-   Fargate as the intended compute path and keeps manual ECS/Fargate plus Application Load Balancer
-   as the fallback if Express Mode does not fit during implementation.
+### Render
 
-2. Define production data ownership.
-   Prefer a clean production database for the first launch. If any local content is imported, review
-   it as public content first and document the import path.
+Render 提供托管 PostgreSQL。选型应比较付费 Web 服务、付费数据库和媒体的合计支出，
+而不是把工作区免费与运行资源免费混为一谈。
+[数据库说明](https://render.com/docs/postgresql)、[定价](https://render.com/pricing)
 
-3. Define media storage.
-   Local filesystem uploads are only a development default. Production should use Amazon S3 for the
-   first AWS launch.
+免费 Web 服务闲置后会休眠，免费 PostgreSQL 当前在创建 30 天后过期。免费组合可用于短期
+试验，不应成为保存正式创作内容的长期方案。[免费服务限制](https://render.com/docs/free)
 
-4. Define environment and secret handling.
-   Required production values include `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SITE_URL`, and
-   future media storage credentials. Keep real values out of Git and out of public docs.
+## 暂不优先推进的路径
 
-5. Revisit public-route caching.
-   Decision `0008` keeps public CMS-backed routes dynamic during Phase 2. Before production, choose
-   whether to keep dynamic rendering for launch or move to ISR, tag-based revalidation, or
-   Payload-triggered revalidation.
+- AWS ECS/RDS：旧方案同时服务 AWS 学习，当前失去了这个前提。保留资料，不按它创建资源。
+- 自管 VPS：可以运行该栈，但补丁、数据库备份和故障恢复会增加日常维护责任。
+- 改为纯静态内容站：可能进一步简化托管，但会改变现有 CMS 发布方式。只有实际创作流程
+  证明后台没有价值时，再单独评估；不为部署重写整个项目。
+- 更换运行时或数据库以追求某平台免费层：先证明兼容性收益，再考虑这种范围的架构变更。
 
-6. Keep the launch runbook manual until the target is stable.
-   It should cover deploy, verify, rollback, database backup, media backup, and basic health checks
-   before any CI/CD or infrastructure-as-code work begins.
+## 分阶段落地
 
-## Manual AWS Launch Runbook
+设计与本地实现阶段仅保留部署所需的清晰边界：标准运行方式、外部数据库、可替换的媒体存储、
+环境配置和稳定路由。临近可用版本时，先验证一个候选，不同时建设三套环境。
 
-The second planning slice is documented in `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`.
+首次部署以以下结果为准：
 
-It covers:
+- 选定应用、数据库、媒体、区域、套餐、月度预算与额度耗尽行为。
+- 使用正式生产密钥和单独的数据库；迁移可以重复执行，上传在重启和重新部署后仍可访问。
+- 验证发布和更新一篇文章、一个项目以及图片，检查公开/草稿和未来发布日期边界。
+- 记录数据库与媒体备份、一次恢复验证、上一版本回滚方式和基本故障定位入口。
+- 测试作者实际网络下的后台、公开页面、图片与闲置后的首次访问。
+- 用实际部署域名配置 canonical、站点地图、社交预览和链接；预览内容避免被误索引。
+- 完成所需代码检查与浏览器验证后，给出具体上线结果和可执行的维护说明。
 
-- the preflight checklist that should block AWS resource creation until the launch prerequisites are
-  ready;
-- the preferred ECS Express Mode on Fargate path accepted by decision `0009`;
-- the manual ECS/Fargate plus Application Load Balancer fallback path;
-- the intended resource order for ECR, IAM, networking, RDS, S3, Secrets Manager or SSM Parameter
-  Store, CloudWatch, ECS, Route 53, and ACM;
-- the environment values that must be recorded before launch;
-- verification and rollback steps for compute, data, media, DNS, and secrets;
-- AWS SAA study points tied to the real platform launch.
+由代理准备配置、实施与验证；付费套餐和预算、必要的账号授权、新域名购买及实际公开上线
+在方案可检查时再由用户决定。当前允许研究和仓库准备，不把它当作任意开通付费资源的授权。
 
-Known launch blockers remain outside the runbook itself: production container image shape, Payload S3
-media storage, a stable health-check endpoint, and the final cache or revalidation decision.
+## 内容与域名边界
 
-## AWS Target Architecture
+本地历史验证使用过 `test`、`first-platform-loop-*` 等内容和测试媒体/用户。这些是历史审计
+记录，本轮没有读取当前数据库；生产默认从干净数据库开始，只导入确认适合公开的内容。
+测试套件中的 `platform-loop-*`、`platform-loop-int-*` 等 fixture 保留在测试范围内。
 
-The first AWS production shape should stay small but real:
+原域名是否可以恢复尚未核实，用户允许选择新域名。可先用部署平台提供的地址验证，再决定
+自定义域名；不假定仍控制旧域名，也不必立即更改仓库名或工作品牌。
 
-- Container registry: Amazon ECR.
-- Application runtime: Amazon ECS Express Mode on Fargate.
-- Fallback runtime: manual Amazon ECS on Fargate behind an Application Load Balancer.
-- Database: Amazon RDS for PostgreSQL.
-- Media: Amazon S3 for Payload uploads; CloudFront can be added after first-launch behavior is
-  understood.
-- DNS and TLS: Route 53 plus AWS Certificate Manager when the domain is ready to point at AWS.
-- Secrets and configuration: AWS Secrets Manager or SSM Parameter Store.
-- Observability: CloudWatch logs, metrics, and a small alarm set.
+当前代码仍有需要在上线前处理的旧域名痕迹：
 
-This is feasible for the current app, but it requires later implementation slices before launch:
+- `src/lib/siteMetadata.ts` 的默认站点地址；
+- `src/app/(frontend)/_lib/uiCopy.ts` 的页脚文案；
+- 旧文档中的域名示例。
 
-- add a production container build path;
-- add or configure Payload S3 media storage;
-- decide how database migrations/schema changes are applied;
-- add a health-check endpoint or confirm a stable health-check path;
-- decide whether launch keeps dynamic rendering or introduces ISR/revalidation;
-- write a manual rollback and restore path.
+`.env.example` 当前使用本地开发地址 `http://localhost:3000`，不需要改成尚未确定的新域名。
 
-## AWS SAA Learning Thread
+决策 0005 的稳定路由和集中元数据原则继续适用。首次上线必须显式配置实际站点地址，
+不能让旧域名回退值进入正式 canonical、sitemap 或社交预览。
 
-This deployment path should double as a practical AWS SAA study map:
+## 待定信息
 
-- VPC and security groups: how the app reaches RDS and how public traffic reaches the load balancer.
-- IAM roles and policies: task execution, S3 media access, ECR image pulls, and secret reads.
-- Compute: ECS, Fargate, containers, autoscaling, and load balancing.
-- Storage: S3 object storage, optional CloudFront distribution, and media backup policy.
-- Database: RDS PostgreSQL, backups, snapshots, maintenance windows, and Multi-AZ tradeoffs.
-- DNS and TLS: Route 53 hosted zone records and ACM certificates.
-- Observability: CloudWatch logs, metrics, alarms, and runbook evidence.
-
-Keep the learning thread attached to real platform needs. Do not add AWS services only because they
-are exam topics.
-
-## Follow-Up Development Direction
-
-After this first target decision, continue in these slices:
-
-1. Production data and content policy.
-2. S3 media storage implementation plan, then implementation.
-3. Runtime health check and production environment validation.
-4. Cache and revalidation decision before production traffic.
-5. First manual AWS deployment using the runbook gate.
-6. Only after the manual path is stable, consider CI/CD and infrastructure-as-code.
-
-## Non-Goals For This Slice
-
-- No new CMS collections or fields.
-- No comments, messages, forum, or workflow engine.
-- No deployment automation.
-- No Terraform or infrastructure-as-code until the target is accepted.
-- No production cache invalidation hooks until hosting and secret boundaries are clear.
+正式供应商、预算、区域与访问表现、最终域名、备份保留周期，以及实际云环境的兼容性。
+这些事项不阻塞设计探索。本文的价格与服务条款是资料核查结果，上线时需要复核。

@@ -1,7 +1,12 @@
 # Manual AWS Launch Runbook
 
-Status: Draft manual runbook
+Status: Historical draft; inactive after the 2026-09-16 restart
 Last updated: 2026-05-05
+
+Decision [0010](../decisions/0010-creator-first-restart.md) supersedes the AWS-first requirement.
+This runbook is retained as a reference, not the current launch gate. The old domain, service facts,
+and AWS study objectives below must not be assumed current. Start with
+[the deployment plan](DEPLOYMENT_AND_OPERATIONS_PLAN.md) if deployment work resumes.
 
 Related records:
 

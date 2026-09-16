@@ -9,11 +9,14 @@ This repository uses a small documentation system that should grow only when the
 - `progress.md`: current state board and handoff surface.
 - `docs/ROADMAP.md`: directional phase roadmap.
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
-- `docs/design/`: durable product and frontend design direction.
-- `docs/operations/`: deployment, operations, and production-readiness planning.
+- `docs/design/RESTART_BRIEF.md`: current creative goals, design hypotheses, and prototype deliverable.
+- `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
+- `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: current hosting comparison and later launch gate.
 - `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist
-  for the accepted ECS/Fargate path.
+  for the historical ECS/Fargate path; inactive after the September 2026 restart.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.
+- `docs/decisions/0010-creator-first-restart.md`: accepted restart, superseding the prior visual target
+  and AWS-first deployment requirement.
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

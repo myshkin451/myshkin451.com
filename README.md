@@ -1,19 +1,26 @@
 # Myshkin 451
 
-Myshkin 451 is a personal digital platform built from scratch.
+Myshkin 451 is a personal creative space for writing, making, and sharing work.
 
-It starts with writing, projects, and a public homepage, but it is not meant to remain a simple blog. The long-term shape is a modular personal platform for essays, project notes, portfolio work, knowledge entry points, discussions, small tools, and experimental pages.
+The first audience is its creator. Success means wanting to publish another piece, revisit the site,
+and share a project. Audience growth and a large feature set are not prerequisites. The platform can
+grow into essays, project notes, visual work, small tools, and experiments as real work appears.
 
 This repository intentionally does not continue an older blog architecture. The old site can be used as a feature reference, but this project should grow from a cleaner foundation.
 
-## Direction
+## Current Direction
 
-- Public writing: articles, essays, notes, and long-form work.
-- Project space: portfolio entries, retrospectives, demos, links, and screenshots.
-- Personal presence: homepage, profile, timeline, and public identity.
-- Knowledge entry points: curated paths into notes or research areas.
-- Future interaction: comments, messages, or discussion spaces when the core platform is stable.
-- Experiments: small tools, AI demos, and exploratory pages without polluting the core content model.
+- Restart with design exploration, then build a small usable site, then deploy it.
+- Make the site personal, visually intentional, and enjoyable to explore and use.
+- Discover the visual direction through working examples; the previous console design is historical.
+- Start with home, writing, projects, and a small about surface. Let actual content justify expansion.
+- Keep the existing publishing foundation while redesigning the public experience.
+- Prefer low-maintenance hosting suited to a small personal site. AWS study is no longer a launch requirement.
+- Keep Myshkin 451 as a working name. The expired domain is not a dependency; the final domain is open.
+
+The restart is accepted in [decision 0010](docs/decisions/0010-creator-first-restart.md).
+The owner-facing [design brief](docs/design/RESTART_BRIEF.md) separates confirmed goals from design
+hypotheses. Older platform-specific skills and references are context, not a fixed aesthetic brief.
 
 ## Engineering Stance
 
@@ -25,14 +32,14 @@ This repository intentionally does not continue an older blog architecture. The 
 - Avoid hidden state, undocumented conventions, and secret-dependent local behavior.
 - Do not overbuild community, workflow, or permission systems before the first platform loop works.
 
-## Planned Stack
+## Existing Foundation
 
 - Next.js for the public site and application shell.
 - Payload CMS for content models, admin UI, permissions, and media management.
 - PostgreSQL as the primary database.
-- S3/R2-compatible object storage for media, with Amazon S3 as the first AWS production target.
+- Local filesystem media in development; durable hosted media storage still needs implementation.
 - GitHub as the public source-of-truth for the platform code.
-- AWS as the first production cloud target, starting from an ECS/Fargate deployment plan.
+- Hosting provider and final domain are undecided. See the [current deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md).
 
 ## Local Development
 
@@ -60,13 +67,14 @@ pnpm build
 
 ## Current Status
 
-The repository has completed the Phase 1 first platform loop and the Phase 2 public-site experience
-baseline locally.
+Phase 1 publishing and Phase 2 public routes have a previously validated local baseline. The
+September 2026 restart reopens public design; the existing UI is not the accepted final experience.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 
 The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
 
-The next active workstream is deployment and operations planning. Start with
-`docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`; do not add deployment automation before the
-target, data, media, secrets, caching, backup, rollback, and health-check choices are clear.
+The next deliverable is a small set of distinct, high-fidelity interactive design studies using the
+same content, followed by one complete home/article/project experience. Deployment research can
+inform implementation, but provider selection and cloud setup come after that working slice. No
+production deployment or new visual implementation is claimed by this documentation update.

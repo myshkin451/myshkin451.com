@@ -6,7 +6,8 @@ Date: 2026-05-04
 
 Superseded by: `0007-public-site-experience-design.md` where the two records conflict. This record
 remains useful as the historical first visual baseline and for early token/context decisions that
-0007 does not replace.
+0007 does not replace. Decision `0010-creator-first-restart.md` reopens visual exploration and
+supersedes both 0006 and 0007 as prescriptions for the restart's aesthetic and homepage structure.
 
 ## Context
 

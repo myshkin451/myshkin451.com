@@ -1,6 +1,8 @@
 # Agent Operating Guide
 
-This repository is a long-lived personal digital platform. Treat it as a public product codebase from the first commit, not as a disposable blog rewrite.
+This repository is a long-lived personal creative platform. Its first purpose is to support the
+owner's writing, making, and eventual project presentation. Apply public-codebase engineering care
+in proportion to that purpose; audience growth and infrastructure study are not launch prerequisites.
 
 ## Startup Path
 
@@ -13,6 +15,16 @@ Before making non-trivial changes, read these files in order:
 5. Relevant records in `docs/decisions/` when changing architecture, stack, deployment, data models, or module boundaries.
 
 Read task-specific code and docs after this startup path. Do not sweep the whole repository when the task has a narrow scope.
+
+## Current Restart Direction
+
+- Decision `0010-creator-first-restart.md` is the current product and sequencing authority.
+- Start public design work with `docs/design/RESTART_BRIEF.md`. Its design hypotheses still need
+  concrete visual validation; do not present them as settled owner preferences.
+- The previous platform-console direction and AWS-first requirement are superseded. Earlier
+  platform-specific skills may provide context but must not constrain this restart's visual exploration.
+- Build and validate a small usable site before provisioning production hosting. Research hosting
+  early enough to catch real compatibility constraints without turning it into a prerequisite course.
 
 ## Project Posture
 
@@ -71,7 +83,9 @@ Parallel agents are welcome, but they must have disjoint ownership.
 
 ## Validation Expectations
 
-The repository does not have an application scaffold yet. Once the stack is initialized, every meaningful change should use the available checks, expected to include:
+The repository has a Next.js/Payload application scaffold. Use proportionate checks for the changed
+surface. Documentation-only changes need formatting, link/reference checks, and consistency review;
+application changes use the relevant checks below:
 
 - format
 - lint
