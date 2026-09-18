@@ -79,8 +79,10 @@ The current [design study](docs/design/studies/restart-03/README.md) compares tw
 [index with previews](docs/design/studies/restart-03/catalog.html). Writing, projects, and images
 share the same six-item sample set, without a preferred medium. Both were implemented after reference
 research and generated mockups, with reading, image viewing, and a working color-sampling tool.
-The owner has not accepted an earlier direction; B's relative preference did not establish a dark or
-abstract visual identity. No database is required for these previews. A
+The owner finds this third round substantially better and wants to explore varied personal work,
+classification, and richer details within a modern minimal design. The specific layout remains open;
+B's earlier relative preference did not establish a dark or abstract visual identity.
+No database is required for these previews. A
 [single-file offline copy](docs/design/studies/restart-03/offline.html) includes both layouts and their assets;
 use the local preview server while iterating, and rebuild the offline copy for portable review.
 

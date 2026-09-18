@@ -13,6 +13,8 @@ reopened. B was only relatively better than the other first studies, not an acce
 identity. The second study's layout improved, but its abstract ring imagery had no meaningful link
 to the owner's content. Writing, projects, and images should coexist without a preferred medium.
 A third study provides two content-led layouts, built after reference research and generated mockups.
+The owner finds this round substantially better and wants to explore modern minimal design with richer
+details, varied personal work, and useful classification. The specific layout and extension proposal remain open.
 No final visual direction or production deployment is claimed.
 
 ## Current Direction
@@ -23,6 +25,8 @@ No final visual direction or production deployment is claimed.
   and repeated explanations. Keep design-process controls outside the proposed website.
 - Give writing, projects, and images equal initial standing. Use visuals that preview the content and
   interactions that help browse, read, inspect images, or operate a real tool.
+- Explore direct links to independent projects, photo series, and interactive pages alongside articles.
+  Allow expressive individual works within a consistent site; playful details may also serve enjoyment.
 - Do not constrain exploration with the old platform-console brief or platform-specific skill.
 - Retain the Next.js/Payload/PostgreSQL foundation while rebuilding the public experience.
 - Build home, writing, projects, and a compact about surface before expanding empty future modules.
@@ -64,12 +68,12 @@ No final visual direction or production deployment is claimed.
 
 ## Next Steps
 
-1. Compare [the grid](docs/design/studies/restart-03/index.html) and
-   [the preview index](docs/design/studies/restart-03/catalog.html), including actual reading/viewing interactions.
-   Establish whether content-led composition and direct copy address the owner's concerns.
-2. Refine the home, article, and project surfaces using feedback. Do not infer dark/abstract preferences
-   from B or record any proposal as accepted without owner confirmation. Replace labeled samples with
-   confirmed public content when moving toward the usable site.
+1. Build on the positively received third study using the [extension proposal](docs/design/RESTART_BRIEF.md).
+   Test a mixed home with writing, single images/photo series, external projects, interactive work, and a
+   curated collection. Explore form and topic filters without fixing the production content model yet.
+2. Refine an article, photo series, and directly accessible interactive project, including navigation back,
+   a small set of expressive interactions, and a possible grid/index view switch. These are proposals, not
+   accepted final layouts. Preserve the existing studies and label any unconfirmed sample content.
 3. Implement that direction with the existing CMS and verify a comfortable publish/update/read/view loop.
 4. Validate one hosting candidate from [the deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
    then decide provider, budget, media, backups, and domain for a small launch.
