@@ -20,6 +20,8 @@ This repository uses a small documentation system that should grow only when the
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.
 - `docs/decisions/0010-creator-first-restart.md`: accepted restart, superseding the prior visual target
   and AWS-first deployment requirement.
+- `docs/decisions/0011-zero-content-start-and-visitor-interaction.md`: accepted zero-content start,
+  convenient owner publishing, and visitor account/message scope; implementation remains pending.
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

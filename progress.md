@@ -17,9 +17,16 @@ The owner finds this round substantially better and wants to explore modern mini
 details, varied personal work, and useful classification. The specific layout and extension proposal remain open.
 No final visual direction or production deployment is claimed.
 
+[Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
+without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
+deferral of comments is superseded; the new capabilities have not been implemented.
+
 ## Current Direction
 
 - Serve personal creative expression, publishing, and future project presentation first.
+- Support an empty starting site; the owner does not need to prepare a portfolio before implementation.
+- Make routine publishing and edits possible in the management UI, with optional reusable layouts.
+- Include public visitor accounts and messages with explicit separation from owner management.
 - Find a distinctive visual and interactive direction through concrete working examples.
 - Use direct titles and functional labels. Avoid slogans, invented creator personas, decorative English,
   and repeated explanations. Keep design-process controls outside the proposed website.
@@ -68,14 +75,16 @@ No final visual direction or production deployment is claimed.
 
 ## Next Steps
 
-1. Build on the positively received third study using the [extension proposal](docs/design/RESTART_BRIEF.md).
-   Test a mixed home with writing, single images/photo series, external projects, interactive work, and a
-   curated collection. Explore form and topic filters without fixing the production content model yet.
-2. Refine an article, photo series, and directly accessible interactive project, including navigation back,
-   a small set of expressive interactions, and a possible grid/index view switch. These are proposals, not
-   accepted final layouts. Preserve the existing studies and label any unconfirmed sample content.
-3. Implement that direction with the existing CMS and verify a comfortable publish/update/read/view loop.
-4. Validate one hosting candidate from [the deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
+1. Build on the third study with zero-, one-, and many-item layouts and a convenient owner publishing flow.
+   Validate partial drafts, preview, updates, photo series, link-based projects, topic assignment, and home
+   selection/order. Use labeled development samples; no actual owner work is required to start.
+2. Refine the public article/photo/project surfaces and a few expressive interactions against those flows.
+   Follow the [design brief](docs/design/RESTART_BRIEF.md); preserve prior studies and stable content links.
+3. Implement visitor registration/sign-in and messages/replies with explicit owner/visitor API permissions,
+   moderation, recovery, and abuse controls. Validate a guestbook plus per-content discussion placement.
+   Resolve the currently broad authenticated-user permissions before enabling public visitor auth.
+4. Validate the selected email/sign-in method and one hosting candidate from the
+   [deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
    then decide provider, budget, media, backups, and domain for a small launch.
 
 Parallel product-direction work still requires owner approval under `AGENTS.md`. Do not turn this
@@ -86,7 +95,6 @@ roadmap into cloud provisioning before the provider, budget, and launch scope ar
 - Final visual/interaction direction after prototype feedback.
 - Production hosting combination, monthly budget, region, and launch acceptance after the usable slice.
 - Final domain and any public identity change beyond the current working name.
-- Whether comments/messages become useful in a later expansion; deferred during restart.
 
 The old AWS launch-timing decision is superseded by 0010 and removed. Resolve each remaining item
 with a matching decision record and remove it here in the same change.
@@ -121,6 +129,10 @@ with a matching decision record and remove it here in the same change.
   Direct `file://` real-browser verification was unavailable because Browser Use blocks that URL scheme.
 - Application/CMS/database state and the full production build have not been revalidated during this isolated
   study. No production dependencies, models, routes, or deployment configuration changed.
+- Source review on 2026-09-18 confirmed the sole auth collection is the admin identity. Draft reads and
+  default content writes trust authenticated users without a visitor distinction. This is a prerequisite
+  to resolve before adding visitor auth, not evidence of an already public registration service.
+  Automatic draft versions, photo-series publishing, and public messages are not implemented.
 - Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
 - Hosting comparisons were researched on 2026-09-16. No provider deployment, billing estimate based on
   measured usage, or owner-network access test has been performed.

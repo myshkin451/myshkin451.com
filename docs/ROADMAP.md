@@ -1,10 +1,12 @@
 # Roadmap
 
-Updated: 2026-09-17
+Updated: 2026-09-18
 
 The current sequence follows [decision 0010](decisions/0010-creator-first-restart.md): establish a
 creative direction, make a small site useful, then give it durable hosting. There is no traffic
 threshold, AWS course, or old-domain recovery requirement for starting.
+[Decision 0011](decisions/0011-zero-content-start-and-visitor-interaction.md) adds an empty-content
+start, convenient owner editing, and visitor accounts/messages to the first usable release scope.
 
 ## Completed Foundation
 
@@ -20,7 +22,8 @@ does not establish the final visual identity or prove a current production deplo
 Status: Active. B was only relatively better than the other initial studies; no palette or abstract
 visual identity was accepted. The owner wants meaningful content/interaction and equal coexistence
 of writing, projects, and imagery. A third study offers two layouts based on reference research
-and generated mockups, ready for evaluation.
+and generated mockups. The owner received this third round positively and wants to build on it with
+varied content, richer details, and publishing that can begin without any existing work.
 
 Goal: find a visual and interactive direction the owner wants to inhabit and keep using.
 
@@ -39,19 +42,23 @@ The first two studies remain available for historical comparison.
 
 ## Step 2: A Small Usable Website
 
-Status: Next, after direction selection.
+Status: Next implementation slice, building on study 03 and continued interface feedback.
 
-Goal: carry the selected design through real reading, project viewing, and publishing.
+Goal: make the design useful from an empty start through everyday publishing and visitor participation.
 
 Scope:
 
-- Home, article list/detail, project list/detail, and a compact about surface.
+- Home, article/photo/project browsing and detail surfaces, and a compact about surface.
 - Shared typography, layout, navigation, media handling, and selected interaction details.
-- Existing Payload publishing and stable routes; no speculative new content models.
-- Real or clearly labeled sample content; empty future modules need not dominate navigation.
+- Convenient drafts, preview, media upload, link-based projects, topic assignment, and basic home editing
+  using the existing Payload foundation; evolve data models only for these concrete requirements.
+- Zero-, one-, and many-item layouts; development samples do not become required public content.
+- Visitor registration/sign-in and messages/replies; a guestbook and optional content comments are the
+  recommended initial placement. Explicit owner/visitor permissions, recovery, and moderation are required.
 
-Exit signal: the owner can publish/update an article and a project, inspect both on desktop and
-phone, and feels the site is worth using. Run the relevant code, content-loop, and browser checks.
+Exit signal: the owner can start with no content, then publish/update writing, photos, and projects
+without code edits. Visitors can register, log in, and participate without access to management or
+drafts. Verify desktop/phone behavior, persistence, and permissions with the relevant checks.
 
 ## Step 3: A Small Hosted Launch
 
@@ -65,10 +72,12 @@ Scope:
 - Select the full app/database/media combination and monthly cost boundary.
 - Use a provider URL for initial verification; select a custom domain when the identity is ready.
 - Configure durable uploads, production migrations, backups, secrets, and a small rollback procedure.
-- Test admin publishing, public media, cold access, and canonical URLs on the actual host.
+- Test admin publishing, visitor accounts/messages, email delivery/recovery, public media, cold access,
+  and canonical URLs on the actual host.
 
-Exit signal: one reviewed article and project are live, updates survive redeployment, restore and
-rollback are understood, and the owner can publish without learning cloud infrastructure first.
+Exit signal: the empty or owner-populated site works, private validation fixtures are not published,
+content and messages survive redeployment, account recovery works, and restore/rollback are understood.
+The owner can publish without learning cloud infrastructure first.
 
 Use [the deployment plan](operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md). The AWS runbook is historical.
 
@@ -76,9 +85,9 @@ Use [the deployment plan](operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md). The AWS
 
 Status: Deferred until the core site is being used.
 
-Possible additions include topic paths, small tools, interactive work, feeds, or comments. Add them
-when concrete content or usage warrants the work. Keep experiments bounded without prebuilding an
-entire lab registry, community system, or plugin platform.
+Possible additions include richer topic paths, new kinds of interactive work, or feeds as concrete
+content warrants them. Basic visitor messages belong to Step 2; a forum, private messaging, or a
+social graph is not implied by that scope. Keep experiments bounded without a speculative plugin platform.
 
 ## Roadmap Rules
 

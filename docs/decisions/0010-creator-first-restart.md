@@ -2,6 +2,9 @@
 
 Status: Accepted
 
+Scope update: [0011](0011-zero-content-start-and-visitor-interaction.md) supersedes this record's
+deferral of visitor accounts/comments after the owner's explicit request on 2026-09-18.
+
 Date: 2026-09-16
 
 ## Context

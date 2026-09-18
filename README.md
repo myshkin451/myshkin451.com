@@ -15,10 +15,15 @@ This repository intentionally does not continue an older blog architecture. The 
 - Discover the visual direction through working examples; the previous console design is historical.
 - Start with home, writing, projects, and a small about surface. Let actual content justify expansion.
 - Keep the existing publishing foundation while redesigning the public experience.
+- Make the site usable with no published work and make routine writing, photo, and project updates easy.
+- Include visitor accounts and a small message/comment experience, with owner management kept separate.
 - Prefer low-maintenance hosting suited to a small personal site. AWS study is no longer a launch requirement.
 - Keep Myshkin 451 as a working name. The expired domain is not a dependency; the final domain is open.
 
 The restart is accepted in [decision 0010](docs/decisions/0010-creator-first-restart.md).
+The zero-content start and visitor interaction scope are recorded in
+[decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md); these capabilities
+still need implementation beyond the existing publishing scaffold.
 The owner-facing [design brief](docs/design/RESTART_BRIEF.md) separates confirmed goals from design
 hypotheses. Older platform-specific skills and references are context, not a fixed aesthetic brief.
 
@@ -86,6 +91,7 @@ No database is required for these previews. A
 [single-file offline copy](docs/design/studies/restart-03/offline.html) includes both layouts and their assets;
 use the local preview server while iterating, and rebuild the offline copy for portable review.
 
-The next deliverable is one accepted home/article/project direction shaped by feedback on this preview.
+The next deliverable builds on this preview with empty/low-content layouts and a usable owner publishing
+flow for writing, photos, and projects, followed by permission-isolated visitor registration and messages.
 Deployment research can inform implementation, but provider selection and cloud setup come after that
 working slice. The studies have not replaced the existing public routes; no production deployment is claimed.
