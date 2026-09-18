@@ -1,10 +1,15 @@
-;(() => {
+window.mountStudyPage = function mountStudyPage() {
   'use strict'
 
-  const items = window.studyContent
+  const navigation = window.studyNavigation
+  const asset = (path) => window.studyAsset?.(path) || path
+  const items = window.studyContent.map((item) =>
+    item.image ? { ...item, image: asset(item.image) } : item,
+  )
+  let disposed = false
   const $ = (id) => document.getElementById(id)
   const page = document.body.dataset.page
-  const params = new URLSearchParams(window.location.search)
+  const params = new URLSearchParams(navigation?.search ?? window.location.search)
   const labels = { writing: '文字', project: '项目', image: '影像' }
   const view = page === 'catalog' || params.get('view') === 'catalog' ? 'catalog' : 'gallery'
   const home = view === 'catalog' ? 'catalog.html' : 'index.html'
@@ -32,6 +37,10 @@
     if (filter !== 'all') search.set('type', filter)
     if (query) search.set('q', query)
     if (page === 'catalog' && visibleItems.length) search.set('id', selectedId)
+    if (navigation) {
+      navigation.replace(search.toString())
+      return
+    }
     window.history.replaceState(
       null,
       '',
@@ -45,8 +54,8 @@
     if (item.cover === 'essay' || item.cover === 'notes')
       return `<div class="cover ${item.cover}-cover" aria-hidden="true"><span class="cover-number">${item.number}</span><strong>${item.title}</strong><p>${item.summary}</p><span class="cover-foot">${item.id === 'restart' ? '2026.09.17 · 设计记录样稿' : '排版样文'}</span></div>`
     if (item.cover === 'website')
-      return `<div class="cover website-cover" aria-hidden="true"><div class="mini-site"><div class="mini-nav"><b>Myshkin 451</b><span>内容　关于 ↗</span></div><div class="mini-head"><span>最近</span><span>文字　项目　影像</span></div><div class="mini-grid"><figure><div class="mini-paper">重新做<br>这个网站</div><figcaption>设计记录</figcaption></figure><figure><img src="assets/sea.png" alt="" width="1254" height="1254" loading="lazy"><figcaption>海面</figcaption></figure><figure><div class="mini-code"><i></i><i></i><i></i></div><figcaption>图像配色</figcaption></figure></div></div></div>`
-    return `<div class="cover palette-cover" aria-hidden="true"><div class="mini-palette"><strong>图像配色</strong><p>从图片中选取颜色</p><img src="assets/sea.png" alt="" width="1254" height="1254" loading="lazy"><div class="mini-swatches"><i style="background:#314a58"></i><i style="background:#688698"></i><i style="background:#a9bfce"></i><i style="background:#d8e1e8"></i></div></div></div>`
+      return `<div class="cover website-cover" aria-hidden="true"><div class="mini-site"><div class="mini-nav"><b>Myshkin 451</b><span>内容　关于 ↗</span></div><div class="mini-head"><span>最近</span><span>文字　项目　影像</span></div><div class="mini-grid"><figure><div class="mini-paper">重新做<br>这个网站</div><figcaption>设计记录</figcaption></figure><figure><img src="${asset('assets/sea.png')}" alt="" width="1254" height="1254" loading="lazy"><figcaption>海面</figcaption></figure><figure><div class="mini-code"><i></i><i></i><i></i></div><figcaption>图像配色</figcaption></figure></div></div></div>`
+    return `<div class="cover palette-cover" aria-hidden="true"><div class="mini-palette"><strong>图像配色</strong><p>从图片中选取颜色</p><img src="${asset('assets/sea.png')}" alt="" width="1254" height="1254" loading="lazy"><div class="mini-swatches"><i style="background:#314a58"></i><i style="background:#688698"></i><i style="background:#a9bfce"></i><i style="background:#d8e1e8"></i></div></div></div>`
   }
 
   function applyChrome() {
@@ -226,7 +235,7 @@
         step(event.key === 'ArrowRight' ? 1 : -1)
       }
     })
-    dialog.addEventListener('close', () => $('open-image').focus())
+    dialog.addEventListener('close', () => $('open-image')?.focus())
   }
 
   function initPalette() {
@@ -279,7 +288,7 @@
         )
       const image = new Image()
       image.onload = () => {
-        if (request !== generation) return
+        if (disposed || request !== generation) return
         if (!context) {
           $('tool-status').textContent = '当前浏览器无法使用图片取色。'
           return
@@ -290,7 +299,7 @@
         sample()
       }
       image.onerror = () => {
-        if (request === generation) {
+        if (!disposed && request === generation) {
           $('tool-status').textContent = '图像未能载入，请重新选择图片。'
           $('color-value').value = '未载入'
         }
@@ -299,12 +308,31 @@
     }
     async function copyColor() {
       if (!ready || !color) return
+      const value = color
+      let copied = false
       try {
-        await navigator.clipboard.writeText(color)
-        $('tool-status').textContent = `已复制 ${color}`
+        await navigator.clipboard.writeText(value)
+        copied = true
       } catch {
-        $('tool-status').textContent = `无法访问剪贴板，可手动复制：${color}`
+        if (disposed) return
+        // Local-file browsers may omit the async Clipboard API.
+        const previousFocus = document.activeElement
+        const field = document.createElement('textarea')
+        field.value = value
+        field.readOnly = true
+        field.style.cssText = 'position:fixed;left:0;top:0;opacity:0;pointer-events:none'
+        document.body.append(field)
+        field.select()
+        try {
+          copied = document.execCommand('copy')
+        } catch {
+          copied = false
+        }
+        field.remove()
+        previousFocus?.focus({ preventScroll: true })
       }
+      if (!disposed)
+        $('tool-status').textContent = copied ? `已复制 ${value}` : `可手动复制色值：${value}`
     }
     canvas.addEventListener('click', (event) => {
       const rect = canvas.getBoundingClientRect()
@@ -378,4 +406,10 @@
     renderCatalog()
   }
   if (page === 'entry') renderEntry()
-})()
+  return () => {
+    disposed = true
+    compact.removeEventListener('change', positionPreview)
+  }
+}
+
+if (document.body.dataset.page) window.mountStudyPage()

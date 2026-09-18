@@ -1,7 +1,7 @@
 # Progress
 
-Last updated: 2026-09-17
-Last implementation update: 2026-09-17 (design studies; production UI remains at its previous baseline)
+Last updated: 2026-09-18
+Last implementation update: 2026-09-18 (offline design preview; production UI remains at its previous baseline)
 
 ## Current Phase
 
@@ -53,6 +53,8 @@ No final visual direction or production deployment is claimed.
   grid and a searchable index with selected-item previews. It includes shared article/project details,
   a two-image viewer, a working pointer/keyboard color sampler, and responsive layouts. Two generated
   mockups, two labeled AI image samples, and the full prompt set are preserved. Sample writing is labeled.
+  A generated standalone `offline.html` includes both layouts, shared detail pages, images, and mockups.
+  The source pages remain the editing surface; a dependency-free Python script rebuilds the portable copy.
   The agent currently recommends evaluating the grid as the home page; this is not owner acceptance.
   These previews do not yet connect to production publishing.
 - Uploads still use local filesystem storage. Production media, migrations, environment validation,
@@ -109,6 +111,10 @@ with a matching decision record and remove it here in the same change.
   empty-state recovery, keyboard selection, preview navigation, return state, reading size, image navigation,
   Escape/focus return, pixel sampling and clipboard copy were exercised. No browser warnings/errors observed.
   Reduced-motion CSS is present, without OS-level preference testing. Original PNGs need launch-time optimization.
+- The standalone copy was checked on 2026-09-18: file-origin JSDOM navigation/filter/search/return-state
+  checks and repeated mount/cleanup cycles passed. An isolated real-browser HTTP preview containing only
+  the bundled file verified rendering, actual Canvas pixel sampling, copying, and the embedded mockup dialog.
+  Direct `file://` real-browser verification was unavailable because Browser Use blocks that URL scheme.
 - Application/CMS/database state and the full production build have not been revalidated during this isolated
   study. No production dependencies, models, routes, or deployment configuration changed.
 - Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
@@ -134,5 +140,7 @@ the current branch cleanliness or restart direction:
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
 - Serve only `docs/design/studies/restart-03` on a loopback static server (port 4321 in the delivered session).
   The preview needs no database or external assets. Its README includes references, prompts, and validation.
-  Direct file opening can restrict Canvas/clipboard behavior; use the local HTTP preview for the working tool.
+  Prefer this server during design iteration. `offline.html` is a portable snapshot; regenerate it with
+  `python3 docs/design/studies/restart-03/build_offline.py` after source edits. Its embedded assets remove
+  adjacent-file dependencies; clipboard access still depends on browser permissions and has a manual fallback.
 - Keep detailed execution in commits and focused work artifacts, not a session diary here.
