@@ -5,6 +5,10 @@ const eslintConfig = [
   ...nextVitals,
   ...nextTypescript,
   {
+    files: ['frontend/**/*.{ts,tsx}'],
+    rules: { '@next/next/no-img-element': 'off' },
+  },
+  {
     rules: {
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
@@ -24,7 +28,12 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: [
+      '.next/',
+      'frontend/dist/**',
+      'src/payload-types.ts',
+      'src/payload-generated-schema.ts',
+    ],
   },
 ]
 

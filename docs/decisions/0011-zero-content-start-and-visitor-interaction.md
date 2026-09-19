@@ -1,6 +1,10 @@
 # 0011: Zero-Content Start and Visitor Interaction
 
-Status: Accepted (product requirements; implementation pending)
+Status: Accepted (local frontend implemented; production backend pending)
+
+Implementation update: [0012](0012-independent-frontend-and-rebuild-authority.md) records the local
+frontend and supersedes the stack-retention requirement below. Real visitor accounts and shared
+messages remain pending; the inspected historical backend has not been modified.
 
 Date: 2026-09-18
 

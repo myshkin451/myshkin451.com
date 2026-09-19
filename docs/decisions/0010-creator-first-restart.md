@@ -4,6 +4,8 @@ Status: Accepted
 
 Scope update: [0011](0011-zero-content-start-and-visitor-interaction.md) supersedes this record's
 deferral of visitor accounts/comments after the owner's explicit request on 2026-09-18.
+[0012](0012-independent-frontend-and-rebuild-authority.md) supersedes the requirement to retain the
+old stack and records the next frontend implementation boundary.
 
 Date: 2026-09-16
 

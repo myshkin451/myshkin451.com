@@ -248,6 +248,9 @@ Current scaffold commands:
 | Run browser tests | `pnpm test:e2e` |
 | Run all tests | `pnpm test` |
 | Production build | `pnpm build` |
+| New frontend preview | `pnpm frontend:dev` |
+| Frontend state/persistence tests | `pnpm frontend:test` |
+| Frontend types and build | `pnpm frontend:build` |
 
 Use the lightest relevant proof for the change. Do not turn every small documentation or configuration change into a full phase review.
 
@@ -265,6 +268,7 @@ It runs on pull requests and pushes to `main` with:
 - `pnpm format:check`.
 - `pnpm lint`.
 - `pnpm typecheck`.
+- `pnpm frontend:test` and `pnpm frontend:build` for the new independent frontend.
 - `pnpm test:int`.
 - `pnpm build`.
 - `pnpm test:e2e`.

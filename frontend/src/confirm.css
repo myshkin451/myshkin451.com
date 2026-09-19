@@ -1,0 +1,50 @@
+.confirm-dialog {
+  width: min(440px, calc(100vw - 36px));
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  margin: auto;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 20px 80px #20232020;
+}
+.confirm-dialog::backdrop {
+  background: #20232055;
+}
+.confirm-dialog h2 {
+  font-size: 23px;
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+.confirm-dialog p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 28px;
+}
+.confirm-actions .button {
+  font-size: 12px;
+  min-height: 39px;
+  padding: 9px 15px;
+}
+@media (max-width: 480px) {
+  .confirm-dialog {
+    padding: 25px;
+  }
+  .confirm-dialog h2 {
+    font-size: 21px;
+  }
+}

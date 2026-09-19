@@ -1,11 +1,11 @@
 # Progress
 
-Last updated: 2026-09-18
-Last implementation update: 2026-09-18 (offline design preview; production UI remains at its previous baseline)
+Last updated: 2026-09-19
+Last implementation update: 2026-09-19 (connected frontend verified with local publishing and visitor flows)
 
 ## Current Phase
 
-Active restart: design exploration before a small usable website and later hosted launch.
+Active restart: a connected local frontend is ready for review; real backend and later hosting remain.
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
@@ -19,7 +19,13 @@ No final visual direction or production deployment is claimed.
 
 [Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
 without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
-deferral of comments is superseded; the new capabilities have not been implemented.
+deferral of comments is superseded. These flows now have a local frontend implementation; real
+visitor authentication and shared persistence remain pending.
+
+[Decision 0012](docs/decisions/0012-independent-frontend-and-rebuild-authority.md) records the owner's
+explicit permission to rethink old engineering/design/skills and the independent `frontend/` boundary.
+Retaining the old Next/Payload stack is no longer a requirement. Prior code remains available for
+selective reuse and comparison; the new frontend does not claim production acceptance.
 
 ## Current Direction
 
@@ -35,15 +41,30 @@ deferral of comments is superseded; the new capabilities have not been implement
 - Explore direct links to independent projects, photo series, and interactive pages alongside articles.
   Allow expressive individual works within a consistent site; playful details may also serve enjoyment.
 - Do not constrain exploration with the old platform-console brief or platform-specific skill.
-- Retain the Next.js/Payload/PostgreSQL foundation while rebuilding the public experience.
+- Evaluate old engineering for reuse on its merits; it must not constrain the new publishing experience.
 - Build home, writing, projects, and a compact about surface before expanding empty future modules.
 - Favor simple hosted operations appropriate to low traffic. Provider, budget, and final domain are open.
 - Keep Myshkin 451 and the GitHub repository name as working anchors; neither implies control of the old domain.
 
 ## Current Implementation
 
+- [New frontend](frontend/README.md): React/Vite page suite with mixed browsing and an index, search,
+  type/topic filtering, article/album/project details, an actual gradient tool, about, guestbook,
+  local visitor pages, and an owner workspace. Start with `pnpm frontend:dev` on `127.0.0.1:4323`.
+- IndexedDB saves resolve after committed writes. Drafts remain separate from the public version;
+  partial drafts, preview, publish/update/unpublish, image upload/order, project links, settings,
+  featured items, and per-item discussion toggles work locally. Clearing browser data loses this content.
+- Six labeled samples and two existing AI-generated images show populated layouts. Hiding samples
+  retains custom entries and allows a true empty start. No owner work or fake visitor conversations are seeded.
+- Visitor identities and messages are local simulations. They do not collect passwords or send email.
+  The workspace is intentionally available in this preview, not protected by a real admin permission boundary.
+- Real authentication, account recovery, durable server media, cross-device publishing, curated series,
+  manual homepage ordering, and production URLs remain unfinished. `frontend/README.md` owns exact limits.
+
+### Historical application and design studies
+
 - Public repository: `https://github.com/myshkin451/myshkin451.com`; local branch `main` tracks `origin/main`.
-- Stack: Next.js, Payload, PostgreSQL, Tailwind, pnpm, and Docker Compose for local PostgreSQL.
+- Historical application stack: Next.js, Payload, PostgreSQL, Tailwind, pnpm, and Docker Compose.
 - Article and project models support slugs, publication status/time, and cover media.
 - Public routes exist for home, about, article/project lists and details, knowledge, and labs.
 - Publication visibility requires `status: published` and `publishedAt <= now`.
@@ -51,7 +72,7 @@ deferral of comments is superseded; the new capabilities have not been implement
   metadata, canonical URLs, robots, sitemap, shared UI copy, and public page patterns.
 - Theme preference supports system/dark/light. Knowledge and Labs remain reserved route-level surfaces.
 - RSS is a placeholder, not an implemented feed. No new collections or visitor/community features are active.
-- The current UI still implements the superseded Phase 2 design; aesthetic acceptance remains outstanding.
+- The historical Next app still implements Phase 2; it is not the current frontend preview.
 - [Design study 01](docs/design/studies/restart-01/README.md) now provides three distinct, working
   home-page directions: 页间 (editorial), 游乐室 (interactive work), and 线索 (connected content).
   The standalone HTML/CSS/JS includes phone preview, sample reading, a visible next-step plan,
@@ -60,7 +81,7 @@ deferral of comments is superseded; the new capabilities have not been implement
   image-led home page, image viewer, interactive SVG torus, article page, and compact about page.
   A generated mockup and standalone image asset are preserved with prompts. Study 01 remains comparison
   material; none of its designs was accepted.
-- [Design study 03](docs/design/studies/restart-03/README.md) is the current comparison: a mixed-content
+- [Design study 03](docs/design/studies/restart-03/README.md) is the preceding comparison: a mixed-content
   grid and a searchable index with selected-item previews. It includes shared article/project details,
   a two-image viewer, a working pointer/keyboard color sampler, and responsive layouts. Two generated
   mockups, two labeled AI image samples, and the full prompt set are preserved. Sample writing is labeled.
@@ -75,14 +96,12 @@ deferral of comments is superseded; the new capabilities have not been implement
 
 ## Next Steps
 
-1. Build on the third study with zero-, one-, and many-item layouts and a convenient owner publishing flow.
-   Validate partial drafts, preview, updates, photo series, link-based projects, topic assignment, and home
-   selection/order. Use labeled development samples; no actual owner work is required to start.
-2. Refine the public article/photo/project surfaces and a few expressive interactions against those flows.
-   Follow the [design brief](docs/design/RESTART_BRIEF.md); preserve prior studies and stable content links.
-3. Implement visitor registration/sign-in and messages/replies with explicit owner/visitor API permissions,
-   moderation, recovery, and abuse controls. Validate a guestbook plus per-content discussion placement.
-   Resolve the currently broad authenticated-user permissions before enabling public visitor auth.
+1. Review the new frontend by browsing actual pages and publishing a local item. Refine specific layouts
+   and interactions from that feedback; the visual choice remains open and does not require owner content.
+2. Choose the smallest durable backend for these verified flows, documenting whether to reuse or replace
+   the old app. Replace the local platform adapter with real content/media operations and API permissions.
+3. Implement real visitor registration/sign-in, messages/replies, recovery and abuse controls. Keep owner
+   and visitor permissions separate. If Payload is reused, resolve its broad authenticated-user rules first.
 4. Validate the selected email/sign-in method and one hosting candidate from the
    [deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
    then decide provider, budget, media, backups, and domain for a small launch.
@@ -93,6 +112,7 @@ roadmap into cloud provisioning before the provider, budget, and launch scope ar
 ## Open Decisions
 
 - Final visual/interaction direction after prototype feedback.
+- Production frontend/backend integration and reuse or replacement of the historical stack.
 - Production hosting combination, monthly budget, region, and launch acceptance after the usable slice.
 - Final domain and any public identity change beyond the current working name.
 
@@ -101,6 +121,14 @@ with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
 
+- Repository format/lint/type checks, production frontend build, 19 data-layer and 8 confirmation-flow
+  tests passed on 2026-09-19. Browser verification covered reading, filtering/return state, image viewing/focus,
+  actual CSS copying, IndexedDB draft/publish isolation, image upload/order, direct project entry, settings,
+  login-return drafts, message/reply persistence, moderation, and cancel/Escape on unsaved changes.
+  See `frontend/README.md` for exact limits.
+- Browser writes were tested on `localhost:4323`; `127.0.0.1:4323` remains a clean review origin.
+  Native leave confirmation blocked an IAB automation tab and was replaced with a page dialog.
+  SVG download completion was not observable through the IAB download event; file delivery is unverified.
 - Historical baseline checks passed on 2026-05-04 for format, lint, typecheck, webpack build,
   browser e2e, Payload/Postgres integration tests, and media-backed route rendering.
 - CI runs format, lint, typecheck, integration tests, build, and browser e2e against PostgreSQL.
@@ -127,12 +155,13 @@ with a matching decision record and remove it here in the same change.
   checks and repeated mount/cleanup cycles passed. An isolated real-browser HTTP preview containing only
   the bundled file verified rendering, actual Canvas pixel sampling, copying, and the embedded mockup dialog.
   Direct `file://` real-browser verification was unavailable because Browser Use blocks that URL scheme.
-- Application/CMS/database state and the full production build have not been revalidated during this isolated
-  study. No production dependencies, models, routes, or deployment configuration changed.
+- Historical application/CMS/database state and its full production build were not revalidated for this
+  frontend slice. Vite is now an explicit dev dependency at the already locked version; production models,
+  routes, environment files and deployment configuration remain unchanged.
 - Source review on 2026-09-18 confirmed the sole auth collection is the admin identity. Draft reads and
   default content writes trust authenticated users without a visitor distinction. This is a prerequisite
   to resolve before adding visitor auth, not evidence of an already public registration service.
-  Automatic draft versions, photo-series publishing, and public messages are not implemented.
+  These features remain absent from the old backend; browser-only versions exist in the new frontend.
 - Accepted build workaround: `next build --webpack` remains in use after the historical Turbopack hang.
 - Hosting comparisons were researched on 2026-09-16. No provider deployment, billing estimate based on
   measured usage, or owner-network access test has been performed.
@@ -150,13 +179,17 @@ the current branch cleanliness or restart direction:
 
 ## Handoff
 
-- Current authority: README, this board, decision 0010, and the restart design brief.
+- The resumed frontend slice passed final checks. Clean delivery origin is `127.0.0.1:4323`;
+  QA writes are isolated at `localhost:4323`. A new backend task can use this board and `frontend/README.md`
+  to recover the current boundary without inheriting the full design conversation.
+- Current authority: README, this board, decisions 0010–0012, and the restart design brief.
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
-- Serve only `docs/design/studies/restart-03` on a loopback static server (port 4321 in the delivered session).
-  The preview needs no database or external assets. Its README includes references, prompts, and validation.
-  Prefer this server during design iteration. `offline.html` is a portable snapshot; regenerate it with
+- Current review entry: `frontend/`, served by `pnpm frontend:dev` on loopback port 4323. It needs no
+  database or secrets. Keep the same origin to retain browser content. Stop its process when review ends.
+- The earlier `restart-03` static preview (port 4321 in its delivered session) remains comparison material.
+  `offline.html` is its portable snapshot; regenerate it with
   `python3 docs/design/studies/restart-03/build_offline.py` after source edits. Its embedded assets remove
   adjacent-file dependencies; clipboard access still depends on browser permissions and has a manual fallback.
 - Keep detailed execution in commits and focused work artifacts, not a session diary here.

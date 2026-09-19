@@ -14,7 +14,7 @@ This repository intentionally does not continue an older blog architecture. The 
 - Make the site personal, visually intentional, and enjoyable to explore and use.
 - Discover the visual direction through working examples; the previous console design is historical.
 - Start with home, writing, projects, and a small about surface. Let actual content justify expansion.
-- Keep the existing publishing foundation while redesigning the public experience.
+- Reuse or replace the old foundation according to the publishing experience; prior code and design skills are not constraints.
 - Make the site usable with no published work and make routine writing, photo, and project updates easy.
 - Include visitor accounts and a small message/comment experience, with owner management kept separate.
 - Prefer low-maintenance hosting suited to a small personal site. AWS study is no longer a launch requirement.
@@ -22,8 +22,10 @@ This repository intentionally does not continue an older blog architecture. The 
 
 The restart is accepted in [decision 0010](docs/decisions/0010-creator-first-restart.md).
 The zero-content start and visitor interaction scope are recorded in
-[decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md); these capabilities
-still need implementation beyond the existing publishing scaffold.
+[decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md). A complete local
+frontend is now in [frontend/](frontend/README.md); shared accounts and publishing still need a backend.
+[Decision 0012](docs/decisions/0012-independent-frontend-and-rebuild-authority.md) records the owner's
+permission to rethink the foundation and the independent frontend boundary.
 The owner-facing [design brief](docs/design/RESTART_BRIEF.md) separates confirmed goals from design
 hypotheses. Older platform-specific skills and references are context, not a fixed aesthetic brief.
 
@@ -48,7 +50,18 @@ hypotheses. Older platform-specific skills and references are context, not a fix
 
 ## Local Development
 
-The application scaffold uses pnpm, Next.js, Payload, and a local PostgreSQL database through Docker Compose.
+Start the new frontend without a database or environment secrets:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm frontend:dev
+```
+
+Open `http://127.0.0.1:4323/`. The frontend includes public pages, a content workspace, and clearly
+labeled local visitor/message simulations. Its [README](frontend/README.md) explains persistence,
+commands, verification, and limits. `pnpm frontend:build` checks types and builds this frontend.
+
+The historical application scaffold uses Next.js, Payload, and local PostgreSQL through Docker Compose:
 
 ```bash
 pnpm install
@@ -91,7 +104,12 @@ No database is required for these previews. A
 [single-file offline copy](docs/design/studies/restart-03/offline.html) includes both layouts and their assets;
 use the local preview server while iterating, and rebuild the offline copy for portable review.
 
-The next deliverable builds on this preview with empty/low-content layouts and a usable owner publishing
-flow for writing, photos, and projects, followed by permission-isolated visitor registration and messages.
+The current [frontend](frontend/README.md) extends this work into a connected page set: mixed browsing,
+reading, albums, projects, topics, a small color tool, visitor pages, and an owner workspace. Content
+can be drafted, previewed, and published into the current browser using IndexedDB. Local demo identities
+and comments do not represent a real account service. Old production routes remain unchanged.
+
+The next deliverable connects the accepted frontend experience to durable content/media and real,
+permission-isolated owner/visitor accounts, including recovery and moderation.
 Deployment research can inform implementation, but provider selection and cloud setup come after that
 working slice. The studies have not replaced the existing public routes; no production deployment is claimed.

@@ -1,0 +1,224 @@
+import { useEffect, useRef, useState } from 'react'
+import { useRoute } from './navigation'
+import { usePlatform } from './platform'
+import { Icon } from './ui'
+import { PublicPage } from './pages/Public'
+import { ColorLab } from './pages/ColorLab'
+import { CommunityPage } from './pages/Community'
+import { StudioPage } from './pages/Studio'
+
+function PreviewDock() {
+  const { state, setMode } = usePlatform()
+  const [pending, setPending] = useState(false)
+  const [failure, setFailure] = useState('')
+  const dialog = useRef<HTMLDialogElement>(null)
+
+  async function changeMode() {
+    setPending(true)
+    setFailure('')
+    try {
+      await setMode(state.mode === 'sample' ? 'empty' : 'sample')
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : '切换失败，请重试。')
+    } finally {
+      setPending(false)
+    }
+  }
+  return (
+    <>
+      <aside className="preview-dock" aria-label="前端预览工具">
+        <button
+          className="preview-info"
+          onClick={() => dialog.current?.showModal()}
+          aria-label="了解这个前端预览"
+        >
+          <span className="preview-dot" />
+          本机预览
+        </button>
+        <span className="dock-divider" />
+        <button onClick={changeMode} disabled={pending} aria-pressed={state.mode === 'sample'}>
+          {state.mode === 'sample' ? '样例已显示' : '仅我的内容'}
+          <span className={`dock-toggle ${state.mode === 'sample' ? 'on' : ''}`} />
+        </button>
+        <a className="dock-studio" href="#/studio">
+          工作台
+          <Icon name="external" size={13} />
+        </a>
+      </aside>
+      {failure && (
+        <p className="dock-error" role="alert">
+          {failure}
+        </p>
+      )}
+      <dialog className="preview-dialog" ref={dialog}>
+        <div className="dialog-heading">
+          <h2>关于这个预览</h2>
+          <button
+            className="icon-button"
+            onClick={() => dialog.current?.close()}
+            aria-label="关闭说明"
+          >
+            <Icon name="close" />
+          </button>
+        </div>
+        <p>
+          你可以浏览页面，也可以在工作台写文章、上传照片和添加项目。发布后，会立即出现在本机首页。
+        </p>
+        <p>
+          内容保存在当前浏览器中。清除浏览器数据会移除这些内容；切换浏览器、设备或访问地址不会同步。
+        </p>
+        <p>访客账号和留言是本机演示。这里没有真实注册、密码或邮件，也没有把内容发布到互联网。</p>
+        <p>样例文章与 AI 生成图片用于展示排版。关闭样例，就能看到只包含自己内容的首页。</p>
+        <a className="button" href="#/studio" onClick={() => dialog.current?.close()}>
+          进入工作台
+          <Icon name="arrow" />
+        </a>
+      </dialog>
+    </>
+  )
+}
+
+function SiteHeader({ path }: { path: string }) {
+  const { state } = usePlatform()
+  const links = [
+    {
+      href: '/',
+      title: '内容',
+      active:
+        path === '/' ||
+        path === '/archive' ||
+        path === '/writing' ||
+        path.startsWith('/topics') ||
+        path.startsWith('/entry'),
+    },
+    { href: '/photos', title: '影像', active: path === '/photos' },
+    { href: '/projects', title: '项目', active: path === '/projects' || path.startsWith('/play') },
+    { href: '/about', title: '关于', active: path === '/about' },
+    { href: '/guestbook', title: '留言', active: path === '/guestbook' },
+  ]
+  return (
+    <header className="site-header">
+      <a className="site-brand" href="#/" aria-label={`${state.settings.name} 首页`}>
+        <img src="./assets/mark.svg" alt="" width="25" height="25" />
+        <span>{state.settings.name}</span>
+      </a>
+      <nav className="site-nav" aria-label="网站导航">
+        {links.map((link) => (
+          <a key={link.href} href={`#${link.href}`} aria-current={link.active ? 'page' : undefined}>
+            {link.title}
+          </a>
+        ))}
+      </nav>
+      <a className="account-link" href={state.visitor ? '#/account' : '#/login'}>
+        {state.visitor ? (
+          <>
+            <span className="visitor-avatar">{state.visitor.nickname.slice(0, 1)}</span>
+            <span className="sr-only">我的账号</span>
+          </>
+        ) : (
+          '登录'
+        )}
+        <Icon name="external" size={14} />
+      </a>
+    </header>
+  )
+}
+
+export default function App() {
+  const { path, params } = useRoute()
+  const { ready, error, state, entries, drafts } = usePlatform()
+  const studio = path.startsWith('/studio')
+  const previousPath = useRef(path)
+  let entryId = ''
+  try {
+    if (path.startsWith('/entry/')) entryId = decodeURIComponent(path.slice(7))
+  } catch {
+    /* The route renders a not-found page. */
+  }
+  const entryTitle = (params.get('draft') === '1' ? drafts : entries).find(
+    (entry) => entry.id === entryId,
+  )?.title
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    if (previousPath.current !== path) {
+      document.getElementById('main')?.focus({ preventScroll: true })
+      previousPath.current = path
+    }
+  }, [path])
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      '/archive': '全部内容',
+      '/writing': '文章',
+      '/photos': '影像',
+      '/projects': '项目',
+      '/about': '关于',
+      '/guestbook': '留言',
+      '/login': '登录',
+      '/register': '注册',
+      '/account': '我的账号',
+      '/recover': '找回账号',
+      '/studio': '工作台',
+      '/studio/settings': '网站设置',
+      '/studio/comments': '留言管理',
+      '/play/color': '色彩练习',
+    }
+    const title = entryTitle || titles[path] || (studio ? '内容编辑' : '')
+    document.title = `${title ? `${title} · ` : ''}${state.settings.name}`
+  }, [path, state.settings.name, entryTitle, studio])
+
+  if (!ready)
+    return (
+      <div className="app-loading" role="status">
+        正在打开内容
+        <span />
+      </div>
+    )
+  const community = ['/guestbook', '/login', '/register', '/recover', '/account'].includes(path)
+  return (
+    <>
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault()
+          document.getElementById('main')?.focus()
+        }}
+      >
+        跳到主要内容
+      </a>
+      {error && (
+        <div className="storage-error" role="alert">
+          {error}
+        </div>
+      )}
+      {studio ? (
+        <main id="main" tabIndex={-1}>
+          <StudioPage path={path} params={params} />
+        </main>
+      ) : (
+        <>
+          <SiteHeader path={path} />
+          <main id="main" className="public-main" tabIndex={-1}>
+            {community ? (
+              <CommunityPage key={path} path={path} params={params} />
+            ) : path === '/play/color' ? (
+              <ColorLab />
+            ) : (
+              <PublicPage path={path} params={params} />
+            )}
+          </main>
+          <footer className="site-footer">
+            <a href="#/">{state.settings.name}</a>
+            <span>© {new Date().getFullYear()}</span>
+            <a href="#/archive">
+              全部内容
+              <Icon name="arrow" size={14} />
+            </a>
+            <a href="#/guestbook">留言</a>
+          </footer>
+          <PreviewDock />
+        </>
+      )}
+    </>
+  )
+}

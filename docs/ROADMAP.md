@@ -42,7 +42,8 @@ The first two studies remain available for historical comparison.
 
 ## Step 2: A Small Usable Website
 
-Status: Next implementation slice, building on study 03 and continued interface feedback.
+Status: Connected local frontend implemented in [frontend/](../frontend/README.md). Real backend
+publishing, media storage, visitor accounts, and permission checks remain the next implementation slice.
 
 Goal: make the design useful from an empty start through everyday publishing and visitor participation.
 
@@ -51,7 +52,8 @@ Scope:
 - Home, article/photo/project browsing and detail surfaces, and a compact about surface.
 - Shared typography, layout, navigation, media handling, and selected interaction details.
 - Convenient drafts, preview, media upload, link-based projects, topic assignment, and basic home editing
-  using the existing Payload foundation; evolve data models only for these concrete requirements.
+  with separate content and presentation boundaries. Decision 0012 permits reusing or replacing the
+  old foundation according to the actual needs of these flows.
 - Zero-, one-, and many-item layouts; development samples do not become required public content.
 - Visitor registration/sign-in and messages/replies; a guestbook and optional content comments are the
   recommended initial placement. Explicit owner/visitor permissions, recovery, and moderation are required.

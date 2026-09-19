@@ -68,6 +68,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Test frontend state and persistence
+        run: pnpm frontend:test
+
+      - name: Build frontend preview
+        run: pnpm frontend:build
+
       - name: Run integration tests
         run: pnpm test:int
 
