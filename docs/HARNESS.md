@@ -139,7 +139,9 @@ It is complete when an operator can:
 3. See the published item render on the public site at a stable route.
 4. Run the baseline checks for the repository, including type checks and production build.
 
-Until this loop works, discussion systems, complex permissions, forums, advanced workflows, and broad plugin architecture remain out of scope.
+The historical loop passed its local gate. Decision 0011 adds a small visitor account/comment surface;
+decision 0013 replaces the production backend while preserving explicit owner/visitor boundaries.
+Forums, advanced workflows, and broad plugin architecture remain out of scope.
 
 ## Harness Layers
 
@@ -157,11 +159,11 @@ Current layer.
 
 Current layer.
 
-- Reproducible install through `pnpm install`.
-- Local development through `pnpm dev`.
-- Local PostgreSQL through `pnpm db:up` and `pnpm db:down`.
-- Environment defaults documented in `.env.example`.
-- Content-loop fixtures seed records through Payload Local API for integration and browser tests.
+- Reproducible install through `pnpm install --frozen-lockfile`.
+- Real platform development through `pnpm site:db:start`, `pnpm site:local:configure`, and `pnpm site:dev`.
+- Independent IndexedDB design preview through `pnpm frontend:dev`.
+- Public website environment names in `site/.env.example`; privileged maintenance credentials stay outside the repository.
+- Historical Payload development commands and fixtures remain separate from the deployed `site/` application.
 
 ### 3. Quality Harness
 
@@ -170,23 +172,21 @@ Current layer.
 - Formatting.
 - Linting.
 - Type checking.
-- Integration tests against Payload and PostgreSQL.
-- Production build.
-- Browser verification for public pages and CMS-driven rendering.
+- API permission tests against real isolated Supabase, plus frontend state and interaction tests.
+- Production build of `site/`; independent preview build and historical checks where relevant.
+- Independent browser sessions for publishing, reading, authentication, messages, and moderation.
 - GitHub Actions runs the stable checks on pull requests and pushes to `main`.
 
 ### 4. Operational Harness
 
-To be added closer to deployment.
+Defined in decision 0013 and `docs/operations/RUNBOOK.md`:
 
-- Focused deployment and operations plan before automation.
-- Hosting target.
-- Environment ownership.
-- Database migration strategy.
-- Media storage configuration.
-- Infrastructure-as-code boundary if cloud resources become durable project infrastructure.
-- Backup and rollback expectations.
-- Monitoring and health checks.
+- Supabase migrations own tables, RPCs, grants, RLS and private media policies.
+- Vercel deploys only `site/`, with browser-safe configuration and no service-role key.
+- Email activation, real delivery, owner-network access, and cloud deployment require separate live evidence.
+- Application backups include supported Auth identities, business data and complete media bytes.
+- Restores target a separate empty project and must be exercised before relying on the backup.
+- `/health` checks public database access; it does not prove email, media, or every permission path.
 
 ## Multi-Agent Protocol
 
@@ -232,22 +232,28 @@ Use `docs/decisions/_template.md` for new records. When an Open Decision in `pro
 
 ## Check Commands
 
-Current scaffold commands:
+Current commands (legacy rows explicitly refer to the historical Payload application):
 
 | Purpose | Command |
 | --- | --- |
 | Install dependencies | `pnpm install` |
 | Start local PostgreSQL | `pnpm db:up` |
 | Stop local PostgreSQL | `pnpm db:down` |
-| Start local app | `pnpm dev` |
+| Start historical app | `pnpm dev` |
 | Format files | `pnpm format` |
 | Check formatting | `pnpm format:check` |
 | Lint | `pnpm lint` |
 | Typecheck | `pnpm typecheck` |
-| Run integration tests | `pnpm test:int` |
-| Run browser tests | `pnpm test:e2e` |
-| Run all tests | `pnpm test` |
-| Production build | `pnpm build` |
+| Historical integration tests | `pnpm test:int` |
+| Historical browser tests | `pnpm test:e2e` |
+| Historical test suite | `pnpm test` |
+| Historical application build | `pnpm build` |
+| Start isolated real backend | `pnpm site:db:start` |
+| Configure local public keys | `pnpm site:local:configure` |
+| Start current platform | `pnpm site:dev` |
+| Test API permissions | `pnpm site:test:api` |
+| Build current platform | `pnpm site:build` |
+| Run built current platform | `pnpm site:start` |
 | New frontend preview | `pnpm frontend:dev` |
 | Frontend state/persistence tests | `pnpm frontend:test` |
 | Frontend types and build | `pnpm frontend:build` |
@@ -259,6 +265,11 @@ Every final handoff should say which checks ran and what remains unverified.
 ## Continuous Integration
 
 Basic CI lives in `.github/workflows/ci.yml`.
+
+The production-platform workflow in `.github/workflows/production.yml` starts an isolated Supabase
+stack and exercises API permissions, frontend tests, application build, types, and database lint.
+It does not use production credentials or copy test data into the cloud. Browser and restore drills
+still require explicit recorded execution; CI success alone does not cover them.
 
 It runs on pull requests and pushes to `main` with:
 

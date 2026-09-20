@@ -5,6 +5,8 @@ export type Photo = {
   alt: string
   caption: string
   credit?: string
+  /** Stable private-storage reference; src may temporarily be an owner-only signed preview. */
+  storagePath?: string
 }
 export type Entry = {
   id: string
@@ -35,6 +37,7 @@ export type Message = {
   createdAt: string
   parentId: string | null
   hidden: boolean
+  status?: 'pending' | 'approved' | 'hidden'
 }
 export type Settings = { name: string; intro: string; about: string; homeView: 'grid' | 'list' }
 export type StoredState = {
@@ -48,6 +51,21 @@ export type StoredState = {
   visitor: Visitor | null
 }
 export type Platform = {
+  remote?: boolean
+  isOwner?: boolean
+  authReady?: boolean
+  refresh?: () => Promise<void>
+  auth?: {
+    emailEnabled: boolean
+    githubEnabled: boolean
+    recoveryPending: boolean
+    login: (email: string, password: string) => Promise<void>
+    register: (email: string, password: string, nickname: string) => Promise<void>
+    recover: (email: string) => Promise<void>
+    updatePassword: (password: string) => Promise<void>
+    signInWithGithub: (destination: string) => Promise<void>
+    saveProfile: (nickname: string) => Promise<void>
+  }
   ready: boolean
   error: string
   state: StoredState

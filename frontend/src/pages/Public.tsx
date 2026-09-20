@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { SiteLink, currentRoute, replaceRoute, go } from '../navigation'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { usePlatform } from '../platform'
 import { EntryArtwork, EntryCard, Icon, PhotoViewer, TextBody, primaryHref } from '../ui'
 import { formatDate, kindLabels, safeDestination } from '../types'
@@ -7,6 +8,37 @@ import { Discussion } from './Community'
 import { Home } from './Home'
 
 let lastCollection = '#/'
+const collectionStorageKey = 'myshkin-last-collection'
+const noCollectionSubscription = () => () => {}
+
+function safeCollection(value: string | null): string {
+  const path = value?.replace(/^#/, '') || '/'
+  if (
+    path.length > 4096 ||
+    /[\\\s#]/.test(path) ||
+    !/^\/(?:|archive|writing|photos|projects|topics\/[^/?]+)(?:\?[^#]*)?$/.test(path)
+  )
+    return '#/'
+  return `#${path}`
+}
+
+function rememberCollection(value: string) {
+  lastCollection = safeCollection(value)
+  try {
+    sessionStorage.setItem(collectionStorageKey, lastCollection)
+  } catch {
+    // In-page navigation still works when storage is disabled.
+  }
+}
+
+function restoredCollection(): string {
+  try {
+    return safeCollection(sessionStorage.getItem(collectionStorageKey) || lastCollection)
+  } catch {
+    return safeCollection(lastCollection)
+  }
+}
+
 type PageProps = { path: string; params: URLSearchParams }
 
 function updateQuery(path: string, params: URLSearchParams, values: Record<string, string>) {
@@ -14,9 +46,7 @@ function updateQuery(path: string, params: URLSearchParams, values: Record<strin
   Object.entries(values).forEach(([key, value]) =>
     value ? query.set(key, value) : query.delete(key),
   )
-  const next = `#${path}${query.size ? `?${query}` : ''}`
-  window.history.replaceState(null, '', next)
-  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  replaceRoute(`${path}${query.size ? `?${query}` : ''}`)
 }
 
 function Collection({ path, params }: PageProps) {
@@ -66,17 +96,17 @@ function Collection({ path, params }: PageProps) {
     updateQuery(path === '/' ? '/archive' : path, params, values)
   const title = routeTopic || (routeKind ? kindLabels[routeKind] : '全部内容')
   useEffect(() => {
-    lastCollection = window.location.hash || '#/'
+    rememberCollection(currentRoute())
   }, [path, params])
 
   return (
     <section className="collection-page">
       <div className="collection-heading">
         <div>
-          <a className="back-link" href="#/">
+          <SiteLink className="back-link" href="#/">
             <Icon name="back" size={15} />
             返回首页
-          </a>
+          </SiteLink>
           <h1>{title}</h1>
           {routeTopic && <p className="page-lead">与「{routeTopic}」相关的内容</p>}
         </div>
@@ -198,7 +228,7 @@ function Collection({ path, params }: PageProps) {
               </div>
               <h2>{selection.title}</h2>
               <p>{selection.summary}</p>
-              <a
+              <SiteLink
                 className="text-link"
                 href={primaryHref(selection)}
                 target={/^https?:/.test(primaryHref(selection)) ? '_blank' : undefined}
@@ -206,11 +236,11 @@ function Collection({ path, params }: PageProps) {
               >
                 {selection.kind === 'project' && selection.destination ? '打开项目' : '查看内容'}
                 <Icon name="arrow" size={16} />
-              </a>
+              </SiteLink>
               {selection.kind === 'project' && selection.destination && (
-                <a className="index-detail-link" href={`#/entry/${selection.id}`}>
+                <SiteLink className="index-detail-link" href={`#/entry/${selection.id}`}>
                   项目说明
-                </a>
+                </SiteLink>
               )}
             </article>
           </div>
@@ -235,17 +265,17 @@ function Collection({ path, params }: PageProps) {
             <button
               className="button secondary"
               onClick={() => {
-                if (routeTopic || routeKind) window.location.hash = '/archive'
+                if (routeTopic || routeKind) go('/archive')
                 else change({ q: '', topic: '', kind: '' })
               }}
             >
               查看全部
             </button>
           ) : (
-            <a className="text-link" href="#/">
+            <SiteLink className="text-link" href="#/">
               返回首页
               <Icon name="arrow" size={16} />
-            </a>
+            </SiteLink>
           )}
         </div>
       )}
@@ -254,7 +284,10 @@ function Collection({ path, params }: PageProps) {
 }
 
 function EntryPage({ id, draft }: { id: string; draft: boolean }) {
-  const { entries, drafts } = usePlatform()
+  const { entries, drafts, remote } = usePlatform()
+  // SSR always emits a safe deterministic link. Hydration restores this tab's
+  // collection route, including its filters and selection, after a document load.
+  const collection = useSyncExternalStore(noCollectionSubscription, restoredCollection, () => '#/')
   const entry = draft
     ? drafts.find((item) => item.id === id)
     : entries.find((item) => item.id === id && item.status === 'published')
@@ -284,15 +317,15 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
   return (
     <article className={`entry-page entry-page-${entry.kind}`}>
       <div className="entry-back-row">
-        <a className="back-link" href={lastCollection}>
+        <SiteLink className="back-link" href={collection}>
           <Icon name="back" size={16} />
           返回内容
-        </a>
+        </SiteLink>
         {draft ? (
-          <a className="draft-preview-badge" href={`#/studio/edit/${entry.id}`}>
-            未发布 · 本机草稿预览
+          <SiteLink className="draft-preview-badge" href={`#/studio/edit/${entry.id}`}>
+            {remote ? '未发布 · 草稿预览' : '未发布 · 本机草稿预览'}
             <Icon name="arrow" size={14} />
-          </a>
+          </SiteLink>
         ) : (
           <span className="entry-date">{formatDate(entry.publishedAt)}</span>
         )}
@@ -304,15 +337,15 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
             {entry.sample ? ' · 样例' : ''}
           </span>
           {entry.topics.map((topic) => (
-            <a key={topic} href={`#/topics/${encodeURIComponent(topic)}`}>
+            <SiteLink key={topic} href={`#/topics/${encodeURIComponent(topic)}`}>
               {topic}
-            </a>
+            </SiteLink>
           ))}
         </div>
         <h1>{entry.title}</h1>
         {entry.summary && <p>{entry.summary}</p>}
         {entry.kind === 'project' && destination && (
-          <a
+          <SiteLink
             className="button"
             href={destination}
             target={/^https?:/.test(destination) ? '_blank' : undefined}
@@ -320,7 +353,7 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
           >
             {destination.startsWith('#/') ? '打开体验' : '访问项目'}
             <Icon name="external" size={17} />
-          </a>
+          </SiteLink>
         )}
       </header>
       {entry.kind === 'writing' && (
@@ -464,10 +497,10 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
         <section className="related-content">
           <div className="section-row">
             <h2>相关内容</h2>
-            <a className="text-link" href="#/archive">
+            <SiteLink className="text-link" href="#/archive">
               全部
               <Icon name="arrow" size={15} />
-            </a>
+            </SiteLink>
           </div>
           <div className="entry-grid">
             {related.map((item) => (
@@ -484,10 +517,10 @@ function About() {
   const { state } = usePlatform()
   return (
     <section className="about-page">
-      <a className="back-link" href="#/">
+      <SiteLink className="back-link" href="#/">
         <Icon name="back" size={15} />
         返回首页
-      </a>
+      </SiteLink>
       <h1>关于</h1>
       <div className="about-content">
         {state.settings.about ? (
@@ -497,14 +530,14 @@ function About() {
         )}
         {state.settings.intro && <p className="about-intro">{state.settings.intro}</p>}
         <div className="about-links">
-          <a href="#/archive">
+          <SiteLink href="#/archive">
             全部内容
             <Icon name="arrow" size={16} />
-          </a>
-          <a href="#/guestbook">
+          </SiteLink>
+          <SiteLink href="#/guestbook">
             留言
             <Icon name="arrow" size={16} />
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -523,10 +556,10 @@ export function NotFound({
       <span className="eyebrow">404</span>
       <h1 className="page-heading">{title}</h1>
       <p>{text}</p>
-      <a className="button secondary" href="#/">
+      <SiteLink className="button secondary" href="#/">
         返回首页
         <Icon name="arrow" />
-      </a>
+      </SiteLink>
     </section>
   )
 }
@@ -536,7 +569,7 @@ export function PublicPage({ path, params }: PageProps) {
     return (
       <Home
         onVisit={() => {
-          lastCollection = '#/'
+          rememberCollection('/')
         }}
       />
     )

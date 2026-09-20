@@ -1,0 +1,30 @@
+name: Production platform
+on:
+  pull_request:
+  push:
+    branches: [main, codex/production-platform]
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm site:db:start > /tmp/myshkin-supabase-start.log 2>&1
+      - run: pnpm site:local:configure
+      - run: pnpm site:test:api
+      - run: pnpm frontend:test
+      - run: pnpm site:build
+      - run: pnpm site:typecheck
+      - run: pnpm exec supabase db lint --local --level error
+      - if: always()
+        run: pnpm exec supabase stop

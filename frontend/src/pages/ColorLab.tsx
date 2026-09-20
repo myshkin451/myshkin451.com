@@ -1,3 +1,4 @@
+import { SiteLink } from '../navigation'
 import { useState } from 'react'
 import { Icon } from '../ui'
 import { usePlatform } from '../platform'
@@ -43,10 +44,10 @@ export function ColorLab() {
   }
   return (
     <section className="color-lab">
-      <a className="back-link" href={hasProject ? '#/entry/color-study' : '#/projects'}>
+      <SiteLink className="back-link" href={hasProject ? '#/entry/color-study' : '#/projects'}>
         <Icon name="back" size={16} />
         {hasProject ? '项目说明' : '返回项目'}
-      </a>
+      </SiteLink>
       <div className="lab-heading">
         <h1>
           色彩练习<span className="heading-period">.</span>

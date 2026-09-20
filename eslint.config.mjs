@@ -29,7 +29,8 @@ const eslintConfig = [
   },
   {
     ignores: [
-      '.next/',
+      '**/.next/**',
+      '.playwright-cli/**',
       'frontend/dist/**',
       'src/payload-types.ts',
       'src/payload-generated-schema.ts',

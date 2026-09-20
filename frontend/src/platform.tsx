@@ -12,10 +12,42 @@ import * as model from './model'
 import { defaultSettings, sampleEntries } from './seed'
 import { DurableStateStore, openStorage, storageError, type StateChange } from './storage'
 import type { Entry, Platform, StoredState } from './types'
+import { useRemotePlatform, type RemoteConfig } from './remote-platform'
 
 const PlatformContext = createContext<Platform | null>(null)
 
-export function PlatformProvider({ children }: { children: ReactNode }) {
+export function PlatformProvider({
+  children,
+  remote,
+  initialState,
+}: {
+  children: ReactNode
+  remote?: RemoteConfig
+  initialState?: StoredState
+}) {
+  return remote ? (
+    <RemoteProvider remote={remote} initialState={initialState}>
+      {children}
+    </RemoteProvider>
+  ) : (
+    <LocalProvider>{children}</LocalProvider>
+  )
+}
+
+function RemoteProvider({
+  children,
+  remote,
+  initialState,
+}: {
+  children: ReactNode
+  remote: RemoteConfig
+  initialState?: StoredState
+}) {
+  const platform = useRemotePlatform(remote, initialState)
+  return <PlatformContext.Provider value={platform}>{children}</PlatformContext.Provider>
+}
+
+function LocalProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<StoredState>(() => model.initialState(defaultSettings))
   const [ready, setReady] = useState(false)
   const [error, setError] = useState('')

@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "incremental": true, "plugins": [{ "name": "next" }] },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../frontend/src/**/*.ts",
+    "../frontend/src/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "../frontend/src/**/*.test.*"]
+}

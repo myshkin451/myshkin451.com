@@ -1,3 +1,4 @@
+import { SiteLink } from '../navigation'
 import { usePlatform } from '../platform'
 import { EntryCard, Icon } from '../ui'
 import type { EntryKind } from '../types'
@@ -23,21 +24,21 @@ export function Home({ onVisit }: { onVisit: () => void }) {
         <div className="home-welcome">
           <h1 id="home-heading">欢迎来访。</h1>
           {state.settings.intro && <p>{state.settings.intro}</p>}
-          <a className="home-message" href="#/guestbook">
+          <SiteLink className="home-message" href="#/guestbook">
             给我留言
             <Icon name="arrow" size={17} />
-          </a>
+          </SiteLink>
         </div>
         <div className="home-directory">
           <nav aria-label="浏览内容">
             {destinations.map(({ kind, label, href }) => {
               const count = published.filter((entry) => entry.kind === kind).length
               return (
-                <a key={kind} href={href} className="home-destination">
+                <SiteLink key={kind} href={href} className="home-destination">
                   <span className="home-destination-name">{label}</span>
                   {count > 0 && <span className="home-destination-count">{count}</span>}
                   <Icon name="arrow" size={25} />
-                </a>
+                </SiteLink>
               )
             })}
           </nav>
@@ -50,10 +51,10 @@ export function Home({ onVisit }: { onVisit: () => void }) {
                 : '暂无公开内容'}
             </span>
             {published.length > 0 && (
-              <a href="#/archive">
+              <SiteLink href="#/archive">
                 全部内容
                 <Icon name="arrow" size={14} />
-              </a>
+              </SiteLink>
             )}
           </div>
         </div>
@@ -64,10 +65,10 @@ export function Home({ onVisit }: { onVisit: () => void }) {
             <h2 id="home-recent-heading">
               {recent.some((entry) => entry.featured) ? '精选' : '最近更新'}
             </h2>
-            <a href="#/archive">
+            <SiteLink href="#/archive">
               查看全部
               <Icon name="arrow" size={14} />
-            </a>
+            </SiteLink>
           </div>
           <div className={`home-recent-grid home-recent-${recent.length}`}>
             {recent.map((entry, index) => (
