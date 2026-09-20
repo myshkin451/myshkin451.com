@@ -33,7 +33,7 @@ pnpm-debug.log*
 *.sqlite3
 postgres-data/
 uploads/
-media/
+/media/
 .storage/
 
 # OS and editor noise
@@ -43,3 +43,11 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Isolated production backend and sensitive backup artifacts
+supabase/.temp/
+supabase/.branches/
+backups/
+.vercel/
+
+.playwright-cli/
