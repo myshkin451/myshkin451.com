@@ -70,9 +70,9 @@ selective reuse and comparison; the new frontend does not claim production accep
   The existing owner design preview at `127.0.0.1:4323` remains untouched.
 - Backup/restore scripts cover supported email/password identities, business data and complete media
   bytes with hashes. The actual separate-target restore recovered 18 rows and 2 media objects; 123
-  identity, permission, content and restart assertions passed. A subsequent API/database binding guard
-  is implemented but its targeted live test awaits approval after automatic review retained an earlier
-  read-only subtask restriction. It must pass before relying on the final restore tool.
+  identity, permission, content and restart assertions passed. The API/database binding guard also passed
+  90 live assertions after restart, including wrong API, unavailable API, concurrent settings changes,
+  nonce cleanup and a successful matching-target restore. Source and prior restore data were preserved.
   See [local acceptance](docs/operations/LOCAL_ACCEPTANCE.md), the [runbook](docs/operations/RUNBOOK.md)
   and [API contract](docs/operations/API_CONTRACT.md).
 
@@ -138,16 +138,15 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Verify the API/database binding guard on the third isolated local target. Original browser and
-   separate-target restore/restart acceptance are complete; keep fixtures local.
-2. Deploy `site/` through Vercel after integrating verified code to `main`.
+1. Complete [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) and integrate verified code to `main`.
+   Local browser, separate-target restore/restart and connection-binding acceptance are complete.
+2. Deploy `site/` through Vercel with automatic Git deployments limited to `main`.
    Configure exact origin/callback URLs and Production-only public environment values. Until an isolated
    preview backend exists, do not connect Preview deployments to the production database.
 3. Activate and verify custom SMTP for non-team recipient registration, confirmation and recovery;
    verify owner access and real owner-network behavior. Brevo Free is the current candidate, not yet proven.
-4. Complete [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1), integrate the main branch,
-   and record actual cloud acceptance. Browser control has intermittent timeouts; recheck the current
-   provider page before making changes rather than assuming an attempted navigation or save succeeded.
+4. Record actual cloud acceptance. Browser control still times out after the computer restart;
+   use official provider CLIs where possible and verify each provider change rather than assuming success.
    The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) remains the acceptance contract.
 
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
@@ -155,16 +154,16 @@ domain purchase, or provider account is authorized by implication; prepare those
 
 ### Active local handoff
 
-The real website process on `127.0.0.1:4325` and three task-owned Supabase stacks remain running for
-the pending validation: source `myshkin451-production` (API/DB `55421/55422`), restored target
-`myshkin451-restore` (`55521/55522`), and empty binding-test target `myshkin451-binding` (`55621/55622`).
-Preserve their volumes and the separate owner preview on `4323`; stop only task-owned processes when
-the validation slice ends. Test accounts and content are local only.
+The computer restart ended the website process on `127.0.0.1:4325`. After final acceptance, all 21
+containers in the three task-owned Supabase stacks were stopped with volumes preserved: source
+`myshkin451-production` (API/DB `55421/55422`), restored target `myshkin451-restore` (`55521/55522`),
+and binding-test target `myshkin451-binding` (`55621/55622`, now holding the successful restore fixture).
+The separate owner design preview on `4323` was not modified. Test accounts and content remain local only.
 
-The private recovery archive is `/private/tmp/myshkin451-backup-2026-09-20T18-07-40-390Z`.
-Restore verification and JSON evidence are under `/private/tmp/myshkin451-restore-4TEZpZ`;
-the binding target and its private configuration are under `/private/tmp/myshkin451-binding-YhjFYO`.
-These temporary paths are restart aids, not long-term backup storage. Do not print or commit their contents.
+Earlier temporary archives were removed by the computer restart. A fresh private recovery archive,
+binding verification script, JSON evidence and private target configurations are under
+`/private/tmp/myshkin451-recovery-Qpm4GZ`. This temporary path is a restart aid, not long-term backup
+storage. Do not print or commit its private contents; the preserved Docker volumes are the local data source.
 
 ## Open Decisions
 
@@ -183,8 +182,8 @@ with a matching decision record and remove it here in the same change.
 - Next.js was upgraded to 16.3.5 before deployment, covering the official August 2026 security fixes.
   `site:build`, repository format/lint/types, all 51 frontend tests and the Vite build passed.
   Two browser sessions also passed publishing, draft isolation, moderation, account recovery and 320px
-  layout checks. Actual restore/restart acceptance passed; the later connection-binding guard still
-  needs its focused live test. Compatible transitive updates removed
+  layout checks. Actual restore/restart acceptance and 90 additional connection-binding assertions passed.
+  Compatible transitive updates removed
   all audit findings on the Next, React, React DOM and Supabase dependency paths. The root production
   audit still reports 0 critical / 21 high / 25 moderate / 7 low findings. This is not a clean repository-wide audit; historical Payload and
   its dependency graph are retained for reference and are not deployed by `site/`.
@@ -200,8 +199,9 @@ with a matching decision record and remove it here in the same change.
   `statements = NULL` after checking that the history table was absent. The dashboard's option to enable
   RLS was selected for the history table. Existing application migration SQL was not rerun.
 - [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) is a draft. Both Stable checks and Production
-  platform CI passed for implementation head `e881bc1`; the subsequent operations changes are not covered
-  by that CI result. No main-branch integration or Vercel deployment has occurred yet.
+  platform CI passed for implementation and operations head `11b55ba`. The subsequent acceptance record
+  and main-only deployment configuration are awaiting their own checks. No main-branch integration or
+  Vercel deployment has occurred yet.
 
 ### Earlier preview and historical verification
 

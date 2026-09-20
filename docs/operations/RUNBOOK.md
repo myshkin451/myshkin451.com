@@ -51,6 +51,11 @@ Brevo 对免费邮箱或未认证域名可能临时改写发件地址，收件�
    使用 [site/vercel.json](../../site/vercel.json) 的构建配置和 [环境模板](../../site/.env.example)。
    公开 URL/key 可以给浏览器；`SUPABASE_SERVICE_ROLE_KEY` 与数据库密码只能用于私密维护命令。
    禁止把 service-role key 放入任何 `NEXT_PUBLIC_*` 变量。预览部署不得复用生产写入权限作测试。
+   当前 Git 自动部署只启用 `main`，其他分支不部署；生产变量仅配置到 Production。
+   没有独立测试后端时不开放 Preview。此规则使用 Vercel 官方
+   [分支匹配配置](https://vercel.com/docs/project-configuration/git-configuration)，
+   后续添加独立预览后端后再调整。构建选择 Node.js 24.x，并配置
+   `ENABLE_EXPERIMENTAL_COREPACK=1` 以使用根目录锁定的 pnpm 版本。
 3. 用真实分配的 HTTPS 地址配置 `SITE_URL`，Supabase Auth 的 Site URL 与精确允许的回调/恢复地址。
    本地应用端口为 `127.0.0.1:4325`；旧的 `127.0.0.1:4323` 留作设计预览。
 4. Supabase Auth 启用邮箱确认、最低密码长度 12、邮件间隔 60 秒、每小时邮件上限 30，保留其余速率限制并配置自定义 SMTP。Brevo SMTP 主机
