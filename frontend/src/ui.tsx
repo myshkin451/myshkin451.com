@@ -1,7 +1,7 @@
 import { SiteLink } from './navigation'
 import { useEffect, useRef } from 'react'
 import type { Entry, Photo } from './types'
-import { kindLabels, safeDestination } from './types'
+import { entryLabel, formatDate, kindLabels, safeDestination } from './types'
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const paths: Record<string, React.ReactNode> = {
@@ -138,6 +138,21 @@ export function primaryHref(entry: Entry) {
 export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }) {
   const href = primaryHref(entry)
   const external = /^https?:/.test(href)
+  if (entry.kind === 'note')
+    return (
+      <article className="entry-card entry-card-note">
+        <div className="card-meta">
+          <span>随记{entry.sample ? ' · 样例' : ''}</span>
+          <time dateTime={entry.publishedAt}>{formatDate(entry.publishedAt)}</time>
+        </div>
+        <SiteLink className="note-card-text" href={href}>
+          {entry.body}
+        </SiteLink>
+        <SiteLink className="text-link" href={href} aria-label={entryLabel(entry)}>
+          阅读全文 <Icon name="arrow" size={14} />
+        </SiteLink>
+      </article>
+    )
   return (
     <article
       className={`entry-card entry-card-${entry.kind}`}

@@ -1,4 +1,4 @@
-export type EntryKind = 'writing' | 'photo' | 'project'
+export type EntryKind = 'writing' | 'photo' | 'project' | 'note'
 export type Photo = {
   id: string
   src: string
@@ -87,6 +87,7 @@ export type Platform = {
 
 export const kindLabels: Record<EntryKind, string> = {
   writing: '文章',
+  note: '随记',
   photo: '影像',
   project: '项目',
 }
@@ -108,7 +109,7 @@ export function newEntry(kind: EntryKind = 'writing'): Entry {
     updatedAt: date,
     publishedAt: '',
     featured: false,
-    discussion: true,
+    discussion: kind !== 'note',
     sample: false,
   }
 }
@@ -121,6 +122,14 @@ export function safeDestination(value: string): string {
   } catch {
     return ''
   }
+}
+
+export const noteLimit = 5000
+
+export function entryLabel(entry: Entry): string {
+  if (entry.kind === 'note')
+    return [...entry.body.trim().replace(/\s+/g, ' ')].slice(0, 64).join('') || '未写完的随记'
+  return entry.title || '未命名'
 }
 
 export function formatDate(value: string): string {

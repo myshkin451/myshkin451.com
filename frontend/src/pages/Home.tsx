@@ -2,9 +2,11 @@ import { SiteLink } from '../navigation'
 import { usePlatform } from '../platform'
 import { EntryCard, Icon } from '../ui'
 import type { EntryKind } from '../types'
+import { LatestNote } from './Notes'
 import './home.css'
 
 const destinations: { kind: EntryKind; label: string; href: string }[] = [
+  { kind: 'note', label: '随记', href: '#/notes' },
   { kind: 'writing', label: '文章', href: '#/writing' },
   { kind: 'photo', label: '影像', href: '#/photos' },
   { kind: 'project', label: '项目', href: '#/projects' },
@@ -13,8 +15,9 @@ const destinations: { kind: EntryKind; label: string; href: string }[] = [
 export function Home({ onVisit }: { onVisit: () => void }) {
   const { state, entries } = usePlatform()
   const published = entries.filter((entry) => entry.status === 'published')
-  const featured = published.filter((entry) => entry.featured)
-  const recent = [...(featured.length ? featured : published)]
+  const works = published.filter((entry) => entry.kind !== 'note')
+  const featured = works.filter((entry) => entry.featured)
+  const recent = [...(featured.length ? featured : works)]
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
     .slice(0, 3)
 
@@ -28,6 +31,7 @@ export function Home({ onVisit }: { onVisit: () => void }) {
             给我留言
             <Icon name="arrow" size={17} />
           </SiteLink>
+          <LatestNote />
         </div>
         <div className="home-directory">
           <nav aria-label="浏览内容">

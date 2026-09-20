@@ -118,6 +118,25 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('shared platform boundaries', () => {
+  it('sends a title-free note through the real adapter while preserving article validation', async () => {
+    fixture.user = { id: 'owner' }
+    fixture.owner = true
+    const { result } = renderHook(() => useRemotePlatform(config))
+    await waitFor(() => expect(result.current.isOwner).toBe(true))
+    await act(() => result.current.publishEntry({ ...newEntry('note'), body: '可以直接发表' }))
+    expect(fixture.rpc).toHaveBeenCalledWith(
+      'save_entry',
+      expect.objectContaining({
+        publish: true,
+        entry: expect.objectContaining({ kind: 'note', title: '', body: '可以直接发表' }),
+      }),
+    )
+    await expect(result.current.publishEntry(newEntry('note'))).rejects.toThrow('内容')
+    await expect(
+      result.current.publishEntry({ ...newEntry('writing'), body: '长文' }),
+    ).rejects.toThrow('标题')
+  })
+
   it('does not fetch drafts for anonymous readers or a visitor with forged owner metadata', async () => {
     const { result } = renderHook(() => useRemotePlatform(config))
     await waitFor(() => expect(result.current.authReady).toBe(true))

@@ -1,4 +1,11 @@
-import { safeDestination, type Entry, type Message, type Settings, type StoredState } from './types'
+import {
+  noteLimit,
+  safeDestination,
+  type Entry,
+  type Message,
+  type Settings,
+  type StoredState,
+} from './types'
 
 const messageLimit = 1000
 const nicknameLimit = 30
@@ -49,7 +56,7 @@ export function restoreState(value: unknown): StoredState {
 function validEntryShape(entry: Entry): boolean {
   return Boolean(
     entry &&
-    ['writing', 'photo', 'project'].includes(entry.kind) &&
+    ['writing', 'photo', 'project', 'note'].includes(entry.kind) &&
     ['draft', 'published'].includes(entry.status) &&
     [
       'id',
@@ -114,6 +121,8 @@ function previousEntry(state: StoredState, samples: Entry[], id: string): Entry 
 function cleanEntry(state: StoredState, samples: Entry[], incoming: Entry, now: string): Entry {
   if (!validEntryShape(incoming) || !incoming.id.trim())
     throw new Error('内容格式不完整，请重新打开编辑器。')
+  if (incoming.kind === 'note' && [...incoming.body].length > noteLimit)
+    throw new Error('随记请控制在 5000 个字符以内。')
   const previous =
     previousEntry(state, samples, incoming.id) ??
     state.drafts.find((entry) => entry.id === incoming.id)
@@ -163,7 +172,8 @@ export function publishEntry(
   published.title = published.title.trim()
   published.summary = published.summary.trim()
   published.destination = published.destination.trim()
-  if (!published.title) throw new Error('请先填写标题。')
+  if (published.kind !== 'note' && !published.title) throw new Error('请先填写标题。')
+  if (published.kind === 'note' && !published.body.trim()) throw new Error('先写一点内容吧。')
   if (published.title.length > 150) throw new Error('标题请控制在 150 个字符以内。')
   if (published.kind === 'writing' && !published.body.trim())
     throw new Error('请先写一点正文，再发布文章。')

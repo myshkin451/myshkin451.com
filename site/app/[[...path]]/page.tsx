@@ -1,3 +1,4 @@
+import { entryLabel } from '../../../frontend/src/types'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Site } from '../client'
@@ -11,6 +12,7 @@ type Props = {
 const titles: Record<string, string> = {
   '/': '',
   '/archive': '全部内容',
+  '/notes': '随记',
   '/writing': '文章',
   '/photos': '影像',
   '/projects': '项目',
@@ -21,6 +23,7 @@ const titles: Record<string, string> = {
   '/recover': '找回账号',
   '/account': '我的账号',
   '/studio': '工作台',
+  '/studio/notes': '随记',
   '/play/color': '色彩练习',
 }
 function privateRoute(path: string) {
@@ -31,8 +34,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const query = await searchParams
   const state = await loadPublicState()
   const entry = state.entries.find((item) => path === `/entry/${item.id}`)
-  const title = [entry?.title || titles[path], state.settings.name].filter(Boolean).join(' · ')
-  const description = (entry?.summary || state.settings.intro || state.settings.name).slice(0, 180)
+  const title = [entry ? entryLabel(entry) : titles[path], state.settings.name]
+    .filter(Boolean)
+    .join(' · ')
+  const description = (
+    (entry?.kind === 'note' ? entry.body : entry?.summary) ||
+    state.settings.intro ||
+    state.settings.name
+  ).slice(0, 180)
   const canonical = new URL(path, siteOrigin()).href
   const hidden = privateRoute(path) || query.draft === '1' || Object.keys(query).length > 0
   return {
@@ -44,7 +53,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       title,
       description,
       url: canonical,
-      type: entry?.kind === 'writing' ? 'article' : 'website',
+      type: entry && ['writing', 'note'].includes(entry.kind) ? 'article' : 'website',
       locale: 'zh_CN',
       ...(entry?.cover ? { images: [new URL(entry.cover, siteOrigin()).href] } : {}),
     },

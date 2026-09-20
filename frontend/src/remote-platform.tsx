@@ -346,7 +346,8 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       ).drafts.find((entry) => entry.id === incoming.id)!
       if (cleaned.photos.length > 20) throw new Error('每篇内容最多添加 20 张图片。')
       if (publish) {
-        if (!cleaned.title.trim()) throw new Error('请先填写标题。')
+        if (cleaned.kind !== 'note' && !cleaned.title.trim()) throw new Error('请先填写标题。')
+        if (cleaned.kind === 'note' && !cleaned.body.trim()) throw new Error('先写一点内容吧。')
         if (cleaned.kind === 'writing' && !cleaned.body.trim())
           throw new Error('请先写一点正文，再发布文章。')
         if (cleaned.kind === 'photo' && !cleaned.photos.length)

@@ -4,6 +4,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { useEffect } from 'react'
 import { ConfirmProvider, useConfirm } from './Confirm'
 import { useRoute } from './navigation'
+import { useUnsavedWork } from './useUnsavedWork'
 import { StudioPage } from './pages/Studio'
 import type { Platform } from './types'
 
@@ -167,6 +168,21 @@ describe('Studio navigation with unsaved content', () => {
     window.dispatchEvent(close)
     expect(close.defaultPrevented).toBe(true)
   })
+})
+
+it('prevents an identical editor link from reloading unsaved text', () => {
+  window.history.replaceState(null, '', '/studio/notes?edit=one')
+  function CurrentEditor() {
+    useUnsavedWork(true)
+    return <a href="/studio/notes?edit=one">当前随记</a>
+  }
+  render(
+    <ConfirmProvider>
+      <CurrentEditor />
+    </ConfirmProvider>,
+  )
+  expect(fireEvent.click(screen.getByRole('link', { name: '当前随记' }))).toBe(false)
+  expect(screen.queryByRole('dialog')).toBeNull()
 })
 
 describe('confirmation promise lifecycle', () => {

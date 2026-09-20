@@ -122,3 +122,10 @@ node scripts/production/api-test.mjs
 实现参考：[Supabase 数据库函数](https://supabase.com/docs/guides/database/functions)、
 [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security)、
 [Storage 访问控制](https://supabase.com/docs/guides/storage/security/access-control)。
+
+## 随记（2026-09-21）
+
+增量迁移 `202609210002_notes.sql` 增加 `kind: note`，继续使用 `save_entry` 和已有发布表。
+随记允许空标题，发布要求正文非空，草稿与公开正文都限制 5,000 个 Unicode 码点。
+现有文章、影像、项目校验不变；管理者校验先于内容处理，匿名与访客没有写权限。
+修改与再次发布保留 `publishedAt`，撤下仍保留私有草稿。备份无需增加新表。
