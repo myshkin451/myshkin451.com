@@ -153,6 +153,19 @@ selective reuse and comparison; the new frontend does not claim production accep
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
 domain purchase, or provider account is authorized by implication; prepare those choices concretely.
 
+### Active local handoff
+
+The real website process on `127.0.0.1:4325` and three task-owned Supabase stacks remain running for
+the pending validation: source `myshkin451-production` (API/DB `55421/55422`), restored target
+`myshkin451-restore` (`55521/55522`), and empty binding-test target `myshkin451-binding` (`55621/55622`).
+Preserve their volumes and the separate owner preview on `4323`; stop only task-owned processes when
+the validation slice ends. Test accounts and content are local only.
+
+The private recovery archive is `/private/tmp/myshkin451-backup-2026-09-20T18-07-40-390Z`.
+Restore verification and JSON evidence are under `/private/tmp/myshkin451-restore-4TEZpZ`;
+the binding target and its private configuration are under `/private/tmp/myshkin451-binding-YhjFYO`.
+These temporary paths are restart aids, not long-term backup storage. Do not print or commit their contents.
+
 ## Open Decisions
 
 - Final visual/interaction direction after prototype feedback.
