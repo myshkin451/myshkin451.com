@@ -9,7 +9,9 @@ The owner explicitly deferred domain purchase on September 21 and asked to finis
 work first. Do not reopen domain shopping or treat the earlier `.com` selection as a current purchase
 authorization. Resend sending-domain activation remains pending alongside the domain.
 
-Stage handoff: the real backend and website are implemented; local browser and restore acceptance passed.
+Stage handoff: the real backend, website and single-author notes are implemented and deployed.
+Notes PR #2 passed both CI workflows and merged as `b0dae87`; the production notes page was verified.
+Local browser and restore acceptance passed.
 The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
 and database health verified. Email registration/recovery and the first real owner remain pending.
 The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
@@ -205,7 +207,10 @@ with a matching decision record and remove it here in the same change.
   and two-visitor publishing denial, private revisions, withdrawal and stable publication dates. Browser
   review covered the real local draft/publish/edit/withdraw loop, independent anonymous reads and 320px
   notes/editor layouts. The new migration is applied locally and in the empty cloud database.
-  Current cloud deployment details and measured limits are recorded in the notes acceptance document.
+  Ready deployment `dpl_7jC7Pw8t65qmYV4GN2ULaNTr32VK` passed eight public HTTP checks.
+  Three repeated empty notes-page requests had a median first response of 1,423ms from the owner computer.
+  The cloud database is about 10.6 MiB with no accounts/content/media; this does not justify a paid upgrade.
+  Exact measurement scope, deployment evidence and pagination limits are in the notes acceptance document.
 
 - September 21 real-backend checks: 155 API assertions passed against local Supabase, including anonymous,
   owner and two independent visitors, spoofed roles/authors, unverified users, draft/media visibility,
