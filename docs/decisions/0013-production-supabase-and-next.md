@@ -12,7 +12,7 @@ Date: 2026-09-21
 
 ## 决定
 
-- `site/` 使用已锁定的 Next.js 16 + React，通过服务端读取已发布内容提供真实路径、HTML、
+- `site/` 使用Next.js 16.3.5 + React（部署前升级，覆盖 2026 年 8 月官方安全修复），通过服务端读取已发布内容提供真实路径、HTML、
   元信息、站点地图和媒体入口。共享 `frontend/src/` 页面；旧 Vite 本机预览继续独立保留。
 - Supabase 托管 PostgreSQL、Auth 和私有 Storage；公开键受数据库 RLS 与 RPC 权限限制。
   网站运行不持有 service-role 密钥。旧 Next/Payload 应用保留为历史实现，生产不部署其 API。

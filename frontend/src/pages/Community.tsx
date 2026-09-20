@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { go } from '../navigation'
+import { currentRoute, go, SiteLink } from '../navigation'
 import { usePlatform } from '../platform'
 import { formatDate } from '../types'
 import type { Message } from '../types'
@@ -12,7 +12,7 @@ const memoryDrafts = new Map<string, { body: string; parentId: string | null }>(
 function returnPath(value: string | null): string {
   if (!value || /[\\\s#]/.test(value)) return '/guestbook'
   const path = value.split('?')[0]
-  return /^\/(?:|guestbook|account|archive|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
+  return /^\/(?:|guestbook|account|studio(?:\/(?:new|settings|comments|edit\/[^/]+))?|archive|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
     path,
   )
     ? value
@@ -79,12 +79,14 @@ function MessageItem({
   onReply,
   onDeleted,
   isReply,
+  canReply = true,
 }: {
   message: Message
   parent?: Message
   onReply: (message: Message) => void
   onDeleted: () => void
   isReply: boolean
+  canReply?: boolean
 }) {
   const platform = usePlatform()
   const own = message.authorId === platform.state.visitor?.id
@@ -156,6 +158,8 @@ function MessageItem({
         </span>
         <span className="community-author">{message.authorName}</span>
         {own && <span className="community-self">我</span>}
+        {message.status === 'pending' && <span className="community-self">待审核</span>}
+        {message.status === 'hidden' && <span className="community-self">已隐藏</span>}
         <time dateTime={message.createdAt}>{formatDate(message.createdAt)}</time>
       </div>
       {parent && (
@@ -214,9 +218,11 @@ function MessageItem({
       )}
       {!editing && (
         <div className="community-message-actions">
-          <button type="button" onClick={() => onReply(message)} disabled={pending}>
-            回复
-          </button>
+          {canReply && message.authorId && message.status !== 'pending' && (
+            <button type="button" onClick={() => onReply(message)} disabled={pending}>
+              回复
+            </button>
+          )}
           {own && (
             <>
               <button
@@ -317,7 +323,7 @@ function DiscussionThread({ targetId }: { targetId: string }) {
     event.preventDefault()
     if (!visitor) {
       keepDraft(targetId, { body, parentId })
-      go(authLink('login', window.location.hash.slice(1)))
+      go(authLink('login', currentRoute()))
       return
     }
     const trimmed = body.trim()
@@ -333,7 +339,13 @@ function DiscussionThread({ targetId }: { targetId: string }) {
       setBody('')
       setParentId(null)
       keepDraft(targetId, { body: '', parentId: null })
-      setNotice('留言已保存在本机。')
+      setNotice(
+        platform.remote
+          ? platform.isOwner
+            ? '留言已发布。'
+            : '留言已提交，审核通过后会公开显示。'
+          : '留言已保存在本机。',
+      )
     } catch (failure) {
       setError(errorText(failure))
     } finally {
@@ -356,9 +368,9 @@ function DiscussionThread({ targetId }: { targetId: string }) {
             {replyingTo ? `回复 ${replyingTo.authorName}` : '写一条留言'}
           </label>
           {visitor && (
-            <a href="#/account" className="community-composer-identity">
+            <SiteLink href="#/account" className="community-composer-identity">
               {visitor.nickname}
-            </a>
+            </SiteLink>
           )}
         </div>
         {replyingTo && (
@@ -453,15 +465,279 @@ export function Discussion({ targetId }: { targetId: string }) {
 }
 
 function Guestbook() {
+  const platform = usePlatform()
   return (
     <div className="community-page guestbook-layout">
       <header className="community-intro">
         <h1 className="page-heading">留言</h1>
         <p className="community-local-note">
-          当前为本机演示。留言和演示身份只保存在这个浏览器，不会公开发布。
+          {platform.remote
+            ? '登录后可以留言。新留言及修改会在审核后公开。'
+            : '当前为本机演示。留言和演示身份只保存在这个浏览器，不会公开发布。'}
         </p>
       </header>
       <Discussion targetId="guestbook" />
+    </div>
+  )
+}
+
+function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchParams }) {
+  const platform = usePlatform()
+  const auth = platform.auth!
+  const register = path === '/register'
+  const recover = path === '/recover' || auth.recoveryPending
+  const callback = path === '/auth/callback' && !recover
+  const updatePassword = recover && Boolean(platform.state.visitor)
+  const destination = returnPath(params.get('return'))
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmation, setConfirmation] = useState('')
+  const [nickname, setNickname] = useState('')
+  const [pending, setPending] = useState(false)
+  const [notice, setNotice] = useState('')
+  const { error, setError, errorRef } = useFormError()
+  const fieldId = useId()
+
+  async function submit(event: FormEvent) {
+    event.preventDefault()
+    setError('')
+    setNotice('')
+    if ((register || updatePassword) && password !== confirmation) {
+      setError('两次填写的密码不一致。')
+      return
+    }
+    setPending(true)
+    try {
+      if (updatePassword) {
+        await auth.updatePassword(password)
+        setPassword('')
+        setConfirmation('')
+        setNotice('密码已更新。请妥善保存新密码。')
+      } else if (recover) {
+        await auth.recover(email)
+        setNotice('如果该邮箱已注册，找回邮件会发送到邮箱。请在当前浏览器打开邮件链接。')
+      } else if (register) {
+        await auth.register(email, password, nickname)
+        setPassword('')
+        setConfirmation('')
+        setNotice('注册申请已提交。请检查邮箱并在当前浏览器打开验证链接；如已注册，请返回登录。')
+      } else {
+        await auth.login(email, password)
+        go(destination)
+      }
+    } catch (cause) {
+      setError(errorText(cause))
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function github() {
+    setPending(true)
+    setError('')
+    try {
+      await auth.signInWithGithub(destination)
+    } catch (cause) {
+      setError(errorText(cause))
+      setPending(false)
+    }
+  }
+
+  const title = updatePassword
+    ? '设置新密码'
+    : recover
+      ? '找回密码'
+      : callback
+        ? '邮箱验证'
+        : register
+          ? '注册访客账号'
+          : '登录'
+  return (
+    <div className="community-auth-page">
+      <section className="community-auth-panel" aria-labelledby={`${fieldId}-title`}>
+        <SiteLink className="community-back" href={destination}>
+          ← 返回
+        </SiteLink>
+        <header>
+          <h1 id={`${fieldId}-title`}>{title}</h1>
+          <p>
+            {register
+              ? '验证邮箱后即可留言，昵称会显示在留言旁。'
+              : recover
+                ? '请使用注册时的邮箱。邮件链接仅在有效期内可用。'
+                : callback
+                  ? '正在确认账号状态。'
+                  : '公开阅读无需账号。登录后可以留言和管理自己的留言。'}
+          </p>
+        </header>
+        {!platform.authReady ? (
+          <p role="status">正在确认登录状态…</p>
+        ) : callback ? (
+          platform.state.visitor ? (
+            <div>
+              <p className="form-notice" role="status">
+                验证完成，已登录为 {platform.state.visitor.nickname}。
+              </p>
+              <SiteLink className="button" href={destination}>
+                继续浏览
+              </SiteLink>
+              {platform.isOwner && (
+                <SiteLink className="button secondary" href="/studio">
+                  进入工作台
+                </SiteLink>
+              )}
+            </div>
+          ) : (
+            <div>
+              <p className="form-error" role="alert">
+                {platform.error ||
+                  '没有可用的验证会话。链接可能已失效，或不是在申请邮件的浏览器打开。请返回登录或重新申请邮件。'}
+              </p>
+              <SiteLink className="button" href="/login">
+                返回登录
+              </SiteLink>
+            </div>
+          )
+        ) : (
+          <>
+            {(auth.emailEnabled || updatePassword) && (
+              <form onSubmit={submit} className="community-auth-form">
+                {register && (
+                  <div className="field">
+                    <label className="field-label" htmlFor={`${fieldId}-nickname`}>
+                      昵称
+                    </label>
+                    <input
+                      id={`${fieldId}-nickname`}
+                      name="nickname"
+                      autoComplete="nickname"
+                      value={nickname}
+                      onChange={(event) => setNickname(event.target.value)}
+                      required
+                      maxLength={24}
+                      disabled={pending}
+                    />
+                  </div>
+                )}
+                {!updatePassword && (
+                  <div className="field">
+                    <label className="field-label" htmlFor={`${fieldId}-email`}>
+                      邮箱
+                    </label>
+                    <input
+                      id={`${fieldId}-email`}
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      required
+                      maxLength={254}
+                      disabled={pending}
+                    />
+                  </div>
+                )}
+                {(!recover || updatePassword) && (
+                  <div className="field">
+                    <label className="field-label" htmlFor={`${fieldId}-password`}>
+                      {updatePassword ? '新密码' : '密码'}
+                    </label>
+                    <input
+                      id={`${fieldId}-password`}
+                      name="password"
+                      type="password"
+                      autoComplete={
+                        register || updatePassword ? 'new-password' : 'current-password'
+                      }
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                      minLength={register || updatePassword ? 12 : 1}
+                      maxLength={128}
+                      disabled={pending}
+                      aria-describedby={
+                        register || updatePassword ? `${fieldId}-password-hint` : undefined
+                      }
+                    />
+                    {(register || updatePassword) && (
+                      <small id={`${fieldId}-password-hint`}>
+                        至少 12 位，建议使用密码管理器生成独立密码。
+                      </small>
+                    )}
+                  </div>
+                )}
+                {(register || updatePassword) && (
+                  <div className="field">
+                    <label className="field-label" htmlFor={`${fieldId}-confirm`}>
+                      再次输入密码
+                    </label>
+                    <input
+                      id={`${fieldId}-confirm`}
+                      name="password-confirmation"
+                      type="password"
+                      autoComplete="new-password"
+                      value={confirmation}
+                      onChange={(event) => setConfirmation(event.target.value)}
+                      required
+                      minLength={12}
+                      maxLength={128}
+                      disabled={pending}
+                    />
+                  </div>
+                )}
+                <button
+                  className="button community-auth-submit"
+                  type="submit"
+                  disabled={pending || !platform.authReady}
+                >
+                  {pending
+                    ? '处理中…'
+                    : updatePassword
+                      ? '保存新密码'
+                      : recover
+                        ? '发送找回邮件'
+                        : register
+                          ? '注册并发送验证邮件'
+                          : '登录'}
+                </button>
+              </form>
+            )}
+            {!auth.emailEnabled && !updatePassword && (
+              <p className="form-notice">邮箱注册与找回暂未开放。</p>
+            )}
+            {auth.githubEnabled && !recover && (
+              <button
+                type="button"
+                className="button secondary community-auth-submit"
+                disabled={pending}
+                onClick={() => void github()}
+              >
+                使用 GitHub 登录
+              </button>
+            )}
+          </>
+        )}
+        {error && (
+          <p className="form-error" role="alert" tabIndex={-1} ref={errorRef}>
+            {error}
+          </p>
+        )}
+        {notice && (
+          <p className="form-notice" role="status">
+            {notice}
+          </p>
+        )}
+        <div className="community-auth-links">
+          <SiteLink
+            href={authLink(register || recover || callback ? 'login' : 'register', destination)}
+          >
+            {register || recover || callback ? '返回登录' : '注册账号'}
+          </SiteLink>
+          {!register && !recover && !callback && (
+            <SiteLink href={authLink('recover', destination)}>忘记密码</SiteLink>
+          )}
+        </div>
+      </section>
     </div>
   )
 }
@@ -507,9 +783,9 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
   return (
     <div className="community-auth-page">
       <section className="community-auth-panel" aria-labelledby="community-auth-title">
-        <a className="community-back" href={`#${destination}`}>
+        <SiteLink className="community-back" href={`#${destination}`}>
           ← 返回
-        </a>
+        </SiteLink>
         <header>
           <h1 id="community-auth-title">
             {recovery ? '账号找回' : register ? '创建留言身份' : '留言身份'}
@@ -566,10 +842,12 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
           )}
         </form>
         <div className="community-auth-links">
-          <a href={`#${authLink(register || recovery ? 'login' : 'register', destination)}`}>
+          <SiteLink href={`#${authLink(register || recovery ? 'login' : 'register', destination)}`}>
             {register || recovery ? '返回登录' : '创建演示身份'}
-          </a>
-          {!register && !recovery && <a href={`#${authLink('recover', destination)}`}>找回账号</a>}
+          </SiteLink>
+          {!register && !recovery && (
+            <SiteLink href={`#${authLink('recover', destination)}`}>找回账号</SiteLink>
+          )}
         </div>
       </section>
     </div>
@@ -579,13 +857,19 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
 function Account() {
   const platform = usePlatform()
   const visitor = platform.state.visitor
-  const [nickname, setNickname] = useState(visitor?.nickname || '')
+  const [nicknameDraft, setNicknameDraft] = useState<{ visitorId: string; value: string } | null>(
+    null,
+  )
+  const nickname =
+    nicknameDraft && nicknameDraft.visitorId === visitor?.id
+      ? nicknameDraft.value
+      : visitor?.nickname || ''
   const [pending, setPending] = useState(false)
   const [notice, setNotice] = useState('')
   const { error, setError, errorRef } = useFormError()
   const fieldId = useId()
   const ownMessages = platform.state.messages
-    .filter((message) => message.authorId === visitor?.id && !message.hidden)
+    .filter((message) => message.authorId === visitor?.id && (platform.remote || !message.hidden))
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
 
   async function save(event: FormEvent) {
@@ -598,7 +882,9 @@ function Account() {
     setError('')
     setNotice('')
     try {
-      await platform.signIn(nickname.trim())
+      if (platform.auth) await platform.auth.saveProfile(nickname.trim())
+      else await platform.signIn(nickname.trim())
+      setNicknameDraft(null)
       setNotice('昵称已更新。')
     } catch (failure) {
       setError(errorText(failure))
@@ -626,9 +912,9 @@ function Account() {
           <span className="eyebrow">访客账号</span>
           <h1>我的账号</h1>
           <p>登录后，可以在这里查看自己的留言。</p>
-          <a href={`#${authLink('login', '/account')}`} className="button">
-            以演示身份登录 <span aria-hidden="true">↗</span>
-          </a>
+          <SiteLink href={`#${authLink('login', '/account')}`} className="button">
+            {platform.remote ? '登录' : '以演示身份登录'} <span aria-hidden="true">↗</span>
+          </SiteLink>
         </section>
       </div>
     )
@@ -639,7 +925,9 @@ function Account() {
         <span className="eyebrow">访客账号</span>
         <h1 className="page-heading">{visitor.nickname}</h1>
         <p className="community-local-note">
-          这是当前浏览器的演示身份。清除浏览器数据后，本机记录会丢失。
+          {platform.remote
+            ? '管理昵称和自己的留言。待审核、已隐藏的留言仅本人和站主可见。'
+            : '这是当前浏览器的演示身份。清除浏览器数据后，本机记录会丢失。'}
         </p>
       </header>
       <div className="community-account-layout">
@@ -654,7 +942,7 @@ function Account() {
                 id={fieldId}
                 value={nickname}
                 onChange={(event) => {
-                  setNickname(event.target.value)
+                  setNicknameDraft({ visitorId: visitor.id, value: event.target.value })
                   setNotice('')
                 }}
                 maxLength={24}
@@ -681,9 +969,19 @@ function Account() {
           )}
           <div className="community-sign-out">
             <button type="button" className="button quiet" disabled={pending} onClick={signOut}>
-              退出演示身份 <span aria-hidden="true">↗</span>
+              {platform.remote ? '退出登录' : '退出演示身份'} <span aria-hidden="true">↗</span>
             </button>
-            <p>退出后仍能浏览网站。再次进入会创建新的演示身份，旧留言仍保留。</p>
+            <p>
+              {platform.remote
+                ? '退出后仍能浏览网站。下次登录可继续管理自己的留言。'
+                : '退出后仍能浏览网站。再次进入会创建新的演示身份，旧留言仍保留。'}
+            </p>
+            {platform.remote && <SiteLink href="/recover">修改密码</SiteLink>}
+            {platform.isOwner && (
+              <SiteLink className="button secondary" href="/studio">
+                进入工作台
+              </SiteLink>
+            )}
           </div>
         </section>
         <section aria-labelledby="community-my-messages">
@@ -711,11 +1009,21 @@ function Account() {
                       </span>
                       <time dateTime={message.createdAt}>{formatDate(message.createdAt)}</time>
                     </div>
-                    <p>{message.body}</p>
+                    {platform.remote ? (
+                      <MessageItem
+                        message={message}
+                        onReply={() => {}}
+                        onDeleted={() => {}}
+                        isReply={false}
+                        canReply={false}
+                      />
+                    ) : (
+                      <p>{message.body}</p>
+                    )}
                     {destination && (
-                      <a href={`#${destination}`}>
+                      <SiteLink href={`#${destination}`}>
                         查看讨论 <span aria-hidden="true">↗</span>
-                      </a>
+                      </SiteLink>
                     )}
                   </article>
                 )
@@ -724,9 +1032,9 @@ function Account() {
           ) : (
             <div className="community-empty community-account-empty">
               <p>你还没有留下留言。</p>
-              <a href="#/guestbook">
+              <SiteLink href="#/guestbook">
                 去留言板看看 <span aria-hidden="true">↗</span>
-              </a>
+              </SiteLink>
             </div>
           )}
         </section>
@@ -736,7 +1044,12 @@ function Account() {
 }
 
 export function CommunityPage({ path, params }: { path: string; params: URLSearchParams }) {
+  const platform = usePlatform()
   if (path === '/guestbook') return <Guestbook />
   if (path === '/account') return <Account />
-  return <AuthPanel key={path} path={path} params={params} />
+  return platform.remote ? (
+    <RemoteAuthPanel key={path} path={path} params={params} />
+  ) : (
+    <AuthPanel key={path} path={path} params={params} />
+  )
 }

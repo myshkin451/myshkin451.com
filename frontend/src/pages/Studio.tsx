@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useConfirm } from '../Confirm'
-import { go } from '../navigation'
+import { go, replaceRoute, SiteLink } from '../navigation'
 import { usePlatform } from '../platform'
 import {
   formatDate,
@@ -110,8 +110,9 @@ function useUnsavedWork(dirty: boolean) {
       window.removeEventListener('beforeunload', beforeUnload)
     }
   }, [confirm, dirty])
-  return () => {
+  return (leavingDocument = false) => {
     allowNext.current = true
+    allowUnload.current = leavingDocument
   }
 }
 
@@ -131,15 +132,15 @@ function StudioHeader({ path }: { path: string }) {
   const { state } = usePlatform()
   return (
     <header className="studio-header">
-      <a className="studio-brand" href="#/studio">
-        <img className="studio-brand-mark" src="./assets/mark.svg" alt="" width="25" height="25" />
+      <SiteLink className="studio-brand" href="#/studio">
+        <img className="studio-brand-mark" src="/assets/mark.svg" alt="" width="25" height="25" />
         <span>
           {state.settings.name}
           <small>工作台</small>
         </span>
-      </a>
+      </SiteLink>
       <nav aria-label="工作台导航" className="studio-nav">
-        <a
+        <SiteLink
           href="#/studio"
           aria-current={
             !path.startsWith('/studio/settings') && !path.startsWith('/studio/comments')
@@ -148,17 +149,23 @@ function StudioHeader({ path }: { path: string }) {
           }
         >
           内容
-        </a>
-        <a href="#/studio/comments" aria-current={path === '/studio/comments' ? 'page' : undefined}>
+        </SiteLink>
+        <SiteLink
+          href="#/studio/comments"
+          aria-current={path === '/studio/comments' ? 'page' : undefined}
+        >
           留言
-        </a>
-        <a href="#/studio/settings" aria-current={path === '/studio/settings' ? 'page' : undefined}>
+        </SiteLink>
+        <SiteLink
+          href="#/studio/settings"
+          aria-current={path === '/studio/settings' ? 'page' : undefined}
+        >
           设置
-        </a>
+        </SiteLink>
       </nav>
-      <a className="studio-visit" href="#/">
+      <SiteLink className="studio-visit" href="#/">
         查看网站 <Arrow />
-      </a>
+      </SiteLink>
     </header>
   )
 }
@@ -212,7 +219,7 @@ function ContentList() {
         </div>
       </div>
       <div className="studio-create-row">
-        <a href="#/studio/new?kind=writing" className="studio-create-card">
+        <SiteLink href="#/studio/new?kind=writing" className="studio-create-card">
           <span className="studio-create-symbol" aria-hidden="true">
             Aa
           </span>
@@ -221,8 +228,8 @@ function ContentList() {
             <small>文字、小记或长篇</small>
           </span>
           <Arrow />
-        </a>
-        <a href="#/studio/new?kind=photo" className="studio-create-card">
+        </SiteLink>
+        <SiteLink href="#/studio/new?kind=photo" className="studio-create-card">
           <svg className="studio-create-symbol" viewBox="0 0 32 32" aria-hidden="true">
             <rect x="4" y="5" width="24" height="22" rx="1" />
             <path d="m5 24 8-9 6 6 4-4 5 5" />
@@ -233,8 +240,8 @@ function ContentList() {
             <small>一张照片，或一组</small>
           </span>
           <Arrow />
-        </a>
-        <a href="#/studio/new?kind=project" className="studio-create-card">
+        </SiteLink>
+        <SiteLink href="#/studio/new?kind=project" className="studio-create-card">
           <svg className="studio-create-symbol" viewBox="0 0 32 32" aria-hidden="true">
             <rect x="4" y="6" width="24" height="21" rx="1" />
             <path d="M4 12h24m-16 5-3 3 3 3m8-6 3 3-3 3" />
@@ -244,7 +251,7 @@ function ContentList() {
             <small>作品、网站或小工具</small>
           </span>
           <Arrow />
-        </a>
+        </SiteLink>
       </div>
       <div className="studio-library-head">
         <h2>
@@ -305,7 +312,7 @@ function ContentList() {
             const draft = hasDraft(entry.id)
             return (
               <article className="studio-entry-row" key={entry.id}>
-                <a className="studio-entry-main" href={`#/studio/edit/${entry.id}`}>
+                <SiteLink className="studio-entry-main" href={`#/studio/edit/${entry.id}`}>
                   <span className={`studio-entry-thumb studio-entry-thumb-${entry.kind}`}>
                     {entry.cover || entry.photos[0]?.src ? (
                       <img src={entry.cover || entry.photos[0].src} alt="" />
@@ -323,16 +330,16 @@ function ContentList() {
                       {entry.sample && <> · 示例</>}
                     </span>
                   </span>
-                </a>
+                </SiteLink>
                 <span className={`studio-status ${published ? 'studio-status-published' : ''}`}>
                   {published ? (draft ? '已发布 · 有修改' : '已发布') : '草稿'}
                 </span>
                 <time className="studio-entry-date" dateTime={entry.updatedAt}>
                   {formatDate(entry.updatedAt)}
                 </time>
-                <a className="studio-entry-edit" href={`#/studio/edit/${entry.id}`}>
+                <SiteLink className="studio-entry-edit" href={`#/studio/edit/${entry.id}`}>
                   编辑 <Arrow />
-                </a>
+                </SiteLink>
               </article>
             )
           })}
@@ -361,9 +368,9 @@ function ContentList() {
               清除筛选
             </button>
           ) : (
-            <a className="button secondary" href="#/studio/new?kind=writing">
+            <SiteLink className="button secondary" href="#/studio/new?kind=writing">
               写第一篇文章
-            </a>
+            </SiteLink>
           )}
         </div>
       )}
@@ -503,14 +510,25 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
       setEntry(next)
       setTopics(nextTopics)
       setDirty(false)
-      setNotice(action === 'publish' ? '已发布到本机网站。' : '草稿已保存到当前浏览器。')
+      setNotice(
+        platform.remote
+          ? action === 'publish'
+            ? '已发布。其他访客现在可以查看。'
+            : '草稿已保存，仅站主可见。'
+          : action === 'publish'
+            ? '已发布到本机网站。'
+            : '草稿已保存到当前浏览器。',
+      )
       if (action === 'preview') {
-        allowNavigation()
+        allowNavigation(Boolean(platform.remote))
         go(`/entry/${next.id}?draft=1`)
       } else if (!id) {
         allowNavigation()
-        window.history.replaceState(null, '', `#/studio/edit/${next.id}`)
-        window.dispatchEvent(new HashChangeEvent('hashchange'))
+        if (platform.remote) replaceRoute(`/studio/edit/${next.id}`)
+        else {
+          window.history.replaceState(null, '', `#/studio/edit/${next.id}`)
+          window.dispatchEvent(new HashChangeEvent('hashchange'))
+        }
       }
     } catch (reason) {
       if (mounted.current) setError(errorText(reason))
@@ -566,7 +584,7 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
     if (
       !(await confirm({
         title: '撤回这篇内容？',
-        description: '它会从本机网站的公开列表中移除，内容和草稿仍会保留。',
+        description: '它会从网站的公开列表中移除，内容和草稿仍会保留。',
         confirmLabel: '撤回草稿',
         cancelLabel: '保持发布',
       }))
@@ -598,7 +616,7 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
     setError('')
     try {
       await platform.deleteEntry(entry.id)
-      allowNavigation()
+      allowNavigation(Boolean(platform.remote))
       go('/studio')
     } catch (reason) {
       setError(errorText(reason))
@@ -610,9 +628,9 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
       <div className="studio-content studio-empty">
         <h1>没有找到这篇内容</h1>
         <p>它可能已经删除，或不在当前浏览器中。</p>
-        <a className="button secondary" href="#/studio">
+        <SiteLink className="button secondary" href="#/studio">
           返回内容
-        </a>
+        </SiteLink>
       </div>
     )
   return (
@@ -622,10 +640,10 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
         {kindLabels[entry.kind]}
       </h1>
       <div className="studio-editor-top">
-        <a className="studio-back" href="#/studio">
+        <SiteLink className="studio-back" href="#/studio">
           <Arrow direction="left" />
           内容
-        </a>
+        </SiteLink>
         <div className="studio-editor-actions">
           <span className="studio-save-state" aria-live="polite">
             {uploading
@@ -635,7 +653,9 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
                 : dirty
                   ? '有未保存的修改'
                   : persisted
-                    ? '已保存到本机'
+                    ? platform.remote
+                      ? '已保存'
+                      : '已保存到本机'
                     : '尚未保存'}
           </span>
           <button
@@ -1115,7 +1135,7 @@ function SettingsPage() {
 
 function CommentsPage() {
   const platform = usePlatform()
-  const [filter, setFilter] = useState<'all' | 'visible' | 'hidden'>('all')
+  const [filter, setFilter] = useState<'all' | 'visible' | 'pending' | 'hidden'>('all')
   const [target, setTarget] = useState('all')
   const [query, setQuery] = useState('')
   const [busy, setBusy] = useState('')
@@ -1124,7 +1144,12 @@ function CommentsPage() {
   const messages = platform.state.messages
     .filter(
       (message) =>
-        (filter === 'all' || (filter === 'hidden' ? message.hidden : !message.hidden)) &&
+        (filter === 'all' ||
+          (filter === 'hidden'
+            ? message.hidden
+            : filter === 'pending'
+              ? message.status === 'pending'
+              : !message.hidden && message.status !== 'pending')) &&
         (target === 'all' ||
           (target === 'guestbook'
             ? message.targetId === 'guestbook'
@@ -1153,9 +1178,9 @@ function CommentsPage() {
           <h1>留言</h1>
           <p className="muted">查看留言，暂时隐藏不适合公开的内容。</p>
         </div>
-        <a className="button secondary" href="#/guestbook">
+        <SiteLink className="button secondary" href="#/guestbook">
           去留言板 <Arrow />
-        </a>
+        </SiteLink>
       </div>
       <div className="studio-library-head">
         <h2>
@@ -1176,7 +1201,8 @@ function CommentsPage() {
           {(
             [
               ['all', '全部'],
-              ['visible', '可见'],
+              ['visible', '已公开'],
+              ...(platform.remote ? [['pending', '待审核'] as const] : []),
               ['hidden', '已隐藏'],
             ] as const
           ).map(([value, label]) => (
@@ -1222,12 +1248,13 @@ function CommentsPage() {
                   <strong>{message.authorName}</strong>
                   <time dateTime={message.createdAt}>{formatDate(message.createdAt)}</time>
                   {message.hidden && <span className="studio-status">已隐藏</span>}
+                  {message.status === 'pending' && <span className="studio-status">待审核</span>}
                   <span className="studio-message-origin">
                     {message.parentId ? '回复 · ' : ''}
                     {message.targetId === 'guestbook' ? (
-                      <a href="#/guestbook">留言板</a>
+                      <SiteLink href="#/guestbook">留言板</SiteLink>
                     ) : entry?.status === 'published' ? (
-                      <a href={`#/entry/${entry.id}`}>{entry.title || '未命名'}</a>
+                      <SiteLink href={`#/entry/${entry.id}`}>{entry.title || '未命名'}</SiteLink>
                     ) : (
                       '已撤下的内容'
                     )}
@@ -1238,10 +1265,30 @@ function CommentsPage() {
                   <button
                     type="button"
                     disabled={!!busy}
-                    onClick={() => void moderate(message.id, !message.hidden)}
+                    onClick={() =>
+                      void moderate(
+                        message.id,
+                        message.status === 'pending' ? false : !message.hidden,
+                      )
+                    }
                   >
-                    {busy === message.id ? '处理中…' : message.hidden ? '恢复显示' : '隐藏留言'}
+                    {busy === message.id
+                      ? '处理中…'
+                      : message.status === 'pending'
+                        ? '审核通过'
+                        : message.hidden
+                          ? '恢复显示'
+                          : '隐藏留言'}
                   </button>
+                  {message.status === 'pending' && (
+                    <button
+                      type="button"
+                      disabled={!!busy}
+                      onClick={() => void moderate(message.id, true)}
+                    >
+                      隐藏
+                    </button>
+                  )}
                 </div>
               </article>
             )
@@ -1285,7 +1332,7 @@ export function StudioPage({ path, params }: { path: string; params: URLSearchPa
     <div className="studio">
       <StudioHeader path={path} />
       <div className="studio-main">
-        <LocalNote />
+        {!platform.remote && <LocalNote />}
         {platform.error && (
           <p className="form-error studio-global-error" role="alert">
             {platform.error}
@@ -1293,7 +1340,7 @@ export function StudioPage({ path, params }: { path: string; params: URLSearchPa
         )}
         {!platform.ready ? (
           <div className="studio-content">
-            <p role="status">正在读取本机内容…</p>
+            <p role="status">{platform.remote ? '正在读取内容…' : '正在读取本机内容…'}</p>
           </div>
         ) : path === '/studio/settings' ? (
           <SettingsPage />
@@ -1309,7 +1356,7 @@ export function StudioPage({ path, params }: { path: string; params: URLSearchPa
       </div>
       <footer className="studio-footer">
         <span>{platform.state.settings.name}</span>
-        <span>本机工作台</span>
+        <span>{platform.remote ? '工作台' : '本机工作台'}</span>
       </footer>
     </div>
   )

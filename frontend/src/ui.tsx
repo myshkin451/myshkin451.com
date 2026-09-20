@@ -1,3 +1,4 @@
+import { SiteLink } from './navigation'
 import { useEffect, useRef } from 'react'
 import type { Entry, Photo } from './types'
 import { kindLabels, safeDestination } from './types'
@@ -143,7 +144,7 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
       style={{ '--order': index } as React.CSSProperties}
     >
       {(entry.kind !== 'writing' || entry.cover) && (
-        <a
+        <SiteLink
           className="art-link"
           href={href}
           target={external ? '_blank' : undefined}
@@ -151,7 +152,7 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           aria-label={`${entry.title}${external ? '（在新标签页打开）' : ''}`}
         >
           <EntryArtwork entry={entry} />
-        </a>
+        </SiteLink>
       )}
       <div className="card-meta">
         <span>
@@ -159,26 +160,28 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           {entry.sample ? ' · 样例' : ''}
         </span>
         {entry.topics[0] && (
-          <a href={`#/topics/${encodeURIComponent(entry.topics[0])}`}>{entry.topics[0]}</a>
+          <SiteLink href={`#/topics/${encodeURIComponent(entry.topics[0])}`}>
+            {entry.topics[0]}
+          </SiteLink>
         )}
       </div>
       <div className="card-title-row">
         <h2>
-          <a
+          <SiteLink
             href={href}
             target={external ? '_blank' : undefined}
             rel={external ? 'noreferrer' : undefined}
           >
             {entry.title}
-          </a>
+          </SiteLink>
         </h2>
         <Icon name={external ? 'external' : 'arrow'} size={17} />
       </div>
       {entry.summary && <p className="card-summary">{entry.summary}</p>}
       {entry.kind === 'project' && (
-        <a className="project-details" href={`#/entry/${entry.id}`}>
+        <SiteLink className="project-details" href={`#/entry/${entry.id}`}>
           项目说明
-        </a>
+        </SiteLink>
       )}
     </article>
   )

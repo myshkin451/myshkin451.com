@@ -12,3 +12,6 @@ src/app/(payload)/admin/importMap.js
 *.env
 # Generated single-file design preview; format its source files instead.
 docs/design/studies/restart-03/offline.html
+
+**/.next/
+.playwright-cli/
