@@ -8,6 +8,7 @@ import { initialState, publishEntry, restoreState, saveDraft, unpublishEntry } f
 import { noteDate, publicNotes } from './notes'
 import { Notes, NoteText } from './pages/Notes'
 import { NoteWorkspace } from './pages/NoteWorkspace'
+import { PublicPage } from './pages/Public'
 import { defaultSettings } from './seed'
 import { newEntry, type Entry, type Platform } from './types'
 
@@ -68,6 +69,15 @@ describe('title-free notes and publication boundaries', () => {
 })
 
 describe('public notes', () => {
+  it('waits for identity before deciding that a private draft is missing', () => {
+    const props = { path: '/entry/private-note', params: new URLSearchParams('draft=1') }
+    const view = render(<PublicPage {...props} />)
+    expect(screen.getByRole('status').textContent).toBe('正在读取草稿…')
+    expect(screen.queryByText('没有找到这份草稿')).toBeNull()
+    fixture.platform.authReady = true
+    view.rerender(<PublicPage {...props} />)
+    expect(screen.getByText('没有找到这份草稿')).toBeTruthy()
+  })
   it('shows an honest empty state without owner tools for visitors', () => {
     render(<Notes params={new URLSearchParams()} />)
     expect(screen.getByText('还没有公开的随记。')).toBeTruthy()

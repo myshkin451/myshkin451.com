@@ -201,7 +201,7 @@ with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
 
-- September 21 notes acceptance: 67 frontend tests and 186 real API assertions passed, including anonymous
+- September 21 notes acceptance: 68 frontend tests and 186 real API assertions passed, including anonymous
   and two-visitor publishing denial, private revisions, withdrawal and stable publication dates. Browser
   review covered the real local draft/publish/edit/withdraw loop, independent anonymous reads and 320px
   notes/editor layouts. The new migration is applied locally and in the empty cloud database.

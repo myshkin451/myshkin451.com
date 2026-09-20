@@ -286,7 +286,7 @@ function Collection({ path, params }: PageProps) {
 }
 
 function EntryPage({ id, draft }: { id: string; draft: boolean }) {
-  const { entries, drafts, remote } = usePlatform()
+  const { entries, drafts, remote, authReady } = usePlatform()
   // SSR always emits a safe deterministic link. Hydration restores this tab's
   // collection route, including its filters and selection, after a document load.
   const collection = useSyncExternalStore(noCollectionSubscription, restoredCollection, () => '#/')
@@ -296,6 +296,12 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null)
   const [largeType, setLargeType] = useState(false)
   const [photoLayout, setPhotoLayout] = useState<'story' | 'overview'>('story')
+  if (draft && remote && !authReady)
+    return (
+      <p className="community-notice" role="status">
+        正在读取草稿…
+      </p>
+    )
   if (!entry)
     return (
       <NotFound
