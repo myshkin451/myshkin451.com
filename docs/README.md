@@ -20,7 +20,7 @@ This repository uses a small documentation system that should grow only when the
 - [Cloud acceptance](operations/CLOUD_ACCEPTANCE.md): actual Vercel deployment, cloud configuration and public checks, with pending email and owner acceptance.
 - [API contract](operations/API_CONTRACT.md): Supabase tables, permissions, RPCs, media access, and integration checks.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: historical hosting comparison; current selection is decision 0013.
-- [Production handoff](operations/PRODUCTION_HANDOFF.md): current mandate, staged implementation, acceptance, and owner-only steps for completing the platform.
+- [Production handoff](operations/PRODUCTION_HANDOFF.md): next-phase domain/email, live publishing, frontend and capacity plan, plus the original mandate and acceptance contract.
 - `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist
   for the historical ECS/Fargate path; inactive after the September 2026 restart.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.

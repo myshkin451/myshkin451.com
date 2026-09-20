@@ -35,7 +35,8 @@
 
 ## 尚未完成
 
-- Brevo 的手机/发件人验证、事务邮件资格和专用 SMTP 凭据；真实确认信与恢复信送达。
+- 自定义 SMTP 和真实确认信、恢复信送达。Brevo 手机验证码多次被拒，此路径已停止接续，
+  未获得可用 SMTP 凭据；建议下一阶段评估自有域名加 Resend，尚未实施或验收替代服务。
 - Supabase CLI 2.117.0 不管理 `auth.rate_limit.email_sent`；目标 30 封/小时仍需通过 Dashboard
   或 Management API 设置和读回。不能以本机 TOML 或其他配置 push 成功替代该项证据。
 - 邮件注册功能开关仍为 false；尚无真实站主账号或 owner 授权。OAuth 也未启用。

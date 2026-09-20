@@ -1,8 +1,12 @@
 # 0013: 托管内容、身份和正式网站
 
-Status: Accepted implementation direction; cloud activation and external delivery not yet verified
+Status: Accepted implementation direction; public cloud deployment verified, email delivery pending
 
 Date: 2026-09-21
+
+接续状态：公开网站已完成 [首次云端验收](../operations/CLOUD_ACCEPTANCE.md)。原定 Brevo 路径受
+手机验证码反复失败阻塞，不再要求继续该流程；下一阶段建议评估自有域名加 Resend。该替代服务
+尚未选定实施或完成送达验收，以下 Brevo 条目保留为原决策依据。域名购买与付费升级仍未授权。
 
 ## 依据
 

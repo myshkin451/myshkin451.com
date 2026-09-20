@@ -5,6 +5,9 @@
 
 当前正式地址：[myshkin451.vercel.app](https://myshkin451.vercel.app)。公开浏览已上线；
 邮件和首次站主账号仍在接续，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。
+Brevo 手机验证反复失败，下面的 Brevo 说明仅保留为原方案参考，不再要求用户继续该注册流程。
+下一阶段优先评估自有域名加 Resend；选定后更新 SMTP 操作步骤并验证实际送达，见
+[接续计划](PRODUCTION_HANDOFF.md#下一阶段接续)。
 
 ## 日常使用
 

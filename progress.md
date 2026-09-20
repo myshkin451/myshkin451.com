@@ -5,13 +5,15 @@ Last implementation update: 2026-09-21 (real publishing, Supabase permissions, a
 
 ## Current Phase
 
-Active delivery: the real backend and website are implemented; local browser and restore acceptance passed.
+Stage handoff: the real backend and website are implemented; local browser and restore acceptance passed.
 The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
 and database health verified. Email registration/recovery and the first real owner remain pending.
 The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
 personal steps. Supabase and Vercel accounts are registered; the initial migration has been applied to
 the empty free Supabase project in Singapore and migration version `202609210001` is recorded.
-Brevo registration and Free selection are complete. The official Vercel GitHub app is authorized for
+Brevo registration and Free selection are complete, but repeated phone-code rejection blocks activation.
+Do not continue the previous Brevo credential-helper flow. An owned domain plus Resend is the recommended
+next candidate, not an activated replacement or an approved purchase. The official Vercel GitHub app is authorized for
 `myshkin451/myshkin451.com` only. The Vercel Hobby project is connected to this repository and deploys
 `main` with Production-only variables; Preview is disabled. Real external email delivery is not verified.
 
@@ -140,18 +142,25 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Activate and verify Brevo SMTP, including sender verification and actual confirmation/recovery delivery.
-   The owner is completing phone verification and a dedicated SMTP credential through the private local
-   helper `/private/tmp/myshkin451-mail-setup.py`; never print or commit its resulting credential file.
+1. Continue in a fresh task using the [next-phase handoff](docs/operations/PRODUCTION_HANDOFF.md#下一阶段接续).
+   Prepare concrete domain candidates with registration/renewal costs and obtain the owner's domain and
+   purchase decision. Recommend an owned sending domain plus Resend; verify current requirements before
+   selecting/configuring the replacement. Brevo phone verification failed repeatedly; no working SMTP
+   credential was received. Do not ask the owner to repeat the old phone/helper workflow.
+2. Configure the selected domain, canonical origin and exact Auth redirects; activate custom SMTP and
+   verify actual confirmation/recovery delivery before enabling registration.
    Supabase CLI does not manage `auth.rate_limit.email_sent`; configure and verify the cloud mail limit
    through the dashboard or Management API instead of treating config push as proof.
-2. Complete real owner registration/confirmation, explicitly grant that verified account owner access,
+3. Complete real owner registration/confirmation, explicitly grant that verified account owner access,
    and finish cloud publishing/permissions acceptance without introducing fake public works or test users.
-3. Record remaining cloud acceptance, redeployment persistence and day-to-day backup readiness.
+4. Record remaining cloud acceptance, redeployment persistence and day-to-day backup readiness.
    [Cloud acceptance](docs/operations/CLOUD_ACCEPTANCE.md) separates the proven launch from pending email work.
    Official Vercel and Supabase CLIs are now authenticated. Chrome control still times out; the in-app
    browser works for public-site verification. Do not assume attempted dashboard changes succeeded.
    The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) remains the acceptance contract.
+5. Iterate on the owner's frontend feedback and new requirements in bounded, reviewable slices. Measure
+   real network performance and service usage before recommending a paid upgrade or hosting migration;
+   no capacity bottleneck or need for a self-managed server has been established.
 
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
 domain purchase, or provider account is authorized by implication; prepare those choices concretely.
