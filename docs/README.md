@@ -16,6 +16,7 @@ This repository uses a small documentation system that should grow only when the
 - [Design study 03](design/studies/restart-03/README.md): preceding visual comparison with references, generated mockups, and functional details.
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: current hosting comparison and later launch gate.
+- [Production handoff](operations/PRODUCTION_HANDOFF.md): current mandate, staged implementation, acceptance, and owner-only steps for completing the platform.
 - `docs/operations/MANUAL_AWS_LAUNCH_RUNBOOK.md`: manual AWS launch runbook and preflight checklist
   for the historical ECS/Fargate path; inactive after the September 2026 restart.
 - `docs/decisions/`: durable decision records for architecture and product-shaping choices.

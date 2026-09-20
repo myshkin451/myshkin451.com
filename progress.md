@@ -5,7 +5,9 @@ Last implementation update: 2026-09-21 (visitor-facing home, typography, and emp
 
 ## Current Phase
 
-Active restart: the local frontend has a revised visitor-facing home ready for review; real backend and later hosting remain.
+Active restart: the local frontend is ready as the starting point for a new task completing real
+publishing, visitor interaction, and deployment. The owner delegates technical execution, retaining
+account, payment, and other unavoidable personal steps. No production capability is claimed yet.
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
@@ -107,18 +109,19 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Review the new frontend by browsing actual pages and publishing a local item. Refine specific layouts
-   and interactions from that feedback; the visual choice remains open and does not require owner content.
-2. Choose the smallest durable backend for these verified flows, documenting whether to reuse or replace
-   the old app. Replace the local platform adapter with real content/media operations and API permissions.
-3. Implement real visitor registration/sign-in, messages/replies, recovery and abuse controls. Keep owner
-   and visitor permissions separate. If Payload is reused, resolve its broad authenticated-user rules first.
-4. Validate the selected email/sign-in method and one hosting candidate from the
-   [deployment plan](docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md),
-   then decide provider, budget, media, backups, and domain for a small launch.
+1. Continue in a new task using the [production handoff](docs/operations/PRODUCTION_HANDOFF.md).
+   Research current hosting constraints, prove one viable integration, and document the chosen backend
+   and reuse/replacement boundary. Current pages remain the starting point, not final visual acceptance.
+2. Connect real content/media persistence, authenticated owner publishing, and stable public routes.
+   Verify draft isolation, convenient editing, empty-content layouts, and independent-session visibility.
+3. Complete real visitor registration/sign-in, recovery, messages/replies and moderation. Keep owner and
+   visitor permissions separate; resolve Payload's broad authenticated-user rules first if it is reused.
+4. Finish deployment, backup/restore, browser and permission verification, owner-network access checks,
+   and a short operating guide. Batch concrete signup/payment/authorization steps for the owner after
+   completing independent work. Visitor interaction remains in this delivery, not silently deferred.
 
-Parallel product-direction work still requires owner approval under `AGENTS.md`. Do not turn this
-roadmap into cloud provisioning before the provider, budget, and launch scope are concrete.
+The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
+domain purchase, or provider account is authorized by implication; prepare those choices concretely.
 
 ## Open Decisions
 
@@ -196,6 +199,10 @@ the current branch cleanliness or restart direction:
 
 ## Handoff
 
+- September 21: the owner requests a new task with very high/maximum reasoning to finish the platform,
+  leaving primarily purchases, registrations, and unavoidable personal operations to them. The
+  [production handoff](docs/operations/PRODUCTION_HANDOFF.md) defines execution and acceptance without
+  selecting a provider or claiming a completed backend. Architecture decisions must follow evidence.
 - The resumed frontend slice passed final checks. Clean delivery origin is `127.0.0.1:4323`;
   QA writes are isolated at `localhost:4323`. A design or backend task can use this board and `frontend/README.md`
   to recover the current boundary without inheriting the full design conversation.

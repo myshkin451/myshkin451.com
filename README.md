@@ -109,7 +109,9 @@ reading, albums, projects, topics, a small color tool, visitor pages, and an own
 can be drafted, previewed, and published into the current browser using IndexedDB. Local demo identities
 and comments do not represent a real account service. Old production routes remain unchanged.
 
-The next deliverable connects the accepted frontend experience to durable content/media and real,
-permission-isolated owner/visitor accounts, including recovery and moderation.
-Deployment research can inform implementation, but provider selection and cloud setup come after that
-working slice. The studies have not replaced the existing public routes; no production deployment is claimed.
+The next task connects the current frontend experience to durable content/media and real,
+permission-isolated owner/visitor accounts, including recovery and moderation, then completes deployment.
+The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) defines that scope, acceptance, and the
+account/payment steps that need the owner. Deployment research informs implementation; cloud setup
+follows a verified working slice and a concrete provider/cost choice. The current visual design remains
+open to feedback. The studies have not replaced the existing public routes; no production deployment is claimed.
