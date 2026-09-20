@@ -6,12 +6,14 @@ Last implementation update: 2026-09-21 (real publishing, Supabase permissions, a
 ## Current Phase
 
 Active delivery: the real backend and website are implemented; local browser and restore acceptance passed.
+The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
+and database health verified. Email registration/recovery and the first real owner remain pending.
 The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
 personal steps. Supabase and Vercel accounts are registered; the initial migration has been applied to
 the empty free Supabase project in Singapore and migration version `202609210001` is recorded.
 Brevo registration and Free selection are complete. The official Vercel GitHub app is authorized for
-`myshkin451/myshkin451.com` only, and Vercel can import it.
-No public website deployment or real external email delivery has been verified yet.
+`myshkin451/myshkin451.com` only. The Vercel Hobby project is connected to this repository and deploys
+`main` with Production-only variables; Preview is disabled. Real external email delivery is not verified.
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
@@ -21,7 +23,7 @@ to the owner's content. Writing, projects, and images should coexist without a p
 A third study provides two content-led layouts, built after reference research and generated mockups.
 The owner finds this round substantially better and wants to explore modern minimal design with richer
 details, varied personal work, and useful classification. The specific layout and extension proposal remain open.
-No final visual direction or production deployment is claimed.
+The deployed layout remains open to further owner feedback; final visual direction is not claimed.
 
 [Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
 without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
@@ -138,15 +140,17 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Complete [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) and integrate verified code to `main`.
-   Local browser, separate-target restore/restart and connection-binding acceptance are complete.
-2. Deploy `site/` through Vercel with automatic Git deployments limited to `main`.
-   Configure exact origin/callback URLs and Production-only public environment values. Until an isolated
-   preview backend exists, do not connect Preview deployments to the production database.
-3. Activate and verify custom SMTP for non-team recipient registration, confirmation and recovery;
-   verify owner access and real owner-network behavior. Brevo Free is the current candidate, not yet proven.
-4. Record actual cloud acceptance. Browser control still times out after the computer restart;
-   use official provider CLIs where possible and verify each provider change rather than assuming success.
+1. Activate and verify Brevo SMTP, including sender verification and actual confirmation/recovery delivery.
+   The owner is completing phone verification and a dedicated SMTP credential through the private local
+   helper `/private/tmp/myshkin451-mail-setup.py`; never print or commit its resulting credential file.
+   Supabase CLI does not manage `auth.rate_limit.email_sent`; configure and verify the cloud mail limit
+   through the dashboard or Management API instead of treating config push as proof.
+2. Complete real owner registration/confirmation, explicitly grant that verified account owner access,
+   and finish cloud publishing/permissions acceptance without introducing fake public works or test users.
+3. Record remaining cloud acceptance, redeployment persistence and day-to-day backup readiness.
+   [Cloud acceptance](docs/operations/CLOUD_ACCEPTANCE.md) separates the proven launch from pending email work.
+   Official Vercel and Supabase CLIs are now authenticated. Chrome control still times out; the in-app
+   browser works for public-site verification. Do not assume attempted dashboard changes succeeded.
    The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) remains the acceptance contract.
 
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
@@ -187,8 +191,10 @@ with a matching decision record and remove it here in the same change.
   all audit findings on the Next, React, React DOM and Supabase dependency paths. The root production
   audit still reports 0 critical / 21 high / 25 moderate / 7 low findings. This is not a clean repository-wide audit; historical Payload and
   its dependency graph are retained for reference and are not deployed by `site/`.
-- Cloud registration is not cloud acceptance. SMTP activation/delivery, Vercel deployment, production
-  permission checks and access from the owner's real network remain unverified. Free Supabase may pause
+- The first Vercel deployment is Ready. Sixteen public HTTP routes passed from the owner's computer,
+  including database health, canonical URL, robots, sitemap and absent content/media 404s. In-app browser
+  review verified the empty home and narrow layouts with no captured warnings/errors. SMTP activation,
+  real delivery and authenticated production permissions remain unverified. Free Supabase may pause
   after one week of inactivity, provides no automatic backup, and has 500 MB DB / 1 GB storage limits.
   Vercel Hobby is for personal noncommercial use. No paid plan or new domain is required for the first run.
 - Cloud migration evidence: the SQL Editor reported success after the empty-project preflight. All
@@ -198,10 +204,12 @@ with a matching decision record and remove it here in the same change.
 - SQL Editor subsequently recorded migration version `202609210001`, name `platform`, with
   `statements = NULL` after checking that the history table was absent. The dashboard's option to enable
   RLS was selected for the history table. Existing application migration SQL was not rerun.
-- [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) is a draft. Both Stable checks and Production
-  platform CI passed for implementation and operations head `11b55ba`. The subsequent acceptance record
-  and main-only deployment configuration are awaiting their own checks. No main-branch integration or
-  Vercel deployment has occurred yet.
+- [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) merged after Stable checks and Production
+  platform CI passed at `ec002bb`. Merge `a8e5a45` is synchronized to the clean main checkout and deployed
+  as `dpl_EtsRMcRCf74LNHHQDe4CG6VzoSRF`. Node 24.x and pnpm 10.33.2 built successfully on Vercel.
+- Cloud Auth now uses the actual HTTPS origin, exact `/auth/callback` and `/recover` redirects, confirmed
+  email and a 12-character minimum password. CLI re-read found no remaining declared managed difference;
+  unrelated service settings were preserved. Registration/recovery UI remains disabled pending SMTP.
 
 ### Earlier preview and historical verification
 

@@ -3,6 +3,9 @@
 更新：2026-09-21。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
 实际验收和上线状态以 [progress.md](../../progress.md) 为准，本文的操作步骤不代表云端已经完成。
 
+当前正式地址：[myshkin451.vercel.app](https://myshkin451.vercel.app)。公开浏览已上线；
+邮件和首次站主账号仍在接续，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。
+
 ## 日常使用
 
 - **发布**：登录站主账号，打开工作台，新建文章、照片或项目。填写标题、正文/图片/项目链接、
@@ -62,6 +65,8 @@ Brevo 对免费邮箱或未认证域名可能临时改写发件地址，收件�
    `smtp-relay.brevo.com`，端口 `587`；用户名和 SMTP 密钥取自 Brevo 控制台，密码不是 Brevo 登录密码。
    参见 [官方 SMTP 步骤](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP)。
    默认 Supabase 邮件仅适合团队地址测试，不能承担公开注册；参见 [Supabase SMTP 限制](https://supabase.com/docs/guides/auth/auth-smtp)。
+   CLI 2.117.0 的 `config push` 明确不管理 `auth.rate_limit.email_sent`；该值必须通过
+   Dashboard 或 Management API 配置并读回，不能仅凭本机 TOML 或 push 成功声称已设置。
 5. 实测非项目团队邮箱注册、确认、登录、退出、恢复；检查发件人显示、回跳地址、实际收件和邮件配额。
    确认通过后才开放邮箱注册入口。不要把邮件测试收件箱或默认邮件服务的成功当成生产送达证明。
 6. 授予本人站主身份，用匿名、两个独立访客和站主分别验证权限，再检查 `/health`、

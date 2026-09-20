@@ -17,6 +17,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - [Runbook](operations/RUNBOOK.md): current publishing, account setup, deployment, backup, restore, and rollback instructions.
 - [Local acceptance](operations/LOCAL_ACCEPTANCE.md): actual separate-target account/media restore, restart and permission evidence, with remaining verification boundaries.
+- [Cloud acceptance](operations/CLOUD_ACCEPTANCE.md): actual Vercel deployment, cloud configuration and public checks, with pending email and owner acceptance.
 - [API contract](operations/API_CONTRACT.md): Supabase tables, permissions, RPCs, media access, and integration checks.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: historical hosting comparison; current selection is decision 0013.
 - [Production handoff](operations/PRODUCTION_HANDOFF.md): current mandate, staged implementation, acceptance, and owner-only steps for completing the platform.
