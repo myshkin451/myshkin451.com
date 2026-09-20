@@ -1051,7 +1051,7 @@ function SettingsPage() {
               <small className="muted">支持分段和 ## 小标题。</small>
             </label>
             <fieldset className="studio-home-view">
-              <legend>首页默认视图</legend>
+              <legend>内容页默认视图</legend>
               <label>
                 <input
                   type="radio"

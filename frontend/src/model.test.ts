@@ -33,7 +33,7 @@ const sample = entry({
   publishedAt: now,
 })
 const samples = [sample]
-const empty = () => model.initialState(settings)
+const empty = (): StoredState => ({ ...model.initialState(settings), mode: 'sample' })
 const signed = (id = 'visitor-a'): StoredState => model.signIn(empty(), '访客 A', id)
 const withArticle = (): StoredState => model.publishEntry(signed(), samples, entry(), now)
 

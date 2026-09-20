@@ -103,9 +103,7 @@ export function EntryArtwork({ entry, small = false }: { entry: Entry; small?: b
     return (
       <div className={`entry-art site-art ${small ? 'small' : ''}`} aria-hidden="true">
         <div className="site-art-page">
-          <div className="mini-header">
-            M <span>Myshkin 451</span>
-          </div>
+          <div className="mini-header">Myshkin 451</div>
           <div className="mini-title">内容</div>
           <div className="mini-columns">
             <div />
@@ -144,15 +142,17 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
       className={`entry-card entry-card-${entry.kind}`}
       style={{ '--order': index } as React.CSSProperties}
     >
-      <a
-        className="art-link"
-        href={href}
-        target={external ? '_blank' : undefined}
-        rel={external ? 'noreferrer' : undefined}
-        aria-label={`${entry.title}${external ? '（在新标签页打开）' : ''}`}
-      >
-        <EntryArtwork entry={entry} />
-      </a>
+      {(entry.kind !== 'writing' || entry.cover) && (
+        <a
+          className="art-link"
+          href={href}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noreferrer' : undefined}
+          aria-label={`${entry.title}${external ? '（在新标签页打开）' : ''}`}
+        >
+          <EntryArtwork entry={entry} />
+        </a>
+      )}
       <div className="card-meta">
         <span>
           {kindLabels[entry.kind]}

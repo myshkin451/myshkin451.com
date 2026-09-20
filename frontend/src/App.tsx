@@ -25,7 +25,8 @@ function PreviewDock() {
     }
   }
   return (
-    <>
+    <details className="preview-tools">
+      <summary>本机预览</summary>
       <aside className="preview-dock" aria-label="前端预览工具">
         <button
           className="preview-info"
@@ -74,7 +75,7 @@ function PreviewDock() {
           <Icon name="arrow" />
         </a>
       </dialog>
-    </>
+    </details>
   )
 }
 
@@ -82,24 +83,20 @@ function SiteHeader({ path }: { path: string }) {
   const { state } = usePlatform()
   const links = [
     {
-      href: '/',
+      href: '/archive',
       title: '内容',
       active:
-        path === '/' ||
-        path === '/archive' ||
-        path === '/writing' ||
+        ['/archive', '/writing', '/photos', '/projects'].includes(path) ||
         path.startsWith('/topics') ||
-        path.startsWith('/entry'),
+        path.startsWith('/entry') ||
+        path.startsWith('/play'),
     },
-    { href: '/photos', title: '影像', active: path === '/photos' },
-    { href: '/projects', title: '项目', active: path === '/projects' || path.startsWith('/play') },
     { href: '/about', title: '关于', active: path === '/about' },
     { href: '/guestbook', title: '留言', active: path === '/guestbook' },
   ]
   return (
     <header className="site-header">
       <a className="site-brand" href="#/" aria-label={`${state.settings.name} 首页`}>
-        <img src="./assets/mark.svg" alt="" width="25" height="25" />
         <span>{state.settings.name}</span>
       </a>
       <nav className="site-nav" aria-label="网站导航">
@@ -118,7 +115,6 @@ function SiteHeader({ path }: { path: string }) {
         ) : (
           '登录'
         )}
-        <Icon name="external" size={14} />
       </a>
     </header>
   )
@@ -198,7 +194,7 @@ export default function App() {
       ) : (
         <>
           <SiteHeader path={path} />
-          <main id="main" className="public-main" tabIndex={-1}>
+          <main id="main" className={`public-main ${path === '/' ? 'is-home' : ''}`} tabIndex={-1}>
             {community ? (
               <CommunityPage key={path} path={path} params={params} />
             ) : path === '/play/color' ? (
@@ -208,8 +204,9 @@ export default function App() {
             )}
           </main>
           <footer className="site-footer">
-            <a href="#/">{state.settings.name}</a>
-            <span>© {new Date().getFullYear()}</span>
+            <span>
+              © {new Date().getFullYear()} {state.settings.name}
+            </span>
             <a href="#/archive">
               全部内容
               <Icon name="arrow" size={14} />

@@ -6,7 +6,7 @@ const nicknameLimit = 30
 export function initialState(settings: Settings): StoredState {
   return {
     version: 1,
-    mode: 'sample',
+    mode: 'empty',
     entries: [],
     drafts: [],
     deletedIds: [],

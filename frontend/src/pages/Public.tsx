@@ -4,6 +4,7 @@ import { EntryArtwork, EntryCard, Icon, PhotoViewer, TextBody, primaryHref } fro
 import { formatDate, kindLabels, safeDestination } from '../types'
 import type { EntryKind } from '../types'
 import { Discussion } from './Community'
+import { Home } from './Home'
 
 let lastCollection = '#/'
 type PageProps = { path: string; params: URLSearchParams }
@@ -20,7 +21,6 @@ function updateQuery(path: string, params: URLSearchParams, values: Record<strin
 
 function Collection({ path, params }: PageProps) {
   const { entries, state } = usePlatform()
-  const home = path === '/'
   const routeKind: EntryKind | undefined =
     path === '/writing'
       ? 'writing'
@@ -43,7 +43,7 @@ function Collection({ path, params }: PageProps) {
       : '')
   const topic = routeTopic || params.get('topic') || ''
   const query = params.get('q') || ''
-  const view = params.get('view') || (home ? state.settings.homeView : 'grid')
+  const view = params.get('view') || state.settings.homeView
   const published = entries.filter((entry) => entry.status === 'published')
   const topics = [...new Set(published.flatMap((entry) => entry.topics))]
   const filtered = useMemo(
@@ -59,133 +59,107 @@ function Collection({ path, params }: PageProps) {
       ),
     [published, selectedKind, topic, query],
   )
-  const visible =
-    home && !query && !selectedKind && !topic
-      ? [...filtered].sort((a, b) => Number(b.featured) - Number(a.featured))
-      : filtered
+  const visible = filtered
   const selectedId = params.get('selected') || ''
   const selection = visible.find((entry) => entry.id === selectedId) || visible[0]
-  const change = (values: Record<string, string>) => updateQuery(path, params, values)
-  const title = home
-    ? state.settings.name
-    : routeTopic
-      ? routeTopic
-      : routeKind
-        ? kindLabels[routeKind]
-        : '全部内容'
+  const change = (values: Record<string, string>) =>
+    updateQuery(path === '/' ? '/archive' : path, params, values)
+  const title = routeTopic || (routeKind ? kindLabels[routeKind] : '全部内容')
   useEffect(() => {
     lastCollection = window.location.hash || '#/'
   }, [path, params])
 
   return (
-    <section className={`collection-page ${home ? 'home-page' : ''}`}>
+    <section className="collection-page">
       <div className="collection-heading">
         <div>
-          {home ? (
-            <span className="eyebrow">个人网站</span>
-          ) : (
-            <a className="back-link" href="#/">
-              <Icon name="back" size={15} />
-              返回首页
-            </a>
-          )}
-          <h1>
-            {title}
-            <span className="heading-period">.</span>
-          </h1>
-          {home && state.settings.intro && <p className="home-intro">{state.settings.intro}</p>}
+          <a className="back-link" href="#/">
+            <Icon name="back" size={15} />
+            返回首页
+          </a>
+          <h1>{title}</h1>
           {routeTopic && <p className="page-lead">与「{routeTopic}」相关的内容</p>}
         </div>
-        <div className="collection-heading-side">
-          <span>
-            {String(home ? published.length : visible.length).padStart(2, '0')}
-            <small>项内容</small>
-          </span>
-          {home ? (
-            <a href="#/archive">
-              浏览目录
-              <Icon name="external" size={15} />
-            </a>
-          ) : (
-            <span className="collection-kinds">文章 · 影像 · 项目</span>
-          )}
-        </div>
       </div>
-      <div className="collection-toolbar">
-        {!routeKind ? (
-          <nav className="type-filter" aria-label="按内容类型筛选">
-            {[
-              ['', '全部'],
-              ['writing', '文章'],
-              ['photo', '影像'],
-              ['project', '项目'],
-            ].map(([kind, label]) => (
-              <button
-                key={kind}
-                onClick={() => change({ kind })}
-                aria-pressed={selectedKind === kind}
-              >
-                {label}
-                <span>{published.filter((entry) => !kind || entry.kind === kind).length}</span>
-              </button>
-            ))}
-          </nav>
-        ) : (
-          <p className="collection-caption">
-            {routeKind === 'photo'
-              ? '单张与组图'
-              : routeKind === 'writing'
-                ? '文章与笔记'
-                : '网站、工具与其他尝试'}
-          </p>
-        )}
-        <div className="collection-controls">
-          <label className="search-box">
-            <Icon name="search" size={16} />
-            <input
-              type="search"
-              aria-label="搜索内容"
-              placeholder="搜索"
-              value={query}
-              onChange={(event) => change({ q: event.target.value })}
-            />
-          </label>
-          <div className="view-toggle" role="group" aria-label="浏览方式">
-            <button
-              className="icon-button"
-              onClick={() => change({ view: 'grid' })}
-              aria-label="图文视图"
-              aria-pressed={view !== 'list'}
-            >
-              <Icon name="grid" size={17} />
-            </button>
-            <button
-              className="icon-button"
-              onClick={() => change({ view: 'list' })}
-              aria-label="目录视图"
-              aria-pressed={view === 'list'}
-            >
-              <Icon name="list" size={18} />
-            </button>
+      {published.length > 0 && (
+        <>
+          <div className="collection-toolbar">
+            {!routeKind ? (
+              <nav className="type-filter" aria-label="按内容类型筛选">
+                {[
+                  ['', '全部'],
+                  ['writing', '文章'],
+                  ['photo', '影像'],
+                  ['project', '项目'],
+                ].map(([kind, label]) => (
+                  <button
+                    key={kind}
+                    onClick={() => change({ kind })}
+                    aria-pressed={selectedKind === kind}
+                  >
+                    {label}
+                    <span>{published.filter((entry) => !kind || entry.kind === kind).length}</span>
+                  </button>
+                ))}
+              </nav>
+            ) : (
+              <p className="collection-caption">
+                {routeKind === 'photo'
+                  ? '单张与组图'
+                  : routeKind === 'writing'
+                    ? '文章与笔记'
+                    : '网站、工具与其他尝试'}
+              </p>
+            )}
+            <div className="collection-controls">
+              <label className="search-box">
+                <Icon name="search" size={16} />
+                <input
+                  type="search"
+                  aria-label="搜索内容"
+                  placeholder="搜索"
+                  value={query}
+                  onChange={(event) => change({ q: event.target.value })}
+                />
+              </label>
+              <div className="view-toggle" role="group" aria-label="浏览方式">
+                <button
+                  className="icon-button"
+                  onClick={() => change({ view: 'grid' })}
+                  aria-label="图文视图"
+                  aria-pressed={view !== 'list'}
+                >
+                  <Icon name="grid" size={17} />
+                </button>
+                <button
+                  className="icon-button"
+                  onClick={() => change({ view: 'list' })}
+                  aria-label="目录视图"
+                  aria-pressed={view === 'list'}
+                >
+                  <Icon name="list" size={18} />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      {topics.length > 0 && (!home || topic) && !routeTopic && (
-        <div className="topic-filter" aria-label="按话题筛选">
-          <span>话题</span>
-          <button aria-pressed={!topic} onClick={() => change({ topic: '' })}>
-            全部
-          </button>
-          {topics.map((item) => (
-            <button
-              key={item}
-              aria-pressed={topic === item}
-              onClick={() => change({ topic: item })}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
+          {topics.length > 0 && !routeTopic && (
+            <div className="topic-filter" aria-label="按话题筛选">
+              <span>话题</span>
+              <button aria-pressed={!topic} onClick={() => change({ topic: '' })}>
+                全部
+              </button>
+              {topics.map((item) => (
+                <button
+                  key={item}
+                  aria-pressed={topic === item}
+                  onClick={() => change({ topic: item })}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
       {visible.length ? (
         view === 'list' ? (
@@ -212,7 +186,9 @@ function Collection({ path, params }: PageProps) {
               ))}
             </div>
             <article className="index-preview" key={selection.id}>
-              <EntryArtwork entry={selection} />
+              {selection.kind !== 'writing' || selection.cover ? (
+                <EntryArtwork entry={selection} />
+              ) : null}
               <div className="card-meta">
                 <span>
                   {kindLabels[selection.kind]}
@@ -239,9 +215,7 @@ function Collection({ path, params }: PageProps) {
             </article>
           </div>
         ) : (
-          <div
-            className={`entry-grid ${home && !selectedKind && !topic && !query ? 'mixed-grid' : ''}`}
-          >
+          <div className={`entry-grid ${routeKind === 'writing' ? 'writing-grid' : ''}`}>
             {visible.map((entry, index) => (
               <EntryCard key={entry.id} entry={entry} index={index} />
             ))}
@@ -249,15 +223,14 @@ function Collection({ path, params }: PageProps) {
         )
       ) : (
         <div className="collection-empty">
-          <span className="empty-cross" aria-hidden="true">
-            <Icon name="plus" size={30} />
-          </span>
-          <h2>{published.length ? '没有找到相关内容' : '暂时还没有发布内容'}</h2>
-          <p>
+          <h2>
             {published.length
-              ? '试试其他关键词，或重新选择分类。'
-              : '文章、照片和项目会出现在这里。'}
-          </p>
+              ? '没有找到相关内容'
+              : routeKind
+                ? `暂无${kindLabels[routeKind]}`
+                : '暂无公开内容'}
+          </h2>
+          {published.length > 0 && <p>试试其他关键词，或重新选择分类。</p>}
           {published.length ? (
             <button
               className="button secondary"
@@ -269,22 +242,11 @@ function Collection({ path, params }: PageProps) {
               查看全部
             </button>
           ) : (
-            <a className="text-link" href="#/guestbook">
-              先留个言
+            <a className="text-link" href="#/">
+              返回首页
               <Icon name="arrow" size={16} />
             </a>
           )}
-        </div>
-      )}
-      {home && visible.length > 0 && (
-        <div className="home-bottom">
-          <span>
-            {state.mode === 'sample' ? '当前包含排版样例' : `已发布 ${published.length} 项内容`}
-          </span>
-          <a className="text-link" href="#/archive">
-            全部内容与分类
-            <Icon name="arrow" size={16} />
-          </a>
         </div>
       )}
     </section>
@@ -522,39 +484,27 @@ function About() {
   const { state } = usePlatform()
   return (
     <section className="about-page">
-      <span className="eyebrow">关于</span>
-      <h1>
-        {state.settings.name}
-        <span className="heading-period">.</span>
-      </h1>
-      {state.settings.intro && <p className="about-intro">{state.settings.intro}</p>}
+      <a className="back-link" href="#/">
+        <Icon name="back" size={15} />
+        返回首页
+      </a>
+      <h1>关于</h1>
       <div className="about-content">
-        <div className="about-mark" aria-hidden="true">
-          <img src="./assets/mark.svg" alt="" />
-        </div>
-        <div>
-          {state.settings.about ? (
-            <TextBody text={state.settings.about} />
-          ) : (
-            <div className="about-unwritten">
-              <p>介绍还没有写。</p>
-              <p>这里可以放一段自我介绍，也可以只留下你想说的话。</p>
-              <a className="text-link" href="#/studio/settings">
-                编辑介绍
-                <Icon name="arrow" size={16} />
-              </a>
-            </div>
-          )}
-          <div className="about-links">
-            <a href="#/archive">
-              浏览内容
-              <Icon name="arrow" />
-            </a>
-            <a href="#/guestbook">
-              留言
-              <Icon name="arrow" />
-            </a>
-          </div>
+        {state.settings.about ? (
+          <TextBody text={state.settings.about} />
+        ) : (
+          <p>这是 {state.settings.name} 的个人网站，用来发布文章、照片和项目。</p>
+        )}
+        {state.settings.intro && <p className="about-intro">{state.settings.intro}</p>}
+        <div className="about-links">
+          <a href="#/archive">
+            全部内容
+            <Icon name="arrow" size={16} />
+          </a>
+          <a href="#/guestbook">
+            留言
+            <Icon name="arrow" size={16} />
+          </a>
         </div>
       </div>
     </section>
@@ -582,6 +532,14 @@ export function NotFound({
 }
 
 export function PublicPage({ path, params }: PageProps) {
+  if (path === '/' && !params.size)
+    return (
+      <Home
+        onVisit={() => {
+          lastCollection = '#/'
+        }}
+      />
+    )
   if (
     ['/', '/archive', '/writing', '/photos', '/projects'].includes(path) ||
     path.startsWith('/topics/')

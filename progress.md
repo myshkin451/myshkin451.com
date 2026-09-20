@@ -1,11 +1,11 @@
 # Progress
 
-Last updated: 2026-09-19
-Last implementation update: 2026-09-19 (connected frontend verified with local publishing and visitor flows)
+Last updated: 2026-09-21
+Last implementation update: 2026-09-21 (visitor-facing home, typography, and empty-content review)
 
 ## Current Phase
 
-Active restart: a connected local frontend is ready for review; real backend and later hosting remain.
+Active restart: the local frontend has a revised visitor-facing home ready for review; real backend and later hosting remain.
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
@@ -48,13 +48,24 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Current Implementation
 
+- September 21 visual revision: the owner rejected the generic M mark, repeated oversized name,
+  unnecessary copy, and template-like composition. The new home uses a compact wordmark, brief greeting,
+  direct type navigation, and at most three featured/recent entries. Zero content has no empty cards,
+  search controls, or zero counters. The layout is implemented for review, not accepted final branding.
+- A fresh browser starts with samples hidden; existing preferences/content are preserved. The preview
+  controls now expand from a corner. Search and layout selection live in the content index; legacy root
+  filter URLs remain usable. Text entries no longer get automatic duplicate title covers; photos keep
+  natural proportions. About and community copy addresses visitors without editor instructions.
+- The owner explicitly says the old personal-platform design skill is no longer important. Do not apply
+  its aesthetic assumptions to further iterations. Current feedback and actual browser results take priority.
+
 - [New frontend](frontend/README.md): React/Vite page suite with mixed browsing and an index, search,
   type/topic filtering, article/album/project details, an actual gradient tool, about, guestbook,
   local visitor pages, and an owner workspace. Start with `pnpm frontend:dev` on `127.0.0.1:4323`.
 - IndexedDB saves resolve after committed writes. Drafts remain separate from the public version;
   partial drafts, preview, publish/update/unpublish, image upload/order, project links, settings,
   featured items, and per-item discussion toggles work locally. Clearing browser data loses this content.
-- Six labeled samples and two existing AI-generated images show populated layouts. Hiding samples
+- Six optional labeled samples and two existing AI-generated images show populated layouts. Hiding samples
   retains custom entries and allows a true empty start. No owner work or fake visitor conversations are seeded.
 - Visitor identities and messages are local simulations. They do not collect passwords or send email.
   The workspace is intentionally available in this preview, not protected by a real admin permission boundary.
@@ -121,6 +132,12 @@ with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
 
+- September 21: real-browser review covered empty home (desktop/390px), first article publishing on a
+  separate QA origin, populated home/reading, and ten public routes at 320px without horizontal overflow
+  or captured browser warnings/errors. Legacy root search clearing was checked to remain in `/archive`.
+  Format, lint, root typecheck, 27 frontend tests, and frontend types/build passed.
+  UI/publishing QA used `127.0.0.1:4324`; the owner review origin `127.0.0.1:4323` contains no QA article.
+
 - Repository format/lint/type checks, production frontend build, 19 data-layer and 8 confirmation-flow
   tests passed on 2026-09-19. Browser verification covered reading, filtering/return state, image viewing/focus,
   actual CSS copying, IndexedDB draft/publish isolation, image upload/order, direct project entry, settings,
@@ -180,7 +197,7 @@ the current branch cleanliness or restart direction:
 ## Handoff
 
 - The resumed frontend slice passed final checks. Clean delivery origin is `127.0.0.1:4323`;
-  QA writes are isolated at `localhost:4323`. A new backend task can use this board and `frontend/README.md`
+  QA writes are isolated at `localhost:4323`. A design or backend task can use this board and `frontend/README.md`
   to recover the current boundary without inheriting the full design conversation.
 - Current authority: README, this board, decisions 0010–0012, and the restart design brief.
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.

@@ -7,7 +7,6 @@ import type { Message } from '../types'
 import './community.css'
 
 const MESSAGE_LIMIT = 1000
-const DEMO_EMAIL = 'visitor@example.test'
 const memoryDrafts = new Map<string, { body: string; parentId: string | null }>()
 
 function returnPath(value: string | null): string {
@@ -408,10 +407,12 @@ function DiscussionThread({ targetId }: { targetId: string }) {
           </p>
         )}
       </form>
-      <div className="community-thread-heading">
-        <h2>{targetId === 'guestbook' ? '留言' : '讨论'}</h2>
-        <span>{messages.length ? `${messages.length} 条` : ''}</span>
-      </div>
+      {messages.length > 0 && (
+        <div className="community-thread-heading">
+          <h2>{targetId === 'guestbook' ? '已有留言' : '讨论'}</h2>
+          <span>{messages.length} 条</span>
+        </div>
+      )}
       {messages.length ? (
         <div className="community-threads">
           {orderedThreads.map(([rootId, thread]) => (
@@ -455,9 +456,7 @@ function Guestbook() {
   return (
     <div className="community-page guestbook-layout">
       <header className="community-intro">
-        <span className="eyebrow">留言板</span>
         <h1 className="page-heading">留言</h1>
-        <p className="page-lead">欢迎留言。</p>
         <p className="community-local-note">
           当前为本机演示。留言和演示身份只保存在这个浏览器，不会公开发布。
         </p>
@@ -490,7 +489,7 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
       return
     }
     if (!nickname.trim()) {
-      setError('请填一个你喜欢的昵称。')
+      setError('请填写昵称。')
       return
     }
     setPending(true)
@@ -512,27 +511,12 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
           ← 返回
         </a>
         <header>
-          <span className="eyebrow">{recovery ? '账号帮助' : '访客账号'}</span>
           <h1 id="community-auth-title">
-            {recovery ? '找回账号' : register ? '认识一下' : '欢迎回来'}
+            {recovery ? '账号找回' : register ? '创建留言身份' : '留言身份'}
           </h1>
-          <p>
-            {recovery ? '以后，你可以通过注册邮箱找回账号。' : '留下一个昵称，参与留言和讨论。'}
-          </p>
+          <p>{recovery ? '当前为本机演示，尚未提供账号找回。' : '这个昵称会显示在你的留言旁。'}</p>
         </header>
         <form onSubmit={submit} className="community-auth-form">
-          <div className="field">
-            <label className="field-label" htmlFor={`${fieldId}-email`}>
-              邮箱 <span className="community-field-note">演示</span>
-            </label>
-            <input
-              id={`${fieldId}-email`}
-              type="email"
-              value={DEMO_EMAIL}
-              readOnly
-              aria-describedby={`${fieldId}-demo`}
-            />
-          </div>
           {!recovery && (
             <div className="field">
               <label className="field-label" htmlFor={`${fieldId}-nickname`}>
@@ -547,11 +531,14 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
                 autoComplete="off"
                 maxLength={24}
                 disabled={pending}
+                aria-describedby={`${fieldId}-demo`}
               />
             </div>
           )}
           <p id={`${fieldId}-demo`} className="community-demo-note">
-            这是本机账号体验，无需真实邮箱或密码。演示身份只在当前浏览器中使用。
+            {recovery
+              ? '演示身份保存在当前浏览器。退出后再次进入会创建新身份。'
+              : '本机演示：身份和留言只保存在当前浏览器，无需邮箱或密码。'}
           </p>
           {error && (
             <p className="form-error" role="alert" ref={errorRef} tabIndex={-1}>
@@ -566,7 +553,7 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
             {pending
               ? '保存中…'
               : recovery
-                ? '预览找回提示'
+                ? '查看说明'
                 : register
                   ? '创建演示身份'
                   : '以演示身份继续'}
@@ -574,13 +561,13 @@ function AuthPanel({ path, params }: { path: string; params: URLSearchParams }) 
           </button>
           {recoveryNotice && (
             <p className="form-notice" role="status" tabIndex={-1} ref={noticeRef}>
-              尚未发送邮件。这是找回流程的界面预览；真实账号和邮件服务接入后，才能发送找回链接。
+              无法恢复已退出的演示身份。你可以返回登录，创建新的留言身份。
             </p>
           )}
         </form>
         <div className="community-auth-links">
           <a href={`#${authLink(register || recovery ? 'login' : 'register', destination)}`}>
-            {register || recovery ? '返回登录' : '第一次来？注册账号'}
+            {register || recovery ? '返回登录' : '创建演示身份'}
           </a>
           {!register && !recovery && <a href={`#${authLink('recover', destination)}`}>找回账号</a>}
         </div>

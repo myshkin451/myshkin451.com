@@ -29,11 +29,11 @@ export const sampleEntries: Entry[] = [
     id: 'coast',
     kind: 'photo',
     title: '海与山',
-    summary: '两张图像，一组观看的顺序。',
+    summary: '',
     topics: ['自然', '视觉'],
     cover: './assets/sea.png',
     featured: true,
-    body: '这组图像用于试验影像的排版与浏览。两张图片均为 AI 生成样例，之后可以替换为你自己的照片。',
+    body: '两张 AI 生成图片，用于展示相册排版。',
     photos: [
       {
         id: 'sea',
@@ -105,7 +105,7 @@ export const sampleEntries: Entry[] = [
     id: 'this-site',
     kind: 'project',
     title: '这个网站',
-    summary: '首页、文章、影像，以及一个可以慢慢更新的个人网站。',
+    summary: '本网站的源代码与开发记录。',
     topics: ['设计'],
     destination: 'https://github.com/myshkin451/myshkin451.com',
     artwork: 'site',
