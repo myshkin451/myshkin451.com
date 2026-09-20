@@ -1,13 +1,17 @@
 # Progress
 
 Last updated: 2026-09-21
-Last implementation update: 2026-09-21 (visitor-facing home, typography, and empty-content review)
+Last implementation update: 2026-09-21 (real publishing, Supabase permissions, and Next.js website)
 
 ## Current Phase
 
-Active restart: the local frontend is ready as the starting point for a new task completing real
-publishing, visitor interaction, and deployment. The owner delegates technical execution, retaining
-account, payment, and other unavoidable personal steps. No production capability is claimed yet.
+Active delivery: the real backend and website are implemented; local browser and restore acceptance passed.
+The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
+personal steps. Supabase and Vercel accounts are registered; the initial migration has been applied to
+the empty free Supabase project in Singapore and migration version `202609210001` is recorded.
+Brevo registration and Free selection are complete. The official Vercel GitHub app is authorized for
+`myshkin451/myshkin451.com` only, and Vercel can import it.
+No public website deployment or real external email delivery has been verified yet.
 
 [Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
 goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
@@ -21,8 +25,8 @@ No final visual direction or production deployment is claimed.
 
 [Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
 without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
-deferral of comments is superseded. These flows now have a local frontend implementation; real
-visitor authentication and shared persistence remain pending.
+deferral of comments is superseded. These flows now have both the original local preview and a real
+Supabase implementation under [decision 0013](docs/decisions/0013-production-supabase-and-next.md).
 
 [Decision 0012](docs/decisions/0012-independent-frontend-and-rebuild-authority.md) records the owner's
 explicit permission to rethink old engineering/design/skills and the independent `frontend/` boundary.
@@ -45,10 +49,34 @@ selective reuse and comparison; the new frontend does not claim production accep
 - Do not constrain exploration with the old platform-console brief or platform-specific skill.
 - Evaluate old engineering for reuse on its merits; it must not constrain the new publishing experience.
 - Build home, writing, projects, and a compact about surface before expanding empty future modules.
-- Favor simple hosted operations appropriate to low traffic. Provider, budget, and final domain are open.
+- Use Supabase Free and Vercel Hobby for the initial personal, noncommercial site, with Singapore selected
+  for the database and application. Keep costs at zero; paid upgrades and the final domain remain separate decisions.
 - Keep Myshkin 451 and the GitHub repository name as working anchors; neither implies control of the old domain.
 
 ## Current Implementation
+
+- `site/` is the selected Next.js application and reuses the current Chinese page/editor components.
+  It provides real paths, public server-rendered HTML, metadata, canonical URLs, sitemap, robots and `/health`.
+  Only public keys are present in the website; service-role credentials are confined to maintenance.
+- Supabase migrations implement verified email/password accounts, explicit owner grants, separate draft
+  and published records, immutable private media, moderated comments/replies, ownership checks and rate limits.
+  The editor uploads actual image bytes and retains canonical references. Published media signatures last
+  60 seconds; withdrawing content blocks new signatures, not copies already downloaded.
+- Public pages never seed demonstration content or expose the local preview dock. First owner access
+  requires an explicit database grant after the real account is verified. Email features remain disabled
+  in a new cloud deployment until custom SMTP and actual confirmation/recovery delivery are verified.
+- Local backend acceptance uses `127.0.0.1:4325`, Supabase API `55421`, and a separate restore target
+  on API `55521`. Synthetic accounts, content and media belong only to these isolated local projects.
+  The existing owner design preview at `127.0.0.1:4323` remains untouched.
+- Backup/restore scripts cover supported email/password identities, business data and complete media
+  bytes with hashes. The actual separate-target restore recovered 18 rows and 2 media objects; 123
+  identity, permission, content and restart assertions passed. A subsequent API/database binding guard
+  is implemented but its targeted live test awaits approval after automatic review retained an earlier
+  read-only subtask restriction. It must pass before relying on the final restore tool.
+  See [local acceptance](docs/operations/LOCAL_ACCEPTANCE.md), the [runbook](docs/operations/RUNBOOK.md)
+  and [API contract](docs/operations/API_CONTRACT.md).
+
+### Independent local design preview
 
 - September 21 visual revision: the owner rejected the generic M mark, repeated oversized name,
   unnecessary copy, and template-like composition. The new home uses a compact wordmark, brief greeting,
@@ -71,8 +99,9 @@ selective reuse and comparison; the new frontend does not claim production accep
   retains custom entries and allows a true empty start. No owner work or fake visitor conversations are seeded.
 - Visitor identities and messages are local simulations. They do not collect passwords or send email.
   The workspace is intentionally available in this preview, not protected by a real admin permission boundary.
-- Real authentication, account recovery, durable server media, cross-device publishing, curated series,
-  manual homepage ordering, and production URLs remain unfinished. `frontend/README.md` owns exact limits.
+- The Vite preview intentionally keeps simulated accounts and browser persistence. The real implementation
+  lives in `site/` with the remote platform adapter. Curated series and manual homepage ordering remain
+  outside this delivery. `frontend/README.md` explains the two modes.
 
 ### Historical application and design studies
 
@@ -109,16 +138,17 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Continue in a new task using the [production handoff](docs/operations/PRODUCTION_HANDOFF.md).
-   Research current hosting constraints, prove one viable integration, and document the chosen backend
-   and reuse/replacement boundary. Current pages remain the starting point, not final visual acceptance.
-2. Connect real content/media persistence, authenticated owner publishing, and stable public routes.
-   Verify draft isolation, convenient editing, empty-content layouts, and independent-session visibility.
-3. Complete real visitor registration/sign-in, recovery, messages/replies and moderation. Keep owner and
-   visitor permissions separate; resolve Payload's broad authenticated-user rules first if it is reused.
-4. Finish deployment, backup/restore, browser and permission verification, owner-network access checks,
-   and a short operating guide. Batch concrete signup/payment/authorization steps for the owner after
-   completing independent work. Visitor interaction remains in this delivery, not silently deferred.
+1. Verify the API/database binding guard on the third isolated local target. Original browser and
+   separate-target restore/restart acceptance are complete; keep fixtures local.
+2. Deploy `site/` through Vercel after integrating verified code to `main`.
+   Configure exact origin/callback URLs and Production-only public environment values. Until an isolated
+   preview backend exists, do not connect Preview deployments to the production database.
+3. Activate and verify custom SMTP for non-team recipient registration, confirmation and recovery;
+   verify owner access and real owner-network behavior. Brevo Free is the current candidate, not yet proven.
+4. Complete [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1), integrate the main branch,
+   and record actual cloud acceptance. Browser control has intermittent timeouts; recheck the current
+   provider page before making changes rather than assuming an attempted navigation or save succeeded.
+   The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) remains the acceptance contract.
 
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
 domain purchase, or provider account is authorized by implication; prepare those choices concretely.
@@ -126,14 +156,41 @@ domain purchase, or provider account is authorized by implication; prepare those
 ## Open Decisions
 
 - Final visual/interaction direction after prototype feedback.
-- Production frontend/backend integration and reuse or replacement of the historical stack.
-- Production hosting combination, monthly budget, region, and launch acceptance after the usable slice.
+- Any paid budget or upgrade beyond the selected free initial hosting combination.
 - Final domain and any public identity change beyond the current working name.
 
 The old AWS launch-timing decision is superseded by 0010 and removed. Resolve each remaining item
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
+
+- September 21 real-backend checks: 155 API assertions passed against local Supabase, including anonymous,
+  owner and two independent visitors, spoofed roles/authors, unverified users, draft/media visibility,
+  reply targets, other-user mutations, moderation and concurrent message limits. Database lint passed.
+- Next.js was upgraded to 16.3.5 before deployment, covering the official August 2026 security fixes.
+  `site:build`, repository format/lint/types, all 51 frontend tests and the Vite build passed.
+  Two browser sessions also passed publishing, draft isolation, moderation, account recovery and 320px
+  layout checks. Actual restore/restart acceptance passed; the later connection-binding guard still
+  needs its focused live test. Compatible transitive updates removed
+  all audit findings on the Next, React, React DOM and Supabase dependency paths. The root production
+  audit still reports 0 critical / 21 high / 25 moderate / 7 low findings. This is not a clean repository-wide audit; historical Payload and
+  its dependency graph are retained for reference and are not deployed by `site/`.
+- Cloud registration is not cloud acceptance. SMTP activation/delivery, Vercel deployment, production
+  permission checks and access from the owner's real network remain unverified. Free Supabase may pause
+  after one week of inactivity, provides no automatic backup, and has 500 MB DB / 1 GB storage limits.
+  Vercel Hobby is for personal noncommercial use. No paid plan or new domain is required for the first run.
+- Cloud migration evidence: the SQL Editor reported success after the empty-project preflight. All
+  17 function bodies/identity signatures match the local aggregate digest
+  `3463defae96bcb42afa0fadcaa164d17`; all 7 application tables have RLS and the media bucket is private.
+  Auth accounts and published entries remain zero. This checks migration consistency, not live email or full runtime acceptance.
+- SQL Editor subsequently recorded migration version `202609210001`, name `platform`, with
+  `statements = NULL` after checking that the history table was absent. The dashboard's option to enable
+  RLS was selected for the history table. Existing application migration SQL was not rerun.
+- [PR #1](https://github.com/myshkin451/myshkin451.com/pull/1) is a draft. Both Stable checks and Production
+  platform CI passed for implementation head `e881bc1`; the subsequent operations changes are not covered
+  by that CI result. No main-branch integration or Vercel deployment has occurred yet.
+
+### Earlier preview and historical verification
 
 - September 21: real-browser review covered empty home (desktop/390px), first article publishing on a
   separate QA origin, populated home/reading, and ten public routes at 320px without horizontal overflow
@@ -206,7 +263,7 @@ the current branch cleanliness or restart direction:
 - The resumed frontend slice passed final checks. Clean delivery origin is `127.0.0.1:4323`;
   QA writes are isolated at `localhost:4323`. A design or backend task can use this board and `frontend/README.md`
   to recover the current boundary without inheriting the full design conversation.
-- Current authority: README, this board, decisions 0010–0012, and the restart design brief.
+- Current authority: README, this board, decisions 0010–0013, the runbook, and the restart design brief.
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.

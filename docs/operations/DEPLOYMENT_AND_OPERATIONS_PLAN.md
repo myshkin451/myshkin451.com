@@ -2,7 +2,10 @@
 
 更新与资料核查：2026-09-16
 
-状态：候选方案研究。尚未选择供应商、开通资源或验证实际部署。
+状态：2026-09-16 的候选方案研究，保留为历史依据。2026-09-21 已由
+[决策 0013](../decisions/0013-production-supabase-and-next.md) 选择 Next.js + Supabase + Vercel；
+当前配置与操作看 [运行说明](RUNBOOK.md)，实际云端验收状态看 [progress.md](../../progress.md)。
+以下旧应用约束和授权边界不代表当前实施状态。
 
 [决策 0010](../decisions/0010-creator-first-restart.md) 已取消 AWS 优先和 AWS 学习前置条件。
 先完成设计与可用网站，再按实际需求部署。[旧 AWS 手册](MANUAL_AWS_LAUNCH_RUNBOOK.md) 保留为历史参考。

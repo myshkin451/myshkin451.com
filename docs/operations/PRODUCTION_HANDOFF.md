@@ -1,6 +1,8 @@
 # 从本机前端到可上线的个人平台
 
-日期：2026-09-21。状态：下一阶段执行范围，尚未完成生产接入。
+日期：2026-09-21。本文保留本阶段的委托与完成标准；实施已按
+[决策 0013](../decisions/0013-production-supabase-and-next.md) 推进。
+当前代码、验收和云端状态以 [progress.md](../../progress.md) 为准，实际操作看 [运行说明](RUNBOOK.md)。
 
 ## 本次委托
 
@@ -23,7 +25,7 @@
 - [部署研究](DEPLOYMENT_AND_OPERATIONS_PLAN.md)：候选方案和上线验收，价格及限制需重新核实。
 - [设计简报](../design/RESTART_BRIEF.md)：当前反馈；历史提案不等于用户已选择。
 
-当前视觉实现基线为 `3cb16b3`。`frontend/` 是 React/Vite + IndexedDB；根目录另有历史
+交接时的视觉实现基线为 `3cb16b3`。当时 `frontend/` 是 React/Vite + IndexedDB；根目录另有历史
 Next/Payload/PostgreSQL 应用。新前端尚未接入这个后端。不能直接部署静态预览并声称完成平台。
 已有本机数据按来源保留，不自动迁移或把样例、QA 文章、演示身份放入生产环境。
 
