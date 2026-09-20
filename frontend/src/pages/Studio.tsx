@@ -1,9 +1,12 @@
+import { useUnsavedWork } from '../useUnsavedWork'
+import { NoteWorkspace } from './NoteWorkspace'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useConfirm } from '../Confirm'
 import { go, replaceRoute, SiteLink } from '../navigation'
 import { usePlatform } from '../platform'
 import {
   formatDate,
+  entryLabel,
   kindLabels,
   newEntry,
   safeDestination,
@@ -14,106 +17,12 @@ import {
 } from '../types'
 import './studio.css'
 
-const kinds: EntryKind[] = ['writing', 'photo', 'project']
+const kinds: EntryKind[] = ['writing', 'photo', 'project', 'note']
 const maxPhotos = 20
 const maxImageBytes = 10 * 1024 * 1024
 
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : '没有保存成功，请重试。当前修改仍保留在编辑器里。'
-}
-
-function useUnsavedWork(dirty: boolean) {
-  const confirm = useConfirm()
-  const allowNext = useRef(false)
-  const allowUnload = useRef(false)
-  const mounted = useRef(true)
-  useEffect(() => {
-    mounted.current = true
-    return () => {
-      mounted.current = false
-    }
-  }, [])
-  useEffect(() => {
-    if (!dirty) return
-    const previousUrl = window.location.href
-    let deciding = false
-    const confirmLeave = async (resume: () => void) => {
-      if (deciding) return
-      deciding = true
-      const accepted = await confirm({
-        title: '离开编辑器？',
-        description: '还有未保存的修改。离开后，这些修改不会保留。',
-        confirmLabel: '放弃修改并离开',
-        cancelLabel: '继续编辑',
-        danger: true,
-      })
-      deciding = false
-      if (mounted.current && accepted) resume()
-    }
-    const beforeUnload = (event: BeforeUnloadEvent) => {
-      if (allowUnload.current) {
-        allowUnload.current = false
-        return
-      }
-      event.preventDefault()
-      event.returnValue = ''
-    }
-    const onClick = (event: MouseEvent) => {
-      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-        return
-      const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]')
-      if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) return
-      const target = new URL(anchor.href, window.location.href)
-      if (target.href === window.location.href) return
-      const current = new URL(window.location.href)
-      const sameDocument =
-        target.origin === current.origin &&
-        target.pathname === current.pathname &&
-        target.search === current.search
-      if (sameDocument && target.hash && !target.hash.startsWith('#/')) return
-      // Stop both the browser default and any React router handler before awaiting a decision.
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      void confirmLeave(() => {
-        if (sameDocument) {
-          allowNext.current = true
-          window.location.hash = target.hash
-        } else {
-          allowUnload.current = true
-          window.location.assign(target.href)
-          // Non-document protocols may not unload the page; do not leave its close guard disabled.
-          window.setTimeout(() => {
-            allowUnload.current = false
-          }, 0)
-        }
-      })
-    }
-    const onHashChange = (event: HashChangeEvent) => {
-      if (allowNext.current) {
-        allowNext.current = false
-        return
-      }
-      const target = new URL(event.newURL)
-      window.history.replaceState(null, '', previousUrl)
-      event.stopImmediatePropagation()
-      void confirmLeave(() => {
-        allowNext.current = true
-        window.location.hash = target.hash
-      })
-    }
-    document.addEventListener('click', onClick, true)
-    window.addEventListener('hashchange', onHashChange, true)
-    window.addEventListener('beforeunload', beforeUnload)
-    return () => {
-      document.removeEventListener('click', onClick, true)
-      window.removeEventListener('hashchange', onHashChange, true)
-      window.removeEventListener('beforeunload', beforeUnload)
-    }
-  }, [confirm, dirty])
-  return (leavingDocument = false) => {
-    allowNext.current = true
-    allowUnload.current = leavingDocument
-  }
 }
 
 function Arrow({ direction = 'right' }: { direction?: 'right' | 'left' }) {
@@ -133,7 +42,6 @@ function StudioHeader({ path }: { path: string }) {
   return (
     <header className="studio-header">
       <SiteLink className="studio-brand" href="#/studio">
-        <img className="studio-brand-mark" src="/assets/mark.svg" alt="" width="25" height="25" />
         <span>
           {state.settings.name}
           <small>工作台</small>
@@ -141,9 +49,17 @@ function StudioHeader({ path }: { path: string }) {
       </SiteLink>
       <nav aria-label="工作台导航" className="studio-nav">
         <SiteLink
+          href="#/studio/notes"
+          aria-current={path.startsWith('/studio/notes') ? 'page' : undefined}
+        >
+          随记
+        </SiteLink>
+        <SiteLink
           href="#/studio"
           aria-current={
-            !path.startsWith('/studio/settings') && !path.startsWith('/studio/comments')
+            !path.startsWith('/studio/settings') &&
+            !path.startsWith('/studio/comments') &&
+            !path.startsWith('/studio/notes')
               ? 'page'
               : undefined
           }
@@ -204,7 +120,7 @@ function ContentList() {
           (status === 'published'
             ? isPublished(entry.id)
             : hasDraft(entry.id) || !isPublished(entry.id))) &&
-        `${entry.title} ${entry.summary} ${entry.topics.join(' ')}`
+        `${entry.title} ${entry.summary} ${entry.body} ${entry.topics.join(' ')}`
           .toLowerCase()
           .includes(search.trim().toLowerCase()),
     )
@@ -218,6 +134,9 @@ function ContentList() {
           <p className="muted">管理已发布内容和草稿。</p>
         </div>
       </div>
+      <SiteLink className="studio-note-shortcut" href="#/studio/notes">
+        写一条随记 <Arrow />
+      </SiteLink>
       <div className="studio-create-row">
         <SiteLink href="#/studio/new?kind=writing" className="studio-create-card">
           <span className="studio-create-symbol" aria-hidden="true">
@@ -225,7 +144,7 @@ function ContentList() {
           </span>
           <span>
             <strong>写文章</strong>
-            <small>文字、小记或长篇</small>
+            <small>完整的写作</small>
           </span>
           <Arrow />
         </SiteLink>
@@ -312,7 +231,14 @@ function ContentList() {
             const draft = hasDraft(entry.id)
             return (
               <article className="studio-entry-row" key={entry.id}>
-                <SiteLink className="studio-entry-main" href={`#/studio/edit/${entry.id}`}>
+                <SiteLink
+                  className="studio-entry-main"
+                  href={
+                    entry.kind === 'note'
+                      ? `#/studio/notes?edit=${entry.id}`
+                      : `#/studio/edit/${entry.id}`
+                  }
+                >
                   <span className={`studio-entry-thumb studio-entry-thumb-${entry.kind}`}>
                     {entry.cover || entry.photos[0]?.src ? (
                       <img src={entry.cover || entry.photos[0].src} alt="" />
@@ -323,7 +249,7 @@ function ContentList() {
                     )}
                   </span>
                   <span className="studio-entry-text">
-                    <strong>{entry.title || '未命名'}</strong>
+                    <strong>{entryLabel(entry)}</strong>
                     <span>
                       {kindLabels[entry.kind]}
                       {entry.topics.length > 0 && <> · {entry.topics.join(' / ')}</>}
@@ -337,7 +263,14 @@ function ContentList() {
                 <time className="studio-entry-date" dateTime={entry.updatedAt}>
                   {formatDate(entry.updatedAt)}
                 </time>
-                <SiteLink className="studio-entry-edit" href={`#/studio/edit/${entry.id}`}>
+                <SiteLink
+                  className="studio-entry-edit"
+                  href={
+                    entry.kind === 'note'
+                      ? `#/studio/notes?edit=${entry.id}`
+                      : `#/studio/edit/${entry.id}`
+                  }
+                >
                   编辑 <Arrow />
                 </SiteLink>
               </article>
@@ -605,7 +538,7 @@ function EntryEditor({ id, kind }: { id?: string; kind: EntryKind }) {
     if (
       !(await confirm({
         title: '删除这篇内容？',
-        description: `「${entry.title || '未命名'}」及它的草稿将被删除。此操作无法撤销。`,
+        description: `「${entryLabel(entry)}」及它的草稿将被删除。此操作无法撤销。`,
         confirmLabel: '删除内容',
         cancelLabel: '保留内容',
         danger: true,
@@ -1254,7 +1187,7 @@ function CommentsPage() {
                     {message.targetId === 'guestbook' ? (
                       <SiteLink href="#/guestbook">留言板</SiteLink>
                     ) : entry?.status === 'published' ? (
-                      <SiteLink href={`#/entry/${entry.id}`}>{entry.title || '未命名'}</SiteLink>
+                      <SiteLink href={`#/entry/${entry.id}`}>{entryLabel(entry)}</SiteLink>
                     ) : (
                       '已撤下的内容'
                     )}
@@ -1342,12 +1275,21 @@ export function StudioPage({ path, params }: { path: string; params: URLSearchPa
           <div className="studio-content">
             <p role="status">{platform.remote ? '正在读取内容…' : '正在读取本机内容…'}</p>
           </div>
+        ) : path === '/studio/notes' || (path === '/studio/new' && kind === 'note') ? (
+          <NoteWorkspace params={params} />
         ) : path === '/studio/settings' ? (
           <SettingsPage />
         ) : path === '/studio/comments' ? (
           <CommentsPage />
         ) : path === '/studio/new' ? (
           <EntryEditor key={`new-${kind}`} kind={kind} />
+        ) : path.startsWith('/studio/edit/') &&
+          [...platform.entries, ...platform.drafts].some(
+            (entry) => entry.kind === 'note' && entry.id === path.slice('/studio/edit/'.length),
+          ) ? (
+          <NoteWorkspace
+            params={new URLSearchParams({ edit: path.slice('/studio/edit/'.length) })}
+          />
         ) : path.startsWith('/studio/edit/') ? (
           <EntryEditor key={path} id={path.slice('/studio/edit/'.length)} kind="writing" />
         ) : (

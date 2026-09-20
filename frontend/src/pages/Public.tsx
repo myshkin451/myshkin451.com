@@ -2,10 +2,11 @@ import { SiteLink, currentRoute, replaceRoute, go } from '../navigation'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { usePlatform } from '../platform'
 import { EntryArtwork, EntryCard, Icon, PhotoViewer, TextBody, primaryHref } from '../ui'
-import { formatDate, kindLabels, safeDestination } from '../types'
+import { entryLabel, formatDate, kindLabels, safeDestination } from '../types'
 import type { EntryKind } from '../types'
 import { Discussion } from './Community'
 import { Home } from './Home'
+import { Notes, NoteDetail } from './Notes'
 
 let lastCollection = '#/'
 const collectionStorageKey = 'myshkin-last-collection'
@@ -68,7 +69,7 @@ function Collection({ path, params }: PageProps) {
   const requestedKind = params.get('kind')
   const selectedKind =
     routeKind ||
-    (['writing', 'photo', 'project'].includes(requestedKind || '')
+    (['writing', 'photo', 'project', 'note'].includes(requestedKind || '')
       ? (requestedKind as EntryKind)
       : '')
   const topic = routeTopic || params.get('topic') || ''
@@ -83,7 +84,7 @@ function Collection({ path, params }: PageProps) {
           (!selectedKind || entry.kind === selectedKind) &&
           (!topic || entry.topics.includes(topic)) &&
           (!query ||
-            `${entry.title} ${entry.summary} ${entry.body} ${entry.topics.join(' ')}`
+            `${entryLabel(entry)} ${entry.summary} ${entry.body} ${entry.topics.join(' ')}`
               .toLocaleLowerCase()
               .includes(query.trim().toLocaleLowerCase())),
       ),
@@ -119,6 +120,7 @@ function Collection({ path, params }: PageProps) {
                 {[
                   ['', '全部'],
                   ['writing', '文章'],
+                  ['note', '随记'],
                   ['photo', '影像'],
                   ['project', '项目'],
                 ].map(([kind, label]) => (
@@ -204,7 +206,7 @@ function Collection({ path, params }: PageProps) {
                 >
                   <span className="index-number">{String(index + 1).padStart(2, '0')}</span>
                   <span className="index-row-name">
-                    {entry.title}
+                    {entryLabel(entry)}
                     <small>
                       {entry.sample ? '样例 · ' : ''}
                       {entry.topics.join(' / ')}
@@ -216,7 +218,7 @@ function Collection({ path, params }: PageProps) {
               ))}
             </div>
             <article className="index-preview" key={selection.id}>
-              {selection.kind !== 'writing' || selection.cover ? (
+              {!['writing', 'note'].includes(selection.kind) || selection.cover ? (
                 <EntryArtwork entry={selection} />
               ) : null}
               <div className="card-meta">
@@ -226,8 +228,8 @@ function Collection({ path, params }: PageProps) {
                 </span>
                 <span>{formatDate(selection.publishedAt)}</span>
               </div>
-              <h2>{selection.title}</h2>
-              <p>{selection.summary}</p>
+              <h2>{entryLabel(selection)}</h2>
+              <p>{selection.kind === 'note' ? selection.body : selection.summary}</p>
               <SiteLink
                 className="text-link"
                 href={primaryHref(selection)}
@@ -284,7 +286,7 @@ function Collection({ path, params }: PageProps) {
 }
 
 function EntryPage({ id, draft }: { id: string; draft: boolean }) {
-  const { entries, drafts, remote } = usePlatform()
+  const { entries, drafts, remote, authReady } = usePlatform()
   // SSR always emits a safe deterministic link. Hydration restores this tab's
   // collection route, including its filters and selection, after a document load.
   const collection = useSyncExternalStore(noCollectionSubscription, restoredCollection, () => '#/')
@@ -294,6 +296,12 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
   const [viewerIndex, setViewerIndex] = useState<number | null>(null)
   const [largeType, setLargeType] = useState(false)
   const [photoLayout, setPhotoLayout] = useState<'story' | 'overview'>('story')
+  if (draft && remote && !authReady)
+    return (
+      <p className="community-notice" role="status">
+        正在读取草稿…
+      </p>
+    )
   if (!entry)
     return (
       <NotFound
@@ -301,6 +309,7 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
         text="这项内容可能还没有发布，或已被移除。"
       />
     )
+  if (entry.kind === 'note') return <NoteDetail entry={entry} draft={draft} />
   const headings = entry.body
     .split(/\n\s*\n/)
     .filter((block) => block.startsWith('## '))
@@ -342,7 +351,7 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
             </SiteLink>
           ))}
         </div>
-        <h1>{entry.title}</h1>
+        <h1>{entryLabel(entry)}</h1>
         {entry.summary && <p>{entry.summary}</p>}
         {entry.kind === 'project' && destination && (
           <SiteLink
@@ -388,7 +397,9 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
             </button>
           </aside>
           <div className={`article-copy ${largeType ? 'large-type' : ''}`}>
-            {entry.cover && <img className="article-cover" src={entry.cover} alt={entry.title} />}
+            {entry.cover && (
+              <img className="article-cover" src={entry.cover} alt={entryLabel(entry)} />
+            )}
             <TextBody text={entry.body} />
             <span className="article-end" aria-label="正文结束" />
           </div>
@@ -565,6 +576,7 @@ export function NotFound({
 }
 
 export function PublicPage({ path, params }: PageProps) {
+  if (path === '/notes') return <Notes params={params} />
   if (path === '/' && !params.size)
     return (
       <Home

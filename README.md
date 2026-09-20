@@ -16,6 +16,7 @@ This repository intentionally does not continue an older blog architecture. The 
 - Start with home, writing, projects, and a small about surface. Let actual content justify expansion.
 - Reuse or replace the old foundation according to the publishing experience; prior code and design skills are not constraints.
 - Make the site usable with no published work and make routine writing, photo, and project updates easy.
+- Keep immediate thoughts alongside longer work: public notes, published only by the owner.
 - Include visitor accounts and a small message/comment experience, with owner management kept separate.
 - Prefer low-maintenance hosting suited to a small personal site. AWS study is no longer a launch requirement.
 - Keep Myshkin 451 as a working name. The expired domain is not a dependency; the final domain is open.
@@ -28,6 +29,10 @@ The zero-content start and visitor interaction scope are recorded in
 permission to rethink the foundation and the independent frontend boundary.
 The owner-facing [design brief](docs/design/RESTART_BRIEF.md) separates confirmed goals from design
 hypotheses. Older platform-specific skills and references are context, not a fixed aesthetic brief.
+
+[Decision 0014](docs/decisions/0014-single-author-notes.md) adds the public notes timeline and a title-free
+owner editor. See [notes usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md). The owner has deferred
+domain purchase; the existing Vercel address remains the deployment target.
 
 ## Engineering Stance
 

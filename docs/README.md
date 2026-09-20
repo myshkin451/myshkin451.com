@@ -17,6 +17,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - [Runbook](operations/RUNBOOK.md): current publishing, account setup, deployment, backup, restore, and rollback instructions.
 - [Local acceptance](operations/LOCAL_ACCEPTANCE.md): actual separate-target account/media restore, restart and permission evidence, with remaining verification boundaries.
+- [随记使用与验收](operations/NOTES_ACCEPTANCE.md)：单人短文字发布、验证范围与域名/邮件接续。
 - [Cloud acceptance](operations/CLOUD_ACCEPTANCE.md): actual Vercel deployment, cloud configuration and public checks, with pending email and owner acceptance.
 - [API contract](operations/API_CONTRACT.md): Supabase tables, permissions, RPCs, media access, and integration checks.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: historical hosting comparison; current selection is decision 0013.
@@ -30,6 +31,7 @@ This repository uses a small documentation system that should grow only when the
   convenient owner publishing, and visitor account/message scope.
 - `docs/decisions/0012-independent-frontend-and-rebuild-authority.md`: permission to rethink the old foundation and the current local frontend boundary.
 - `docs/decisions/0013-production-supabase-and-next.md`: real backend and website architecture, hosted services, data ownership, and free-tier constraints.
+- `docs/decisions/0014-single-author-notes.md`：单人发布、公开阅读的随记与增量迁移。
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

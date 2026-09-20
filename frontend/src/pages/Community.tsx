@@ -12,7 +12,7 @@ const memoryDrafts = new Map<string, { body: string; parentId: string | null }>(
 function returnPath(value: string | null): string {
   if (!value || /[\\\s#]/.test(value)) return '/guestbook'
   const path = value.split('?')[0]
-  return /^\/(?:|guestbook|account|studio(?:\/(?:new|settings|comments|edit\/[^/]+))?|archive|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
+  return /^\/(?:|guestbook|account|studio(?:\/(?:new|notes|settings|comments|edit\/[^/]+))?|archive|notes|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
     path,
   )
     ? value

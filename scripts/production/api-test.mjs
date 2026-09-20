@@ -172,6 +172,94 @@ try {
   denied(await alice.client.rpc('save_profile', { nickname: 'x'.repeat(31) }), 'nickname length')
   denied(await alice.client.schema('private').rpc('is_owner'), 'private helpers not exposed by API')
 
+  const note = entry('note', { title: '', body: '第一条随记。', discussion: false })
+  denied(
+    await anonymous.rpc('save_entry', { entry: note, publish: true }),
+    'anonymous cannot publish notes',
+  )
+  denied(
+    await alice.client.rpc('save_entry', { entry: note, publish: true }),
+    'visitors cannot publish notes',
+  )
+  ok(await owner.client.rpc('save_entry', { entry: note }), 'save title-free note draft')
+  equal(await get(anonymous, 'published_entries', note.id), [], 'note draft is private')
+  equal(await get(bob.client, 'entry_drafts', note.id), [], 'second visitor cannot read note draft')
+  denied(
+    await owner.client.rpc('save_entry', { entry: { ...note, body: ' \n\t' }, publish: true }),
+    'blank note rejected',
+  )
+  denied(
+    await owner.client.rpc('save_entry', {
+      entry: { ...note, body: '字'.repeat(5001) },
+      publish: true,
+    }),
+    'long note rejected',
+  )
+  denied(
+    await owner.client.rpc('save_entry', { entry: { ...note, body: '字'.repeat(5001) } }),
+    'long note draft rejected',
+  )
+  const liveNote = ok(
+    await owner.client.rpc('save_entry', {
+      entry: { ...note, body: '🌙'.repeat(5000) },
+      publish: true,
+    }),
+    'unicode codepoint note boundary accepted',
+  )
+  equal(
+    (await get(anonymous, 'published_entries', note.id))[0].data.title,
+    '',
+    'note never requires invented title',
+  )
+  equal(
+    (await get(anonymous, 'published_entries', note.id))[0].data.body,
+    liveNote.body,
+    'note body is public',
+  )
+  denied(
+    await bob.client.rpc('add_message', { target_id: note.id, body: 'not allowed' }),
+    'notes can close discussion',
+  )
+  ok(
+    await owner.client.rpc('save_entry', { entry: { ...note, body: '未公开修改' } }),
+    'revise note privately',
+  )
+  equal(
+    (await get(anonymous, 'published_entries', note.id))[0].data.body,
+    liveNote.body,
+    'private revision does not leak',
+  )
+  const revision = ok(
+    await owner.client.rpc('save_entry', { entry: { ...note, body: '公开修改' }, publish: true }),
+    'publish note revision',
+  )
+  equal(revision.publishedAt, liveNote.publishedAt, 'note edit retains chronological position')
+  equal(
+    (await get(bob.client, 'published_entries', note.id))[0].data.body,
+    '公开修改',
+    'independent visitor sees revision',
+  )
+  denied(
+    await alice.client.rpc('unpublish_entry', { entry_id: note.id }),
+    'visitor cannot withdraw notes',
+  )
+  ok(await owner.client.rpc('unpublish_entry', { entry_id: note.id }), 'owner withdraws note')
+  equal(
+    await get(anonymous, 'published_entries', note.id),
+    [],
+    'withdrawn note disappears publicly',
+  )
+  equal(
+    (await get(owner.client, 'entry_drafts', note.id))[0].data.body,
+    '公开修改',
+    'withdrawn note retained privately',
+  )
+  const restoredNote = ok(
+    await owner.client.rpc('save_entry', { entry: note, publish: true }),
+    'republish withdrawn note',
+  )
+  equal(restoredNote.publishedAt, liveNote.publishedAt, 'republish retains original note date')
+
   const article = entry()
   denied(
     await anonymous.rpc('save_entry', { entry: article, publish: true }),

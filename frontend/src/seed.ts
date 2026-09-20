@@ -111,4 +111,37 @@ export const sampleEntries: Entry[] = [
     artwork: 'site',
     body: '这里是本次网站设计的项目样页，链接指向当前公开仓库。\n\n## 当前版本\n\n这一轮实现公开浏览、内容编辑和访客交流的前端体验。本机发布的内容仅保存在当前浏览器中。真实账号、邮件与多人留言将在后端接入后提供。\n\n## 继续修改\n\n可以在工作台新建文章、上传照片或添加项目，再回到首页查看。已有样例与自己的内容可以分开浏览。',
   },
+  ...[
+    {
+      id: 'note-sample-window',
+      body: '雨停了，窗台上还在滴水。\n\n把窗开了一会儿，房间里有了秋天的气味。',
+      topics: ['日常'],
+      publishedAt: '2026-09-21T09:42:00.000Z',
+    },
+    {
+      id: 'note-sample-book',
+      body: '书看到一半，突然想回去重读第一章。\n\n有些开头，大概要等读完以后才算真的读过。',
+      topics: ['阅读'],
+      publishedAt: '2026-09-20T14:16:00.000Z',
+    },
+    {
+      id: 'note-sample-link',
+      body: '一个只需看着就能待很久的页面。先把地址留在这里。\nhttps://ciechanow.ski/moon/',
+      topics: ['网页'],
+      publishedAt: '2026-09-18T05:07:00.000Z',
+    },
+    {
+      id: 'note-sample-august',
+      body: '今天绕远路回家。多走了二十分钟，发现一家还开着的旧书店。',
+      topics: ['日常'],
+      publishedAt: '2026-08-30T11:30:00.000Z',
+    },
+  ].map((note) => ({
+    ...base,
+    ...note,
+    kind: 'note' as const,
+    title: '',
+    summary: '',
+    discussion: false,
+  })),
 ]

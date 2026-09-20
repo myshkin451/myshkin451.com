@@ -1,3 +1,4 @@
+import { entryLabel } from './types'
 import { SiteLink } from './navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useRoute } from './navigation'
@@ -81,7 +82,8 @@ function PreviewDock() {
 }
 
 function SiteHeader({ path }: { path: string }) {
-  const { state } = usePlatform()
+  const { state, entries } = usePlatform()
+  const noteEntry = entries.some((entry) => entry.kind === 'note' && path === '/entry/' + entry.id)
   const links = [
     {
       href: '/archive',
@@ -89,9 +91,10 @@ function SiteHeader({ path }: { path: string }) {
       active:
         ['/archive', '/writing', '/photos', '/projects'].includes(path) ||
         path.startsWith('/topics') ||
-        path.startsWith('/entry') ||
+        (path.startsWith('/entry') && !noteEntry) ||
         path.startsWith('/play'),
     },
+    { href: '/notes', title: '随记', active: path === '/notes' || noteEntry },
     { href: '/about', title: '关于', active: path === '/about' },
     { href: '/guestbook', title: '留言', active: path === '/guestbook' },
   ]
@@ -136,9 +139,10 @@ export default function App() {
   } catch {
     /* The route renders a not-found page. */
   }
-  const entryTitle = (params.get('draft') === '1' ? drafts : entries).find(
+  const currentEntry = (params.get('draft') === '1' ? drafts : entries).find(
     (entry) => entry.id === entryId,
-  )?.title
+  )
+  const entryTitle = currentEntry ? entryLabel(currentEntry) : undefined
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
     if (previousPath.current !== path) {
@@ -149,6 +153,8 @@ export default function App() {
   useEffect(() => {
     const titles: Record<string, string> = {
       '/archive': '全部内容',
+      '/notes': '随记',
+      '/studio/notes': '随记',
       '/writing': '文章',
       '/photos': '影像',
       '/projects': '项目',
@@ -213,7 +219,13 @@ export default function App() {
                       : '请先登录管理者账号。'}
                 </p>
                 {authReady && (
-                  <SiteLink className="button" href="#/login?return=/studio">
+                  <SiteLink
+                    className="button"
+                    href={
+                      '#/login?return=' +
+                      encodeURIComponent(path + (params.size ? '?' + params.toString() : ''))
+                    }
+                  >
                     登录
                   </SiteLink>
                 )}

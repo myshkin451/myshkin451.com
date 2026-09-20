@@ -1,16 +1,21 @@
 # Progress
 
 Last updated: 2026-09-21
-Last implementation update: 2026-09-21 (real publishing, Supabase permissions, and Next.js website)
+Last implementation update: 2026-09-21 (single-author notes and publication acceptance)
 
 ## Current Phase
+
+The owner explicitly deferred domain purchase on September 21 and asked to finish the remaining feature
+work first. Do not reopen domain shopping or treat the earlier `.com` selection as a current purchase
+authorization. Resend sending-domain activation remains pending alongside the domain.
 
 Stage handoff: the real backend and website are implemented; local browser and restore acceptance passed.
 The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
 and database health verified. Email registration/recovery and the first real owner remain pending.
 The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
 personal steps. Supabase and Vercel accounts are registered; the initial migration has been applied to
-the empty free Supabase project in Singapore and migration version `202609210001` is recorded.
+the free Supabase project in Singapore. Migration versions `202609210001` and `202609210002` are recorded;
+the latter adds title-free notes without changing existing data or owner grants.
 Brevo registration and Free selection are complete, but repeated phone-code rejection blocks activation.
 Do not continue the previous Brevo credential-helper flow. An owned domain plus Resend is the recommended
 next candidate, not an activated replacement or an approved purchase. The official Vercel GitHub app is authorized for
@@ -59,6 +64,13 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Current Implementation
 
+- [Decision 0014](docs/decisions/0014-single-author-notes.md) adds owner-only publishing of public notes.
+  `/notes` shows text directly, grouped by month, with topic/search filters and stable entry links.
+  `/studio/notes` supports title-free writing, private drafts, publishing, private revisions and withdrawal.
+  The homepage shows the latest note alongside longer work. The light background, serif type and blue
+  detail continue the current site design; owner visual feedback is still welcome.
+  [Usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md) records the exact completed checks and limits.
+
 - `site/` is the selected Next.js application and reuses the current Chinese page/editor components.
   It provides real paths, public server-rendered HTML, metadata, canonical URLs, sitemap, robots and `/health`.
   Only public keys are present in the website; service-role credentials are confined to maintenance.
@@ -99,7 +111,7 @@ selective reuse and comparison; the new frontend does not claim production accep
 - IndexedDB saves resolve after committed writes. Drafts remain separate from the public version;
   partial drafts, preview, publish/update/unpublish, image upload/order, project links, settings,
   featured items, and per-item discussion toggles work locally. Clearing browser data loses this content.
-- Six optional labeled samples and two existing AI-generated images show populated layouts. Hiding samples
+- Ten optional labeled samples, including four notes, and two existing AI-generated images show populated layouts. Hiding samples
   retains custom entries and allows a true empty start. No owner work or fake visitor conversations are seeded.
 - Visitor identities and messages are local simulations. They do not collect passwords or send email.
   The workspace is intentionally available in this preview, not protected by a real admin permission boundary.
@@ -142,36 +154,36 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Continue in a fresh task using the [next-phase handoff](docs/operations/PRODUCTION_HANDOFF.md#下一阶段接续).
-   Prepare concrete domain candidates with registration/renewal costs and obtain the owner's domain and
-   purchase decision. Recommend an owned sending domain plus Resend; verify current requirements before
-   selecting/configuring the replacement. Brevo phone verification failed repeatedly; no working SMTP
-   credential was received. Do not ask the owner to repeat the old phone/helper workflow.
-2. Configure the selected domain, canonical origin and exact Auth redirects; activate custom SMTP and
-   verify actual confirmation/recovery delivery before enabling registration.
-   Supabase CLI does not manage `auth.rate_limit.email_sent`; configure and verify the cloud mail limit
-   through the dashboard or Management API instead of treating config push as proof.
-3. Complete real owner registration/confirmation, explicitly grant that verified account owner access,
-   and finish cloud publishing/permissions acceptance without introducing fake public works or test users.
-4. Record remaining cloud acceptance, redeployment persistence and day-to-day backup readiness.
-   [Cloud acceptance](docs/operations/CLOUD_ACCEPTANCE.md) separates the proven launch from pending email work.
-   Official Vercel and Supabase CLIs are now authenticated. Chrome control still times out; the in-app
-   browser works for public-site verification. Do not assume attempted dashboard changes succeeded.
-   The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) remains the acceptance contract.
-5. Iterate on the owner's frontend feedback and new requirements in bounded, reviewable slices. Measure
-   real network performance and service usage before recommending a paid upgrade or hosting migration;
-   no capacity bottleneck or need for a self-managed server has been established.
+1. Review the working notes feature and iterate on concrete owner feedback. The notes scope is implemented;
+   do not rebuild a second microblog service. Public code and cloud state should be checked against the
+   [notes acceptance](docs/operations/NOTES_ACCEPTANCE.md) before continuing.
+2. Domain purchase is deferred by the owner. When they resume it, recheck availability/prices; then configure
+   DNS, HTTPS, canonical origin, Auth redirects and Resend SMTP. Do not repeat Brevo phone verification.
+   The prior research is a dated reference, not a purchase or an activated mail service.
+3. Verify actual confirmation/recovery delivery before enabling registration. Configure cloud mail rate
+   limits through the dashboard or Management API, not CLI config push. The verified real account then
+   needs an explicit owner grant. Complete the owner's first real note/article/photo and moderation loop.
+4. Verify real content persistence across redeployment and arrange durable private backups. Existing local
+   restore tests remain evidence for the supported email/password identities, not a real owner's cloud
+   acceptance. Do not add OAuth casually without addressing its identity/restore boundary.
+5. Measure actual populated pages, image bytes, request timing and service usage before changing hosting
+   or paying for capacity. Empty-site measurements cannot establish mainland-carrier performance or
+   a paid-upgrade need. Current providers remain Supabase Free and Vercel Hobby.
 
 The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
 domain purchase, or provider account is authorized by implication; prepare those choices concretely.
 
 ### Active local handoff
 
-The computer restart ended the website process on `127.0.0.1:4325`. After final acceptance, all 21
-containers in the three task-owned Supabase stacks were stopped with volumes preserved: source
-`myshkin451-production` (API/DB `55421/55422`), restored target `myshkin451-restore` (`55521/55522`),
-and binding-test target `myshkin451-binding` (`55621/55622`, now holding the successful restore fixture).
-The separate owner design preview on `4323` was not modified. Test accounts and content remain local only.
+The notes slice uses managed worktree `myshkin-notes` on branch `codex/notes`. Its isolated design
+preview is `http://127.0.0.1:4326/#/notes`; optional samples are enabled for review there only.
+The original `4323` origin and its stored content were not modified. Browser QA against the real local
+backend used a synthetic owner and note in the retained `myshkin451-production` stack (API/DB
+`55421/55422`). Those task-owned fixtures are removed at handoff; retained prior data is preserved.
+The real website test server on `4325` and source Supabase stack are stopped after acceptance, keeping
+Docker volumes. The prior restore stacks `myshkin451-restore` (`55521/55522`) and `myshkin451-binding`
+(`55621/55622`) remain stopped with volumes preserved. The `4326` design preview is explicitly handed
+back for owner review; it is browser-local and is not the production publishing interface.
 
 Earlier temporary archives were removed by the computer restart. A fresh private recovery archive,
 binding verification script, JSON evidence and private target configurations are under
@@ -188,6 +200,12 @@ The old AWS launch-timing decision is superseded by 0010 and removed. Resolve ea
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
+
+- September 21 notes acceptance: 68 frontend tests and 186 real API assertions passed, including anonymous
+  and two-visitor publishing denial, private revisions, withdrawal and stable publication dates. Browser
+  review covered the real local draft/publish/edit/withdraw loop, independent anonymous reads and 320px
+  notes/editor layouts. The new migration is applied locally and in the empty cloud database.
+  Current cloud deployment details and measured limits are recorded in the notes acceptance document.
 
 - September 21 real-backend checks: 155 API assertions passed against local Supabase, including anonymous,
   owner and two independent visitors, spoofed roles/authors, unverified users, draft/media visibility,
@@ -206,7 +224,7 @@ with a matching decision record and remove it here in the same change.
   real delivery and authenticated production permissions remain unverified. Free Supabase may pause
   after one week of inactivity, provides no automatic backup, and has 500 MB DB / 1 GB storage limits.
   Vercel Hobby is for personal noncommercial use. No paid plan or new domain is required for the first run.
-- Cloud migration evidence: the SQL Editor reported success after the empty-project preflight. All
+- Historical initial migration evidence (the notes migration later replaces `save_entry`): the SQL Editor reported success after the empty-project preflight. All
   17 function bodies/identity signatures match the local aggregate digest
   `3463defae96bcb42afa0fadcaa164d17`; all 7 application tables have RLS and the media bucket is private.
   Auth accounts and published entries remain zero. This checks migration consistency, not live email or full runtime acceptance.
