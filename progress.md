@@ -15,6 +15,11 @@ or real owner account was activated by this preparation.
 
 Stage handoff: the real backend, website and single-author notes are implemented and deployed.
 Notes PR #2 passed both CI workflows and merged as `b0dae87`; the production notes page was verified.
+The automatic-draft/email-template follow-up [PR #3](https://github.com/myshkin451/myshkin451.com/pull/3)
+also passed both workflows and merged as `e224415`. Production deployment
+`dpl_7GqcC9YjobBAvfHGoQjkJssbT6ZR` reached Ready and the existing alias points to it.
+Six public/management/auth HTTP checks passed; the browser confirms the empty public notes page and
+that email registration/recovery remain closed. This is a deployed feature, not completed real-owner acceptance.
 Local browser and restore acceptance passed.
 The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
 and database health verified. Email registration/recovery and the first real owner remain pending.

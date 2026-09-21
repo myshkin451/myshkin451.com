@@ -29,6 +29,12 @@
   本轮沿用既有 RPC 与权限规则，没有数据库迁移、云端账号或测试内容写入。
 - 中文确认/恢复邮件的本机验证与云端待办单独记录在 [认证邮件接续](EMAIL_SETUP.md)。
 
+[PR #3](https://github.com/myshkin451/myshkin451.com/pull/3) 的两套 CI 通过，`0bbbb19` 合并为
+`e224415`。Vercel 部署 `dpl_7GqcC9YjobBAvfHGoQjkJssbT6ZR` 已 Ready，正式别名指向
+`myshkin451-rjmookvrl-myshkin451.vercel.app`。主页、随记、健康检查、工作台、注册和恢复共六项
+HTTP 检查通过；浏览器确认公开空状态及邮箱入口仍关闭。本轮没有启用 Hosted Auth SMTP，
+真实站主发布仍待本人验证。原主线工作区已快进同步，测试服务器均已关闭。
+
 ## 首次随记验证（2026-09-21）
 
 - 增量迁移应用于保留的本机 Supabase 栈，数据库 lint 无错误。
