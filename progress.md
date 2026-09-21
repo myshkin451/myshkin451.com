@@ -1,13 +1,17 @@
 # Progress
 
-Last updated: 2026-09-21
-Last implementation update: 2026-09-21 (single-author notes and publication acceptance)
+Last updated: 2026-09-22
+Last implementation update: 2026-09-22 (automatic private note drafts and Chinese auth email templates)
 
 ## Current Phase
 
 The owner explicitly deferred domain purchase on September 21 and asked to finish the remaining feature
 work first. Do not reopen domain shopping or treat the earlier `.com` selection as a current purchase
-authorization. Resend sending-domain activation remains pending alongside the domain.
+authorization. On September 22 the owner also questioned retaining Myshkin 451. It remains a working
+name; public identity and the final domain are open. Resend sending-domain activation remains pending.
+[Email setup](docs/operations/EMAIL_SETUP.md) now contains versioned Chinese confirmation/recovery
+templates, successful local Auth/Mailpit validation and concrete activation steps. No hosted SMTP
+or real owner account was activated by this preparation.
 
 Stage handoff: the real backend, website and single-author notes are implemented and deployed.
 Notes PR #2 passed both CI workflows and merged as `b0dae87`; the production notes page was verified.
@@ -68,7 +72,9 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 - [Decision 0014](docs/decisions/0014-single-author-notes.md) adds owner-only publishing of public notes.
   `/notes` shows text directly, grouped by month, with topic/search filters and stable entry links.
-  `/studio/notes` supports title-free writing, private drafts, publishing, private revisions and withdrawal.
+  `/studio/notes` supports title-free writing, automatic private drafts, publishing, private revisions and withdrawal.
+  After a 1.2-second pause it saves privately and retains a refreshable edit URL; only explicit publication
+  changes the public copy. Chinese composition, slow saves, failed saves and consecutive notes are covered.
   The homepage shows the latest note alongside longer work. The light background, serif type and blue
   detail continue the current site design; owner visual feedback is still welcome.
   [Usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md) records the exact completed checks and limits.
@@ -159,7 +165,8 @@ selective reuse and comparison; the new frontend does not claim production accep
 1. Review the working notes feature and iterate on concrete owner feedback. The notes scope is implemented;
    do not rebuild a second microblog service. Public code and cloud state should be checked against the
    [notes acceptance](docs/operations/NOTES_ACCEPTANCE.md) before continuing.
-2. Domain purchase is deferred by the owner. When they resume it, recheck availability/prices; then configure
+2. Identity and domain are being reconsidered by the owner. Keep Myshkin 451 as the working name.
+   When they choose the name and resume purchase, recheck availability/prices; then configure
    DNS, HTTPS, canonical origin, Auth redirects and Resend SMTP. Do not repeat Brevo phone verification.
    The prior research is a dated reference, not a purchase or an activated mail service.
 3. Verify actual confirmation/recovery delivery before enabling registration. Configure cloud mail rate
@@ -177,15 +184,15 @@ domain purchase, or provider account is authorized by implication; prepare those
 
 ### Active local handoff
 
-The notes slice uses managed worktree `myshkin-notes` on branch `codex/notes`. Its isolated design
-preview is `http://127.0.0.1:4326/#/notes`; optional samples are enabled for review there only.
-The original `4323` origin and its stored content were not modified. Browser QA against the real local
-backend used a synthetic owner and note in the retained `myshkin451-production` stack (API/DB
-`55421/55422`). Those task-owned fixtures are removed at handoff; retained prior data is preserved.
-The real website test server on `4325` and source Supabase stack are stopped after acceptance, keeping
-Docker volumes. The prior restore stacks `myshkin451-restore` (`55521/55522`) and `myshkin451-binding`
-(`55621/55622`) remain stopped with volumes preserved. The `4326` design preview is explicitly handed
-back for owner review; it is browser-local and is not the production publishing interface.
+The current daily-use slice uses managed worktree `notes-daily-use` on `codex/notes-daily-use`.
+Its isolated `4327` browser-preview fixtures and `4328` sanitized email previews were used only for QA;
+both servers and their browser tabs are closed. The source Supabase stack (`55421/55422`) is stopped
+with data volumes preserved after the 186 API assertions and mail-template acceptance. Synthetic
+mail-test accounts were removed; original local data was not changed by fixture cleanup.
+Earlier `myshkin-notes` (`4326`) and original `4323` preview ports were not listening at the September 22
+handoff check; their browser-local data was not touched. The prior restore stacks (`55521/55522` and
+`55621/55622`) remain outside this work slice. Restart previews explicitly when needed, and never use
+these local fixtures or identities as production seed data.
 
 Earlier temporary archives were removed by the computer restart. A fresh private recovery archive,
 binding verification script, JSON evidence and private target configurations are under
@@ -202,6 +209,12 @@ The old AWS launch-timing decision is superseded by 0010 and removed. Resolve ea
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
+
+- September 22 daily-use checks: 75 frontend tests, 186 real API assertions, format, lint, root/site type checks and both builds passed. Browser checks
+  cover automatic private drafts, focus, refresh recovery, separate new notes and the 320px editor.
+  Both Chinese auth templates passed 21 local Auth/Mailpit assertions, including real verification links
+  and new-password login; synthetic mail-test accounts were removed. External deliverability and real
+  email-client rendering remain pending. Templates are not pushed to Hosted Auth by a Vercel deployment.
 
 - September 21 notes acceptance: 68 frontend tests and 186 real API assertions passed, including anonymous
   and two-visitor publishing denial, private revisions, withdrawal and stable publication dates. Browser

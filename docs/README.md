@@ -18,6 +18,7 @@ This repository uses a small documentation system that should grow only when the
 - [Runbook](operations/RUNBOOK.md): current publishing, account setup, deployment, backup, restore, and rollback instructions.
 - [Local acceptance](operations/LOCAL_ACCEPTANCE.md): actual separate-target account/media restore, restart and permission evidence, with remaining verification boundaries.
 - [随记使用与验收](operations/NOTES_ACCEPTANCE.md)：单人短文字发布、验证范围与域名/邮件接续。
+- [认证邮件接续](operations/EMAIL_SETUP.md)：中文模板、本机验证和最终域名确定后的 SMTP 操作。
 - [Cloud acceptance](operations/CLOUD_ACCEPTANCE.md): actual Vercel deployment, cloud configuration and public checks, with pending email and owner acceptance.
 - [API contract](operations/API_CONTRACT.md): Supabase tables, permissions, RPCs, media access, and integration checks.
 - `docs/operations/DEPLOYMENT_AND_OPERATIONS_PLAN.md`: historical hosting comparison; current selection is decision 0013.

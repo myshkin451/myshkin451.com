@@ -98,7 +98,7 @@ production email entrypoints stay disabled until external SMTP and delivery are 
 ## Validation
 
 Run proportionate format, lint, frontend types, tests and build for changes. Current frontend tests
-include 27 original data/confirmation cases, 12 remote-adapter cases, 10 collection-return cases and
-2 async-profile nickname cases. Mocked adapter tests cover lifecycle and request construction, not actual
+include 28 data/confirmation cases, 13 remote-adapter cases, 10 collection-return cases,
+2 async-profile nickname cases and 22 notes cases, including automatic private draft saving. Mocked adapter tests cover lifecycle and request construction, not actual
 RLS, SMTP delivery, cloud persistence or deployment. Real API and independent-browser verification are
 separate acceptance steps recorded in the [current project state](../progress.md).
