@@ -1,18 +1,20 @@
 # Myshkin 451 使用与维护
 
-更新：2026-09-21。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
+更新：2026-09-22。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
 实际验收和上线状态以 [progress.md](../../progress.md) 为准，本文的操作步骤不代表云端已经完成。
 
 当前正式地址：[myshkin451.vercel.app](https://myshkin451.vercel.app)。公开浏览已上线；
 邮件和首次站主账号仍在接续，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。
-Brevo 手机验证反复失败，下面的 Brevo 说明仅保留为原方案参考，不再要求用户继续该注册流程。
-下一阶段优先评估自有域名加 Resend；选定后更新 SMTP 操作步骤并验证实际送达，见
-[接续计划](PRODUCTION_HANDOFF.md#下一阶段接续)。
+Brevo 手机验证反复失败，停止该流程。Myshkin 451 目前仍是工作名，域名暂缓；
+Resend 接入准备、中文模板和待本人参与的环节见 [认证邮件接续](EMAIL_SETUP.md)。
+目前仅完成本机邮件验证，正式 SMTP 尚未启用。
 
 ## 日常使用
 
 - **发布**：登录站主账号，打开工作台，新建文章、照片或项目。填写标题、正文/图片/项目链接、
   分类与显示选项，先保存草稿并预览，再发布。发布后复制作品链接；另一个浏览器无需登录即可阅读。
+- **随记**：工作台打开“随记”，直接写正文。停笔后自动存私有草稿，看到“草稿已保存”后
+  可以刷新恢复。主动点击“发布”才会公开；“写新随记”保留原草稿并打开空编辑器。
 - **修改**：在工作台打开已发布作品，保存只修改草稿，发布更新才会替换公开版本。
   撤下会移除公开作品，保留编辑内容；删除前先确认确实不再需要。站点无作品时可以正常使用。
 - **照片**：使用编辑器上传文件；媒体存放在 Supabase 私有 `media` 桶，公开作品引用的图片允许读取，
@@ -35,15 +37,10 @@ Brevo 手机验证反复失败，下面的 Brevo 说明仅保留为原方案参�
 | --- | --- | --- |
 | [Supabase](https://supabase.com/dashboard) | Free，$0/月；数据库 500 MB、文件 1 GB；没有可依赖的自动备份，低活动约一周可暂停。[官方价格](https://supabase.com/pricing) | 注册/登录、验证邮箱，创建 Free 项目；把数据库密码保存在密码管理器。区域在实际网络检查后确认。 |
 | [Vercel](https://vercel.com/new) | Hobby，$0，适用于个人非商业站点；超额可能暂时停用相应功能。[官方限制](https://vercel.com/docs/plans/hobby) | 注册/登录，授权此 GitHub 仓库。使用默认 `*.vercel.app` 地址即可。 |
-| [Brevo](https://www.brevo.com/) | Free，300 封/天；新账号及事务邮件可能需审核。[免费限制](https://help.brevo.com/hc/en-us/articles/208580669-FAQs-What-are-the-limits-of-the-Free-plan) | 注册并完成平台要求的本人验证，验证发件邮箱，申请/启用事务邮件，创建 SMTP 密钥。实际启用和送达仍需验证。 |
+| [Resend](https://resend.com/) | 候选 Free，$0/月、3,000 封/月、100 封/日；需要验证自有发件域名。[官方价格](https://resend.com/pricing) | 名字与域名确定后注册并完成本人验证；未开户、未产生费用。技术设置见邮件接续。 |
 
-Brevo 对免费邮箱或未认证域名可能临时改写发件地址，收件人看到的地址可能不是最初填写的地址。
-这是当前无需先购买域名的候选路径，不是对长期发信资格或送达的保证。
-参见 [发件要求](https://help.brevo.com/hc/en-us/articles/14925263522578-Comply-with-Gmail-Yahoo-and-Microsoft-s-requirements-for-email-senders)。
-如果本人已有符合要求的工作/自有域名邮箱，也可选 SMTP2GO Free（1,000 封/月，200 封/天；
-仅验证单个发件地址时另限 25 封/小时）。其注册不接受 Gmail 等公共邮箱，不能因为支持单发件地址验证
-就认定无需符合注册要求。参见 [免费套餐](https://support.smtp2go.com/hc/en-gb/articles/223087947-Free-Plan)
-及 [注册条件](https://support.smtp2go.com/hc/en-gb/articles/12747932085145-Quick-Start-Guide)。
+Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表中这两项额度是 2026-09-21 的
+核实记录，Resend 于 2026-09-22 复核。最终名字尚未决定，当前无需本人重复注册或购买。
 
 密码、验证码、数据库连接串、SMTP 密钥和 service-role key 不发在聊天里。
 本人在服务商登录界面和受保护的环境变量/密码管理器中填写；维护者接续配置与测试。
@@ -64,9 +61,8 @@ Brevo 对免费邮箱或未认证域名可能临时改写发件地址，收件�
    `ENABLE_EXPERIMENTAL_COREPACK=1` 以使用根目录锁定的 pnpm 版本。
 3. 用真实分配的 HTTPS 地址配置 `SITE_URL`，Supabase Auth 的 Site URL 与精确允许的回调/恢复地址。
    本地应用端口为 `127.0.0.1:4325`；旧的 `127.0.0.1:4323` 留作设计预览。
-4. Supabase Auth 启用邮箱确认、最低密码长度 12、邮件间隔 60 秒、每小时邮件上限 30，保留其余速率限制并配置自定义 SMTP。Brevo SMTP 主机
-   `smtp-relay.brevo.com`，端口 `587`；用户名和 SMTP 密钥取自 Brevo 控制台，密码不是 Brevo 登录密码。
-   参见 [官方 SMTP 步骤](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP)。
+4. Supabase Auth 启用邮箱确认、最低密码长度 12、邮件间隔 60 秒、每小时邮件上限 30，保留其余速率限制并按
+   [认证邮件接续](EMAIL_SETUP.md)配置 Resend SMTP、中文模板和已验证的发件域。此步骤待域名确定后执行。
    默认 Supabase 邮件仅适合团队地址测试，不能承担公开注册；参见 [Supabase SMTP 限制](https://supabase.com/docs/guides/auth/auth-smtp)。
    CLI 2.117.0 的 `config push` 明确不管理 `auth.rate_limit.email_sent`；该值必须通过
    Dashboard 或 Management API 配置并读回，不能仅凭本机 TOML 或 push 成功声称已设置。

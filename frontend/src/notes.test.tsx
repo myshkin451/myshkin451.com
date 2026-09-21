@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CommunityPage } from './pages/Community'
-import { NavigationProvider } from './navigation'
+import { NavigationProvider, useRoute } from './navigation'
 import { ConfirmProvider } from './Confirm'
 import { initialState, publishEntry, restoreState, saveDraft, unpublishEntry } from './model'
 import { noteDate, publicNotes } from './notes'
@@ -18,13 +18,19 @@ const now = '2026-09-20T16:30:00.000Z'
 const later = '2026-09-22T03:00:00.000Z'
 const makeNote = (body = '一条随记') => ({ ...newEntry('note'), body })
 beforeEach(() => {
+  window.history.replaceState(null, '', '#/studio/notes')
   fixture.platform = {
     remote: true,
     isOwner: false,
     entries: [],
     drafts: [],
     state: initialState(defaultSettings),
-    saveDraft: vi.fn().mockResolvedValue(undefined),
+    saveDraft: vi.fn().mockImplementation(async (entry: Entry) => {
+      fixture.platform.drafts = [
+        { ...entry, status: 'draft', updatedAt: now },
+        ...fixture.platform.drafts.filter((item) => item.id !== entry.id),
+      ]
+    }),
     publishEntry: vi.fn().mockImplementation(async (entry: Entry) => {
       fixture.platform.entries = [
         { ...entry, status: 'published', publishedAt: now },
@@ -34,7 +40,21 @@ beforeEach(() => {
     }),
   } as unknown as Platform
 })
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.useRealTimers()
+  delete document.body.dataset.routing
+  window.history.replaceState(null, '', '/')
+})
+
+function RoutedEditor() {
+  const { params } = useRoute()
+  return (
+    <ConfirmProvider>
+      <NoteWorkspace params={params} />
+    </ConfirmProvider>
+  )
+}
 
 describe('title-free notes and publication boundaries', () => {
   it('publishes without a title and retains isolation through edit, reload and withdrawal', () => {
@@ -126,12 +146,7 @@ describe('public notes', () => {
 })
 
 describe('quick note composer', () => {
-  const setup = () =>
-    render(
-      <ConfirmProvider>
-        <NoteWorkspace params={new URLSearchParams()} />
-      </ConfirmProvider>,
-    )
+  const setup = () => render(<RoutedEditor />)
   it('publishes text with a stable ID, then clears the composer on success', async () => {
     setup()
     fireEvent.change(screen.getByRole('textbox', { name: '随记正文' }), {
@@ -168,7 +183,7 @@ describe('quick note composer', () => {
     )
     expect(screen.queryByRole('link', { name: '查看' })).toBeNull()
     expect(screen.queryByText('修改已发布。')).toBeNull()
-    expect(screen.getByText('仅你可见')).toBeTruthy()
+    expect(screen.getByText('草稿已保存')).toBeTruthy()
     expect((screen.getByRole('textbox', { name: '随记正文' }) as HTMLTextAreaElement).value).toBe(
       '私下修改',
     )
@@ -235,3 +250,162 @@ it.each(['/studio/notes?edit=note-id', '/notes?month=2026-09'])(
     expect(screen.getByRole('link', { name: '← 返回' }).getAttribute('href')).toBe(destination)
   },
 )
+
+describe('automatic private draft saving', () => {
+  const pause = async (milliseconds = 1300) => {
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(milliseconds)
+    })
+  }
+  const write = (body: string) => {
+    const field = screen.getByRole('textbox', { name: '随记正文' }) as HTMLTextAreaElement
+    fireEvent.change(field, { target: { value: body } })
+    return field
+  }
+  it.each(['hash', 'path'])(
+    'waits for Chinese composition and preserves focus with %s routing',
+    async (routing) => {
+      vi.useFakeTimers()
+      if (routing === 'path') {
+        document.body.dataset.routing = 'path'
+        window.history.replaceState(null, '', '/studio/notes')
+      }
+      render(<RoutedEditor />)
+      const field = screen.getByRole('textbox', { name: '随记正文' }) as HTMLTextAreaElement
+      field.focus()
+      fireEvent.compositionStart(field)
+      write('zheng zai')
+      await pause(3000)
+      expect(fixture.platform.saveDraft).not.toHaveBeenCalled()
+      fireEvent.compositionEnd(field)
+      write('正在写下的想法')
+      await pause()
+      expect(fixture.platform.saveDraft).toHaveBeenCalledTimes(1)
+      expect(fixture.platform.publishEntry).not.toHaveBeenCalled()
+      const destination = '/studio/notes?edit=' + fixture.platform.drafts[0].id
+      expect(
+        routing === 'path'
+          ? window.location.pathname + window.location.search
+          : window.location.hash.slice(1),
+      ).toBe(destination)
+      expect(document.activeElement).toBe(field)
+      expect(screen.getByRole('textbox', { name: '随记正文' })).toBe(field)
+      expect(screen.getByText('草稿已保存')).toBeTruthy()
+      expect(screen.getByRole('button', { name: '草稿1' }).getAttribute('aria-pressed')).toBe(
+        'true',
+      )
+    },
+  )
+  it('starts a separate blank note after following the new-note link from an automatic draft', async () => {
+    vi.useFakeTimers()
+    render(<RoutedEditor />)
+    const field = screen.getByRole('textbox', { name: '随记正文' })
+    fireEvent.change(field, { target: { value: '保留在原草稿' } })
+    await act(() => vi.advanceTimersByTimeAsync(1200))
+    const originalId = fixture.platform.drafts[0].id
+    await act(async () => {
+      window.history.replaceState(null, '', '#/studio/notes')
+      window.dispatchEvent(new Event('popstate'))
+    })
+    const next = screen.getByRole('textbox', { name: '随记正文' }) as HTMLTextAreaElement
+    expect(next.value).toBe('')
+    expect(next).not.toBe(field)
+    fireEvent.change(next, { target: { value: '另一条想法' } })
+    await act(() => vi.advanceTimersByTimeAsync(1200))
+    expect(fixture.platform.drafts).toHaveLength(2)
+    expect(fixture.platform.drafts.find((entry) => entry.id === originalId)?.body).toBe(
+      '保留在原草稿',
+    )
+    expect(window.location.hash).not.toContain(originalId)
+  })
+  it('retains text typed during a slow save and publishes only the latest text on demand', async () => {
+    vi.useFakeTimers()
+    const commit = vi.mocked(fixture.platform.saveDraft).getMockImplementation()!
+    let complete!: () => Promise<void>
+    vi.mocked(fixture.platform.saveDraft).mockImplementationOnce(
+      (entry) =>
+        new Promise<void>((resolve) => {
+          complete = async () => {
+            await commit(entry)
+            resolve()
+          }
+        }),
+    )
+    render(<RoutedEditor />)
+    const field = write('第一句话')
+    await pause()
+    expect(field.disabled).toBe(false)
+    write('第一句话，还有刚刚补上的内容')
+    fireEvent.keyDown(field, { key: 'Enter', ctrlKey: true })
+    expect(fixture.platform.publishEntry).not.toHaveBeenCalled()
+    await act(async () => {
+      await complete()
+    })
+    expect(field.value).toBe('第一句话，还有刚刚补上的内容')
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: '发布' }))
+    })
+    expect(fixture.platform.publishEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ body: '第一句话，还有刚刚补上的内容' }),
+    )
+    await pause(4000)
+    expect(fixture.platform.saveDraft).toHaveBeenCalledTimes(1)
+    expect(fixture.platform.drafts).toHaveLength(0)
+    expect((screen.getByRole('textbox', { name: '随记正文' }) as HTMLTextAreaElement).value).toBe(
+      '',
+    )
+    expect(window.location.hash).toBe('#/studio/notes')
+  })
+  it('keeps the public version unchanged until an explicit publication', async () => {
+    vi.useFakeTimers()
+    const entry = { ...makeNote('原来的公开文字'), status: 'published' as const, publishedAt: now }
+    fixture.platform.entries = [entry]
+    window.history.replaceState(null, '', '#/studio/notes?edit=' + entry.id)
+    render(<RoutedEditor />)
+    write('新想法，还不公开')
+    await pause()
+    expect(fixture.platform.entries[0].body).toBe('原来的公开文字')
+    expect(fixture.platform.drafts[0].body).toBe('新想法，还不公开')
+    expect(screen.getByText('修改未发布')).toBeTruthy()
+    expect(fixture.platform.publishEntry).not.toHaveBeenCalled()
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: '发布修改' }))
+    })
+    expect(fixture.platform.entries[0].body).toBe('新想法，还不公开')
+  })
+  it('shows a failed save, retains text, and retries after the owner edits again', async () => {
+    vi.useFakeTimers()
+    vi.mocked(fixture.platform.saveDraft).mockRejectedValueOnce(new Error('网络暂时不可用'))
+    render(<RoutedEditor />)
+    const field = write('不要丢掉这句话')
+    await pause()
+    expect(screen.getByRole('alert').textContent).toContain('网络暂时不可用')
+    expect(field.value).toBe('不要丢掉这句话')
+    await pause(10000)
+    expect(fixture.platform.saveDraft).toHaveBeenCalledTimes(1)
+    write('不要丢掉这句话。继续写。')
+    await pause()
+    expect(fixture.platform.saveDraft).toHaveBeenCalledTimes(2)
+    expect(fixture.platform.drafts[0].body).toBe('不要丢掉这句话。继续写。')
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+  it('does not navigate back to the editor when an abandoned save eventually completes', async () => {
+    vi.useFakeTimers()
+    let complete!: () => void
+    vi.mocked(fixture.platform.saveDraft).mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          complete = resolve
+        }),
+    )
+    const view = render(<RoutedEditor />)
+    write('正在保存')
+    await pause()
+    view.unmount()
+    window.history.replaceState(null, '', '#/notes')
+    await act(async () => {
+      complete()
+    })
+    expect(window.location.hash).toBe('#/notes')
+  })
+})

@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { useConfirm } from './Confirm'
+import { currentRoute } from './navigation'
 
 export function useUnsavedWork(dirty: boolean) {
   const confirm = useConfirm()
+  const route = typeof window === 'undefined' ? '' : currentRoute()
   const allowNext = useRef(false)
   const allowUnload = useRef(false)
   const mounted = useRef(true)
@@ -93,7 +95,7 @@ export function useUnsavedWork(dirty: boolean) {
       window.removeEventListener('hashchange', onHashChange, true)
       window.removeEventListener('beforeunload', beforeUnload)
     }
-  }, [confirm, dirty])
+  }, [confirm, dirty, route])
   return (leavingDocument = false) => {
     allowNext.current = true
     allowUnload.current = leavingDocument
