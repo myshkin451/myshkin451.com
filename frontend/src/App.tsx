@@ -83,18 +83,17 @@ function PreviewDock() {
 
 function SiteHeader({ path }: { path: string }) {
   const { state, entries } = usePlatform()
-  const noteEntry = entries.some((entry) => entry.kind === 'note' && path === '/entry/' + entry.id)
+  const currentEntry = entries.find((entry) => path === '/entry/' + entry.id)
+  const kindActive = (kind: string, route: string) => path === route || currentEntry?.kind === kind
   const links = [
+    { href: '/writing', title: '文章', active: kindActive('writing', '/writing') },
+    { href: '/photos', title: '影像', active: kindActive('photo', '/photos') },
     {
-      href: '/archive',
-      title: '内容',
-      active:
-        ['/archive', '/writing', '/photos', '/projects'].includes(path) ||
-        path.startsWith('/topics') ||
-        (path.startsWith('/entry') && !noteEntry) ||
-        path.startsWith('/play'),
+      href: '/projects',
+      title: '项目',
+      active: kindActive('project', '/projects') || path.startsWith('/play'),
     },
-    { href: '/notes', title: '随记', active: path === '/notes' || noteEntry },
+    { href: '/notes', title: '随记', active: kindActive('note', '/notes') },
     { href: '/about', title: '关于', active: path === '/about' },
     { href: '/guestbook', title: '留言', active: path === '/guestbook' },
   ]
@@ -252,11 +251,14 @@ export default function App() {
             <span>
               © {new Date().getFullYear()} {state.settings.name}
             </span>
-            <SiteLink href="#/archive">
-              全部内容
-              <Icon name="arrow" size={14} />
-            </SiteLink>
-            <SiteLink href="#/guestbook">留言</SiteLink>
+            <div className="site-footer-links">
+              <SiteLink href="#/archive">
+                全部内容
+                <Icon name="arrow" size={14} />
+              </SiteLink>
+              <SiteLink href="#/about">关于</SiteLink>
+              <SiteLink href="#/guestbook">留言</SiteLink>
+            </div>
           </footer>
           {!remote && <PreviewDock />}
         </>

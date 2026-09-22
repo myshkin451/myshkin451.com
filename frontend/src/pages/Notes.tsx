@@ -290,30 +290,6 @@ export function Notes({ params }: { params: URLSearchParams }) {
   )
 }
 
-export function LatestNote() {
-  const { entries } = usePlatform()
-  const latest = publicNotes(entries)[0]
-  if (!latest) return null
-  const date = noteDate(latest.publishedAt)
-  return (
-    <aside className="home-note" aria-label="最近的随记">
-      <div className="home-note-meta">
-        <SiteLink href="#/notes">
-          最近的随记
-          <Icon name="arrow" size={13} />
-        </SiteLink>
-        <time dateTime={latest.publishedAt}>
-          {date.month}.{date.day}
-        </time>
-      </div>
-      {latest.sample && <span className="note-sample">排版样例</span>}
-      <SiteLink className="home-note-body" href={'#/entry/' + latest.id}>
-        {noteExcerpt(latest.body, 115)}
-      </SiteLink>
-    </aside>
-  )
-}
-
 export function NoteDetail({ entry, draft }: { entry: Entry; draft: boolean }) {
   const date = noteDate(entry.publishedAt || entry.createdAt)
   return (

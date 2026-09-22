@@ -107,6 +107,17 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ### Independent local design preview
 
+- September 22 full visual replacement ("版面"): the owner said the prior rounds were still not the
+  platform they wanted and asked for a redesign against strong references. `frontend/` now uses one
+  two-column editorial grid on every page (narrow margin with vertical running head and date/kind
+  stamps, measured content column), a dated ledger home with one featured lead then strict date order,
+  Chinese-first serif for content, sans for UI, mono for stamps, and a warm-paper/ink/vermilion palette
+  where vermilion only marks position, featured items, and hover. Navigation points directly at the four
+  content kinds; the "内容" hub link is gone and the archive sits at the bottom of home and in the footer.
+  Legacy `.home-intro`/`.collection-*` rules were removed from `public.css` because load order let them
+  override the new layer. Hypotheses and references are in `docs/design/RESTART_BRIEF.md`. This is a
+  design proposal awaiting owner judgment, not accepted branding. Studio and account pages inherit the
+  tokens but still carry some older component styling.
 - September 21 visual revision: the owner rejected the generic M mark, repeated oversized name,
   unnecessary copy, and template-like composition. The new home uses a compact wordmark, brief greeting,
   direct type navigation, and at most three featured/recent entries. Zero content has no empty cards,
@@ -167,20 +178,24 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Review the working notes feature and iterate on concrete owner feedback. The notes scope is implemented;
+1. Get the owner's judgment on the September 22 "版面" redesign in `frontend/` (see the dated section
+   in `docs/design/RESTART_BRIEF.md`). If accepted, calibrate type sizes and margins on real content,
+   fold Studio/account pages into the same tokens, then port the system to `site/`. If rejected,
+   discuss which hypothesis failed rather than patching locally.
+2. Review the working notes feature and iterate on concrete owner feedback. The notes scope is implemented;
    do not rebuild a second microblog service. Public code and cloud state should be checked against the
    [notes acceptance](docs/operations/NOTES_ACCEPTANCE.md) before continuing.
-2. Identity and domain are being reconsidered by the owner. Keep Myshkin 451 as the working name.
+3. Identity and domain are being reconsidered by the owner. Keep Myshkin 451 as the working name.
    When they choose the name and resume purchase, recheck availability/prices; then configure
    DNS, HTTPS, canonical origin, Auth redirects and Resend SMTP. Do not repeat Brevo phone verification.
    The prior research is a dated reference, not a purchase or an activated mail service.
-3. Verify actual confirmation/recovery delivery before enabling registration. Configure cloud mail rate
+4. Verify actual confirmation/recovery delivery before enabling registration. Configure cloud mail rate
    limits through the dashboard or Management API, not CLI config push. The verified real account then
    needs an explicit owner grant. Complete the owner's first real note/article/photo and moderation loop.
-4. Verify real content persistence across redeployment and arrange durable private backups. Existing local
+5. Verify real content persistence across redeployment and arrange durable private backups. Existing local
    restore tests remain evidence for the supported email/password identities, not a real owner's cloud
    acceptance. Do not add OAuth casually without addressing its identity/restore boundary.
-5. Measure actual populated pages, image bytes, request timing and service usage before changing hosting
+6. Measure actual populated pages, image bytes, request timing and service usage before changing hosting
    or paying for capacity. Empty-site measurements cannot establish mainland-carrier performance or
    a paid-upgrade need. Current providers remain Supabase Free and Vercel Hobby.
 
@@ -214,6 +229,12 @@ The old AWS launch-timing decision is superseded by 0010 and removed. Resolve ea
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
+
+- September 22 frontend redesign checks: format, lint, frontend type check and 75 frontend tests passed
+  after the visual replacement. Playwright measured no horizontal overflow on ten routes at 320, 390 and
+  1440px, and full-page desktop/mobile screenshots of home, archive, writing, notes and about were
+  reviewed in both empty and sample-populated states. Owner aesthetic acceptance is not established; the
+  deployed `site/` still uses the earlier design until the owner accepts a direction and it is ported.
 
 - September 22 daily-use checks: 75 frontend tests, 186 real API assertions, format, lint, root/site type checks and both builds passed. Browser checks
   cover automatic private drafts, focus, refresh recovery, separate new notes and the 320px editor.

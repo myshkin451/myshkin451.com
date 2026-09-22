@@ -2,6 +2,7 @@ import { SiteLink } from './navigation'
 import { useEffect, useRef } from 'react'
 import type { Entry, Photo } from './types'
 import { entryLabel, formatDate, kindLabels, safeDestination } from './types'
+import { noteDate, noteExcerpt } from './notes'
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const paths: Record<string, React.ReactNode> = {
@@ -199,6 +200,157 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
         </SiteLink>
       )}
     </article>
+  )
+}
+
+/**
+ * A dated ledger. Every kind of work keeps its own shape: notes show their text,
+ * photos keep their proportions, writing leads with its title, projects show a way in.
+ */
+export function Stream({
+  entries,
+  children,
+  label,
+}: {
+  entries: Entry[]
+  children?: React.ReactNode
+  label?: string
+}) {
+  const years = entries.map((entry) => noteDate(entry.publishedAt || entry.createdAt).year)
+  return (
+    <ol className="stream" aria-label={label}>
+      {entries.map((entry, index) => (
+        <StreamRow key={entry.id} entry={entry} showYear={years[index] !== years[index - 1]} />
+      ))}
+      {children}
+    </ol>
+  )
+}
+
+function Topics({ entry, base = '#/topics/' }: { entry: Entry; base?: string }) {
+  if (!entry.topics.length) return null
+  return (
+    <span className="stream-topics">
+      {entry.topics.map((topic) => (
+        <SiteLink key={topic} href={`${base}${encodeURIComponent(topic)}`}>
+          {topic}
+        </SiteLink>
+      ))}
+    </span>
+  )
+}
+
+export function StreamRow({ entry, showYear = true }: { entry: Entry; showYear?: boolean }) {
+  const href = primaryHref(entry)
+  const external = /^https?:/.test(href)
+  const stamp = noteDate(entry.publishedAt || entry.createdAt)
+  const detail = `#/entry/${encodeURIComponent(entry.id)}`
+  const linkProps = external ? { target: '_blank', rel: 'noreferrer' } : {}
+  const label = entryLabel(entry)
+  const image = entry.cover || entry.photos[0]?.src
+  return (
+    <li className={`stream-row stream-row-${entry.kind}${entry.featured ? ' is-featured' : ''}`}>
+      <div className="stamp">
+        <SiteLink
+          href={detail}
+          aria-label={`${label}，${stamp.year}年${stamp.month}月${stamp.day}日`}
+        >
+          <time dateTime={entry.publishedAt || entry.createdAt} className="stamp-date">
+            {stamp.month}.{stamp.day}
+          </time>
+          <span className={`stamp-year${showYear ? '' : ' is-repeat'}`}>{stamp.year}</span>
+        </SiteLink>
+        <span className="stamp-kind">
+          {entry.featured && <i className="stamp-mark" aria-label="精选" />}
+          {kindLabels[entry.kind]}
+          {entry.sample && <small>样例</small>}
+        </span>
+      </div>
+      <div className="stream-body">
+        {entry.kind === 'note' && (
+          <>
+            <SiteLink className="stream-note" href={href}>
+              {noteExcerpt(entry.body, 220)}
+            </SiteLink>
+            <div className="stream-meta">
+              <Topics entry={entry} base="#/notes?topic=" />
+            </div>
+          </>
+        )}
+        {entry.kind === 'photo' && (
+          <>
+            {image && (
+              <SiteLink className="stream-figure" href={href} aria-label={`查看「${label}」`}>
+                <img src={image} alt={entry.photos[0]?.alt || label} loading="lazy" />
+              </SiteLink>
+            )}
+            <h2 className="stream-title">
+              <SiteLink href={href}>{label}</SiteLink>
+            </h2>
+            {entry.summary && <p className="stream-summary">{entry.summary}</p>}
+            <div className="stream-meta">
+              <span className="stream-count">
+                {String(entry.photos.length || 1).padStart(2, '0')} 张
+              </span>
+              <Topics entry={entry} />
+            </div>
+          </>
+        )}
+        {entry.kind === 'writing' && (
+          <>
+            <h2 className="stream-title">
+              <SiteLink href={href}>{label}</SiteLink>
+            </h2>
+            {entry.summary && <p className="stream-summary">{entry.summary}</p>}
+            {entry.cover && (
+              <SiteLink
+                className="stream-figure is-inline"
+                href={href}
+                aria-hidden="true"
+                tabIndex={-1}
+              >
+                <img src={entry.cover} alt="" loading="lazy" />
+              </SiteLink>
+            )}
+            <div className="stream-meta">
+              <SiteLink className="stream-action" href={href}>
+                阅读
+                <Icon name="arrow" size={14} />
+              </SiteLink>
+              <Topics entry={entry} />
+            </div>
+          </>
+        )}
+        {entry.kind === 'project' && (
+          <>
+            <h2 className="stream-title">
+              <SiteLink href={href} {...linkProps}>
+                {label}
+                {external && <Icon name="external" size={16} />}
+              </SiteLink>
+            </h2>
+            {entry.summary && <p className="stream-summary">{entry.summary}</p>}
+            <SiteLink
+              className="stream-figure is-project"
+              href={href}
+              {...linkProps}
+              aria-hidden="true"
+              tabIndex={-1}
+            >
+              <EntryArtwork entry={entry} />
+            </SiteLink>
+            <div className="stream-meta">
+              <SiteLink className="stream-action" href={href} {...linkProps}>
+                {href !== detail ? (href.startsWith('#/') ? '打开体验' : '访问项目') : '查看项目'}
+                <Icon name={external ? 'external' : 'arrow'} size={14} />
+              </SiteLink>
+              {href !== detail && <SiteLink href={detail}>项目说明</SiteLink>}
+              <Topics entry={entry} />
+            </div>
+          </>
+        )}
+      </div>
+    </li>
   )
 }
 
