@@ -1,6 +1,6 @@
 # 0016: Minimal Account and Owner Access Management
 
-Status: Accepted; database migration deployed, account UI and real-account acceptance pending
+Status: Accepted; database migration and account UI deployed, real-account acceptance pending
 
 Date: 2026-09-27
 
@@ -48,8 +48,8 @@ was no product interface for inspecting accounts or changing their access.
 ## Verification and Release Boundary
 
 The migration `202609270001_accounts.sql` has been applied to production by the lead operator.
-At that verification point production had zero real Auth accounts. The account UI has not yet been
-released as part of this decision record; real registration, email delivery, first-owner bootstrap,
+At that verification point production had zero real Auth accounts. The account UI is deployed in `766781a`;
+real registration, email delivery, first-owner bootstrap,
 owner login and independent visitor acceptance remain unproven.
 
 Local Supabase checks passed: 76 account-permission assertions and 186 existing API assertions.

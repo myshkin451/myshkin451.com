@@ -125,8 +125,9 @@ pnpm build
 The publishing backend and public routes are implemented. The modern public design is now integrated
 into the shared application used by Vite and `site/`, including a data-driven homepage, search, reading,
 image viewing, accounts and the owner workspace. The owner has authorized this direction for continued
-development and has now accepted the current visual version for launch. This redesign is local and has
-not been deployed; the next stage is production rollout and real-account activation.
+development and has now accepted the current visual version for launch. The accepted redesign and
+account-management UI were deployed on September 27. Real-account activation is tracked separately
+in [progress.md](progress.md).
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 

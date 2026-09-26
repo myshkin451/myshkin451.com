@@ -1,75 +1,46 @@
 # Progress
 
 Last updated: 2026-09-27
-Last implementation update: 2026-09-27 (modern design integrated into the shared application; not deployed)
+Last implementation update: 2026-09-27 (modern design deployed; account access management and backup safeguards added)
 
 ## Current Phase
 
-The owner has accepted the refined [Study 04](docs/design/studies/restart-04/README.md) version as the
-initial release baseline and asks to move toward real launch and account setup. A deliberately unique
-personal visual identity is not required. [Decision 0015](docs/decisions/0015-modern-public-direction.md)
-records this acceptance. The next phase is production rollout and real-account acceptance, not another
-round of basic visual exploration.
+The accepted modern visual baseline `2a7e304`, including Cursor's `e264d44`, and the account-management
+release `766781a` are deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app).
+Both GitHub workflows passed; Vercel deployment `HbSMc5tpKHbeSD6NyGMiHW6H94UC` is Ready at the
+account release. No design restart or backend replacement is needed.
 
-The redesign is now implemented in the shared `frontend/src/` application used by Vite and Next.js
-`site/`, rather than only in a separate study. The homepage reads published entries and site settings;
-public search, reading, albums, notes, accounts and the owner workspace follow the new visual system.
-Draft isolation, permissions, discussions and existing public routes remain in place. The current
-review entry is `http://127.0.0.1:4333/index.html?preview=sample`; `study.html` is a reference.
-This work is local and has not been deployed. Backend configuration, cloud resources and production
-data were not changed. The publishing implementation below must be reused, not restarted.
+Account management now has a scoped implementation: verified-account status, a paginated owner-only
+user list, grant/revoke owner access, restrict/restore application writes, self/last-owner protections,
+and private audit records. Migration `202609270001` has been applied to the existing production
+project. The frontend release and its final browser evidence are recorded in
+[cloud acceptance](docs/operations/CLOUD_ACCEPTANCE.md).
 
-September 27 read-only refresh: the current Vercel `/health` returns `200 {"status":"ok"}`;
-home, login, registration and recovery return 200. Their public application configuration still has
-`emailEnabled=false` and `githubEnabled=false`, and the accepted modern homepage is not deployed.
-The email flag currently gates email login as well as registration/recovery. This check did not query
-private cloud accounts or owner grants; those remain unverified beyond the earlier recorded boundary.
-Remote `main` is `9b916f8`; the local Cursor commit `e264d44` and the modern refinement must be included
-in the release. The accepted source and this handoff are being retained as a local commit, without a push
-or automatic deployment in this design task.
+A fresh production SQL read on September 27 confirms **0 Auth accounts, 0 owners, 0 published entries,
+0 drafts, 0 messages and 0 media objects**. No local fixtures or IndexedDB data were imported. This
+means the public website is deployed, but no real owner or daily publishing has been accepted yet.
 
-The owner explicitly deferred domain purchase on September 21 and asked to finish the remaining feature
-work first. Do not reopen domain shopping or treat the earlier `.com` selection as a current purchase
-authorization. On September 22 the owner also questioned retaining Myshkin 451. It remains a working
-name; public identity and the final domain are open. Resend sending-domain activation remains pending.
-[Email setup](docs/operations/EMAIL_SETUP.md) now contains versioned Chinese confirmation/recovery
-templates, successful local Auth/Mailpit validation and concrete activation steps. No hosted SMTP
-or real owner account was activated by this preparation.
+The owner reconfirmed on September 27 that there is no owned DNS/domain and domain work remains a
+later step. Do not purchase or let that block independent implementation. Resend is only a candidate;
+its sending-domain requirement is separate from the website brand. Custom SMTP is still disabled and
+the dashboard currently requires it before editing hosted email templates. Email login, registration
+and recovery remain closed until external confirmation/recovery delivery is verified. Local Chinese
+mail templates are ready; no default administrator/password exists.
 
-Last recorded cloud handoff (September 22): the real backend, website and single-author notes are implemented and deployed.
-Notes PR #2 passed both CI workflows and merged as `b0dae87`; the production notes page was verified.
-The automatic-draft/email-template follow-up [PR #3](https://github.com/myshkin451/myshkin451.com/pull/3)
-also passed both workflows and merged as `e224415`. Production deployment
-`dpl_7GqcC9YjobBAvfHGoQjkJssbT6ZR` reached Ready and the existing alias points to it.
-Six public/management/auth HTTP checks passed; the browser confirms the empty public notes page and
-that email registration/recovery remain closed. This is a deployed feature, not completed real-owner acceptance.
-Local browser and restore acceptance passed.
-The website is deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app), with public browsing
-and database health verified. Email registration/recovery and the first real owner remain pending.
-The owner delegates technical execution and deployment, retaining account, payment, and unavoidable
-personal steps. Supabase and Vercel accounts are registered; the initial migration has been applied to
-the free Supabase project in Singapore. Migration versions `202609210001` and `202609210002` are recorded;
-the latter adds title-free notes without changing existing data or owner grants.
-Brevo registration and Free selection are complete, but repeated phone-code rejection blocks activation.
-Do not continue the previous Brevo credential-helper flow. An owned domain plus Resend is the recommended
-next candidate, not an activated replacement or an approved purchase. The official Vercel GitHub app is authorized for
-`myshkin451/myshkin451.com` only. The Vercel Hobby project is connected to this repository and deploys
-`main` with Production-only variables; Preview is disabled. Real external email delivery is not verified.
+The owner asked the agent to choose backup storage. The selected private local directory is
+`~/Library/Application Support/Myshkin451/Backups`, created with mode 700 on this Mac, whose
+FileVault status was verified On. The recovery tools include account restrictions/audit and validate
+bucket constraints. The owner explicitly authorized this project's credentials for local backup only.
+The first production archive, `2026-09-27-production`, passed integrity verification: 11 tables,
+one default-settings row, no accounts or media. Its actual isolated restore and restart passed
+54 checks; a separate populated synthetic restore passed 107. Recovery evidence is recorded in the
+[September 27 restore record](docs/operations/RELEASE_RESTORE_2026-09-27.md).
+A weekly Sunday 21:00 backup-due check is active in the current Codex task; it does not assume a
+maintenance window or run unattended exports. No new external storage or paid resource has been added.
 
-[Decision 0010](docs/decisions/0010-creator-first-restart.md) retains creator-first goals and removes
-AWS study and old-domain recovery as prerequisites. Earlier studies are historical design evidence;
-current direction is 0015. Writing, projects, images and notes should coexist without prescribing the
-owner's creative identity. The deployed older layout is not evidence that the local redesign is live.
-
-[Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
-without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
-deferral of comments is superseded. These flows now have both the original local preview and a real
-Supabase implementation under [decision 0013](docs/decisions/0013-production-supabase-and-next.md).
-
-[Decision 0012](docs/decisions/0012-independent-frontend-and-rebuild-authority.md) records the owner's
-explicit permission to rethink old engineering/design/skills and the independent `frontend/` boundary.
-Retaining the old Next/Payload stack is no longer a requirement. Prior code remains available for
-selective reuse and comparison; the new frontend does not claim production acceptance.
+Current product authority remains decisions 0010–0016. Existing Supabase/Vercel resources and the
+accepted shared design are reused. Detailed current delivery evidence lives in cloud acceptance;
+older sections below retain historical evidence only.
 
 ## Current Direction
 
@@ -184,39 +155,34 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Start a focused production-and-account task from the latest local `main`, including the accepted
-   modern source; remote `main` alone does not yet contain it. Review the release diff, synchronize it
-   through GitHub checks and deploy to the existing Vercel project. Verify the deployed source and
-   public/mobile pages. Keep samples out of production and unverified email features closed.
-2. Recheck the actual email provider/session state and complete sending-domain, SMTP, Chinese templates,
-   precise redirects and limits. Verify real confirmation/recovery delivery before opening the email
-   flows. Configure cloud mail limits through Dashboard or Management API, not CLI config push.
-   Do not repeat the failed Brevo phone-verification path or describe the Resend candidate as activated.
-3. Complete the owner's real email/password account, explicit verified-UUID owner grant and login.
-   No default administrator exists, and provider-console accounts are not website identities. The owner
-   enters passwords/codes through secure provider/site screens. Validate an independent visitor and
-   owner-only permissions, then the first real note/article/photo and moderation loop. Reuse the existing
-   backend and [notes implementation](docs/operations/NOTES_ACCEPTANCE.md).
-4. Public identity/domain remain open and purchase is still deferred. Keep the working name and Vercel
-   URL unless the owner changes that decision. Distinguish a required sending-domain decision from a
-   website-brand/domain change; prepare any purchase or unavoidable personal step concretely first.
-5. Verify real content persistence across redeployment and arrange durable private backups. Existing local
-   restore tests remain evidence for the supported email/password identities, not a real owner's cloud
-   acceptance. Do not add OAuth casually without addressing its identity/restore boundary.
-6. Measure actual populated pages, image bytes, request timing and service usage before changing hosting
-   or paying for capacity. Empty-site measurements cannot establish mainland-carrier performance or
-   a paid-upgrade need. Current providers remain Supabase Free and Vercel Hobby.
-
-The owner asks the agent to handle the remaining technical work and deployment. No paid plan, budget,
-domain purchase, or provider account is authorized by implication; prepare those choices concretely.
+1. Retain the deployed account-management release and `2a7e304` as the accepted visual rollback baseline.
+   Do not recreate backend resources or seed data. Domain work remains deferred by the owner.
+2. When domain work resumes, select and verify a sending domain and SMTP,
+   apply the versioned Chinese templates and precise redirects/rate limits, then prove external delivery.
+   Keep email features closed until that succeeds; do not retry Brevo phone verification.
+3. The owner creates and verifies their website account through secure screens, then the maintainer
+   grants the verified UUID explicitly. Passwords and codes are never requested in chat. Prove real
+   owner/visitor boundaries and owner-approved publishing, photos, moderation and redeploy persistence.
+4. Maintain a weekly quiet-window backup plus a backup after important publishing. The first production
+   archive has no real accounts/content/media; repeat recovery acceptance when those exist. An independent
+   encrypted copy remains a separate storage choice; do not upload to a new destination implicitly.
+5. Use real populated-site measurements before discussing paid capacity. Current website URL, working
+   name, free hosting and owner-accepted visual design remain in place.
 
 ### Active local handoff
+
+The September 27 account UI test server on `4326` and its browser sessions are closed. Its two explicitly
+named synthetic accounts and their audit events were removed; the two prior local accounts remain.
+The source Supabase stack (`myshkin451-production`, API `55421`) is stopped with volumes preserved.
+The separate recovery environments and their cleanup state are recorded in the September 27 restore record.
+The production project remains empty and was only changed by the reviewed account migration.
 
 The connected review entry is `http://127.0.0.1:4333/index.html?preview=sample`; the independent
 `http://127.0.0.1:4333/study.html` is an exploration reference. The Vite server is handed off for owner
 review; restart with `pnpm frontend:dev --port 4333` if needed. This origin's local content and sample
 preference are separate from `4323`, `localhost`, Supabase and production. Keep the same origin for
-continued use and stop the review server when no longer needed. No cloud configuration changed.
+continued use and stop the review server when no longer needed. This earlier design preview is separate
+from the now-deployed website and was not stopped or modified during account verification.
 
 The last recorded September 22 daily-use handoff used managed worktree `notes-daily-use` on
 `codex/notes-daily-use`. Its isolated `4327` browser-preview fixtures and `4328` sanitized email previews were used only for QA;
@@ -244,6 +210,14 @@ The old AWS launch-timing decision is superseded by 0010 and removed. Resolve ea
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
+
+- September 27 release: 89 frontend tests, 76 account-access assertions, 186 original API assertions,
+  12 backup-tool tests, formatting/lint/types and both builds passed. Desktop and independent visitor
+  sessions verified restriction/restoration and server rejection of unauthorized writes; the account
+  page fits a 320px viewport. Production passed 16 HTTP routes and a 390px browser check. A separate
+  synthetic source-to-target restore passed 107 checks, including accounts, private revisions, media,
+  restrictions, audit and restart; the actual empty production archive passed 54 separate restore/restart
+  checks. These checks do not establish external email or real-owner acceptance.
 
 - Current modern integration: 83 frontend tests, lint, root/site type checks and both frontend/site builds
   passed. The new regression coverage checks real-content home selection, empty/notes-only states,
@@ -374,9 +348,10 @@ the current branch cleanliness or restart direction:
 
 ## Handoff
 
-- The September 27 design slice is complete and visually accepted. A fresh task is recommended for the
-  production/account scope in [production handoff](docs/operations/PRODUCTION_HANDOFF.md). Start from
-  the latest local `main` commit, not the older remote ref; do not recreate the backend or reopen design.
+- The September 27 modern/account release is deployed. Continue from current `main` and
+  [production handoff](docs/operations/PRODUCTION_HANDOFF.md); the next personal step is the explicitly
+  deferred sending-domain/email setup, followed by the first verified owner and real publishing.
+  Do not recreate the backend, reopen design or treat local fixtures as real production acceptance.
 - September 21: the owner requests a new task with very high/maximum reasoning to finish the platform,
   leaving primarily purchases, registrations, and unavoidable personal operations to them. The
   [production handoff](docs/operations/PRODUCTION_HANDOFF.md) defines execution and acceptance without
@@ -384,7 +359,7 @@ the current branch cleanliness or restart direction:
 - The earlier September frontend slice used `127.0.0.1:4323` for delivery and
   `localhost:4323` for isolated QA writes. A design or backend task can use this board and `frontend/README.md`
   to recover the current boundary without inheriting the full design conversation.
-- Current authority: README, this board, decisions 0010–0015, the runbook, and the restart design brief.
+- Current authority: README, this board, decisions 0010–0016, the runbook, and the restart design brief.
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.

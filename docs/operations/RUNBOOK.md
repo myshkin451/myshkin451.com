@@ -1,18 +1,20 @@
 # Myshkin 451 使用与维护
 
-更新：2026-09-22。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
+更新：2026-09-27。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
 实际验收和上线状态以 [progress.md](../../progress.md) 为准，本文的操作步骤不代表云端已经完成。
 
 当前正式地址：[myshkin451.vercel.app](https://myshkin451.vercel.app)。公开浏览已上线；
 邮件和首次站主账号仍在接续，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。
 Brevo 手机验证反复失败，停止该流程。Myshkin 451 目前仍是工作名，域名暂缓；
 Resend 接入准备、中文模板和待本人参与的环节见 [认证邮件接续](EMAIL_SETUP.md)。
-目前仅完成本机邮件验证，正式 SMTP 尚未启用。
+目前仅完成本机邮件验证，正式 SMTP 尚未启用。新版视觉已上线；账号与权限操作见
+[账号指南](ACCOUNT_GUIDE.md)。域名和真实收信仍由本人明确留待下一步。
 
 ## 日常使用
 
 - **发布**：登录站主账号，打开工作台，新建文章、照片或项目。填写标题、正文/图片/项目链接、
   分类与显示选项，先保存草稿并预览，再发布。发布后复制作品链接；另一个浏览器无需登录即可阅读。
+- **账号管理**：工作台 → 账号，查看邮箱验证、角色和写入状态；可授予/撤销其他已验证账号的站主权限，或限制/恢复访客的本站写入。确认提示会说明影响；不能在页面中撤销自己的权限。
 - **随记**：工作台打开“随记”，直接写正文。停笔后自动存私有草稿，看到“草稿已保存”后
   可以刷新恢复。主动点击“发布”才会公开；“写新随记”保留原草稿并打开空编辑器。
 - **修改**：在工作台打开已发布作品，保存只修改草稿，发布更新才会替换公开版本。
@@ -40,7 +42,7 @@ Resend 接入准备、中文模板和待本人参与的环节见 [认证邮件�
 | [Resend](https://resend.com/) | 候选 Free，$0/月、3,000 封/月、100 封/日；需要验证自有发件域名。[官方价格](https://resend.com/pricing) | 名字与域名确定后注册并完成本人验证；未开户、未产生费用。技术设置见邮件接续。 |
 
 Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表中这两项额度是 2026-09-21 的
-核实记录，Resend 于 2026-09-22 复核。最终名字尚未决定，当前无需本人重复注册或购买。
+核实记录，Resend 于 2026-09-27 复核。最终名字尚未决定，当前无需本人重复注册或购买。
 
 密码、验证码、数据库连接串、SMTP 密钥和 service-role key 不发在聊天里。
 本人在服务商登录界面和受保护的环境变量/密码管理器中填写；维护者接续配置与测试。
@@ -48,7 +50,7 @@ Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表�
 
 ## 部署接续（维护者）
 
-1. 在空的 Supabase 项目应用 `supabase/migrations/`，不要把本地测试库、旧 IndexedDB 或演示样例导入生产。
+1. 现有项目只应用未部署的增量迁移；仅首次新项目才从空库应用全部 `supabase/migrations/`。不要重置现有项目，也不要把本地测试库、旧 IndexedDB 或演示样例导入生产。
    SQL、函数权限、RLS 和私有媒体桶均由迁移建立。保留当前生产迁移版本和对应 Git 提交。
 2. Vercel 导入本仓库，Root Directory 设为 `site`，允许构建读取根目录依赖和 `frontend/`。
    使用 [site/vercel.json](../../site/vercel.json) 的构建配置和 [环境模板](../../site/.env.example)。
@@ -62,7 +64,7 @@ Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表�
 3. 用真实分配的 HTTPS 地址配置 `SITE_URL`，Supabase Auth 的 Site URL 与精确允许的回调/恢复地址。
    本地应用端口为 `127.0.0.1:4325`；旧的 `127.0.0.1:4323` 留作设计预览。
 4. Supabase Auth 启用邮箱确认、最低密码长度 12、邮件间隔 60 秒、每小时邮件上限 30，保留其余速率限制并按
-   [认证邮件接续](EMAIL_SETUP.md)配置 Resend SMTP、中文模板和已验证的发件域。此步骤待域名确定后执行。
+   [认证邮件接续](EMAIL_SETUP.md)配置 Resend SMTP、中文模板和已验证的发件域。此步骤待发件域就绪后执行，不要求先确定网站品牌。
    默认 Supabase 邮件仅适合团队地址测试，不能承担公开注册；参见 [Supabase SMTP 限制](https://supabase.com/docs/guides/auth/auth-smtp)。
    CLI 2.117.0 的 `config push` 明确不管理 `auth.rate_limit.email_sent`；该值必须通过
    Dashboard 或 Management API 配置并读回，不能仅凭本机 TOML 或 push 成功声称已设置。
@@ -79,8 +81,12 @@ Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表�
 
 ## 备份范围与保存方式
 
+备份保存的是网站上以后不想丢失的东西：账号、作品、未公开草稿、留言、原始图片和站点设置。
+例如误删文章或需要换服务器时，可以用它恢复到备份时的状态。网站源码另由 Git/GitHub 保存；
+这份应用备份不包含整台电脑的文件。
+
 [`backup.mjs`](../../scripts/production/backup.mjs) 导出本项目的邮箱密码账号、对应身份 UUID、站主授权、
-个人昵称、公开内容、草稿、站点设置、留言及速率记录，并下载 `media` 桶所有原始文件。
+个人昵称、账号写入限制及权限审计、公开内容、草稿、站点设置、留言及速率记录，并下载 `media` 桶所有原始文件。
 每个文件与数据库导出都有 SHA-256，表有行数/内容摘要；备份期间检测到相关数据变化会失败，
 不生成完成标记。目录权限为 `700`，文件为 `600`，输出目录必须位于 Git 仓库外。
 
@@ -88,11 +94,53 @@ Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表�
 私密草稿和留言，必须存入加密磁盘/加密备份，并保留一个由本人控制的独立加密副本。
 SHA-256 检查意外损坏，不验证来源；只恢复自己生成并保管的可信备份，SQL 文件不能接受陌生来源。
 每次重要发布后备份，最迟每周一次；至少保留最近两份成功备份与一次实际恢复记录。
-当前脚本按需运行，没有替本人设置定时云任务或收费备份。
+当前脚本按需在维护窗口运行，没有收费备份。不要在定时器中固定填入 `--quiesced` 冒充已停止写入。
+
+9 月 27 日本人让维护者选择保存位置：本机 `~/Library/Application Support/Myshkin451/Backups`，
+目录已创建并设为 700，FileVault 已实时确认开启。此路径在代码仓库和临时目录之外；
+第二份独立加密副本尚未选定，不能把同一台 Mac 的另一目录称为独立副本。
+本人已明确授权“仅用于这个项目的本机备份”。第一份生产归档
+`2026-09-27-production` 于本地时间 9 月 27 日 02:44 生成并通过完整性检查：11 张表共
+1 行默认设置，账号与媒体均为 0。该归档的实际隔离恢复及重启通过 54 项检查；另有含账号、内容
+和媒体的合成演练 107 项检查，详见 [本轮恢复记录](RELEASE_RESTORE_2026-09-27.md)。
+目录权限 700，归档文件权限 600；实际有内容后仍需再次备份并验证真实数据恢复。
+
+当前 Codex 任务已安排每周日 21:00（Asia/Shanghai）检查备份是否超过七天、缺失或损坏。
+正常时不通知，同一未解决状态没有变化时不重复通知。该检查只读，不访问生产密钥或自动导出；
+到期后安排维护窗口执行备份。本机定期任务依赖 Mac 开机且 Codex 运行，不能视为服务器端自动备份；
+参见 [Codex 定期任务说明](https://learn.chatgpt.com/docs/automations?surface=app)。
+
+新增 `linked-backup.mjs` 可复用已有 CLI 授权获取本项目的短期数据库连接和 service_role，
+只在本机进程内存与子进程环境传递，不输出密钥、不执行返回 shell、不写凭据文件。
+它严格验证项目绑定，要求显式静默窗口，依赖已运行的 PostgreSQL 工具容器。远程连接始终使用
+`verify-full`；当前项目的证书由 Supabase Database → Settings → SSL configuration 提供。
+9 月 27 日控制台指向以下官方公开 CA（有效期至 2031-04-26）。工具容器重建后需重新放入证书，
+不能依赖上次的容器临时文件；若服务商更换 CA，以当前控制台提供的证书为准：
+
+```bash
+curl --fail --show-error --location \
+  https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt \
+  --output /private/tmp/myshkin-prod-ca-2021.crt
+openssl x509 -in /private/tmp/myshkin-prod-ca-2021.crt -noout -subject -issuer -dates
+docker cp /private/tmp/myshkin-prod-ca-2021.crt \
+  supabase_db_myshkin451-production:/tmp/myshkin-prod-ca-2021.crt
+PGSSLROOTCERT=/tmp/myshkin-prod-ca-2021.crt \
+node scripts/production/linked-backup.mjs \
+  --project-ref ggvwabhlogzhmgdnqpkx \
+  --out "$HOME/Library/Application Support/Myshkin451/Backups/NEW_TIMESTAMP" \
+  --pg-container supabase_db_myshkin451-production --quiesced
+```
+
+CLI 短期连接以 `cli_login_postgres` 登录时，工具显式切换到其授权的 `postgres` 维护角色。
+失败只报告固定阶段，不打印含凭据的原始 CLI 或数据库错误。证书信任或连接失败时修复对应条件，
+不关闭 TLS 校验、不重置数据库密码。
+
+每份清单记录 Git 提交/是否有未提交修改、Node/PostgreSQL 工具和服务端版本。恢复前会检查
+目标媒体桶的私有状态、文件大小及 MIME 限制与备份一致，防止恢复时悄悄放宽上传约束。
 
 这是**应用恢复包**，不是完整 Supabase 项目克隆：
 
-- 包含 `auth.users`、`auth.identities`、六张 `public` 业务表及 `private.message_events` 的数据。
+- 包含 `auth.users`、`auth.identities`、六张 `public` 业务表及 `private.message_events`、`private.account_access`、`private.account_access_events` 的数据。
   数据库结构、函数、RLS 和媒体桶规则由相同版本的仓库迁移重建。
 - 不恢复登录会话、refresh token、旧验证/重置链接；恢复后重新登录，未确认用户重新请求确认邮件。
   不复制 SMTP、项目 URL、签名密钥、数据库角色、服务商设置、其他桶、日志或外部服务凭据。

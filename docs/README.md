@@ -16,8 +16,10 @@ This repository uses a small documentation system that should grow only when the
 - [Design study 02](design/studies/restart-02/README.md): historical image-led preview; its abstract imagery was not accepted.
 - [Design study 03](design/studies/restart-03/README.md): preceding visual comparison with references, generated mockups, and functional details.
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
+- [账号与权限指南](operations/ACCOUNT_GUIDE.md)：登录、验证、站主授权与账号写入限制。
 - [Runbook](operations/RUNBOOK.md): current publishing, account setup, deployment, backup, restore, and rollback instructions.
 - [Local acceptance](operations/LOCAL_ACCEPTANCE.md): actual separate-target account/media restore, restart and permission evidence, with remaining verification boundaries.
+- [2026-09-27 备份恢复验收](operations/RELEASE_RESTORE_2026-09-27.md)：当前账号权限版本的隔离恢复证据及生产归档边界。
 - [随记使用与验收](operations/NOTES_ACCEPTANCE.md)：单人短文字发布、验证范围与域名/邮件接续。
 - [认证邮件接续](operations/EMAIL_SETUP.md)：中文模板、本机验证和最终域名确定后的 SMTP 操作。
 - [Cloud acceptance](operations/CLOUD_ACCEPTANCE.md): actual Vercel deployment, cloud configuration and public checks, with pending email and owner acceptance.
@@ -35,6 +37,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/decisions/0013-production-supabase-and-next.md`: real backend and website architecture, hosted services, data ownership, and free-tier constraints.
 - `docs/decisions/0014-single-author-notes.md`：单人发布、公开阅读的随记与增量迁移。
 - `docs/decisions/0015-modern-public-direction.md`：沿第四轮现代视觉方向继续开发，在共享前端中保留真实内容、发布、权限与路由；不以刻意建立个人辨识度为目标。
+- `docs/decisions/0016-account-access-management.md`：最小账号管理、有效站主保护和权限审计。
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

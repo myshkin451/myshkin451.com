@@ -8,6 +8,7 @@ import { options, repository } from './backup.mjs'
 
 const execute = promisify(execFile)
 const invalid = () => new Error('Unexpected linked credential format or project binding')
+let stage = 'arguments'
 
 export function assertProjectRef(value) {
   if (typeof value !== 'string' || !/^[a-z]{20}$/.test(value)) throw invalid()
@@ -96,6 +97,7 @@ async function main() {
     await readFile(path.join(repository, 'supabase/.temp/project-ref'), 'utf8')
   ).trim()
   if (linked !== ref) throw invalid()
+  stage = 'postgres-container'
   const container = args['--pg-container'] || process.env.PG_TOOL_CONTAINER
   if (!container || !/^[a-zA-Z0-9_.-]+$/.test(container))
     throw new Error('Provide a running --pg-container or PG_TOOL_CONTAINER')
@@ -104,10 +106,12 @@ async function main() {
     'true'
   )
     throw new Error('PostgreSQL tool container must already be running')
+  stage = 'linked-database-credentials'
   const database = parseDatabaseCredentials(
     await capture('pnpm', ['exec', 'supabase', 'db', 'dump', '--linked', '--dry-run']),
     ref,
   )
+  stage = 'project-service-role'
   const key = parseServiceRole(
     await capture('pnpm', [
       'exec',
@@ -122,6 +126,7 @@ async function main() {
     ref,
   )
   const api = `https://${ref}.supabase.co`
+  stage = 'archive-export'
   await capture(
     process.execPath,
     [
@@ -138,6 +143,7 @@ async function main() {
       SUPABASE_DB_URL: database,
       SUPABASE_SERVICE_ROLE_KEY: key,
       PG_TOOL_CONTAINER: container,
+      PGROLE: 'postgres',
     },
   )
   console.log(
@@ -148,7 +154,7 @@ async function main() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch(() => {
     console.error(
-      'Linked backup failed. Private CLI output was suppressed; check arguments, project binding, CLI authorization and PostgreSQL container. No credential file was written.',
+      `Linked backup failed at ${stage}. Private CLI output was suppressed. No credential file was written.`,
     )
     process.exitCode = 1
   })

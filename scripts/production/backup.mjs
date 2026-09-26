@@ -91,6 +91,8 @@ export function configuration(args, action) {
   const container = process.env.PG_TOOL_CONTAINER
   if (container && !/^[a-zA-Z0-9_.-]+$/.test(container))
     throw new Error('Invalid PG_TOOL_CONTAINER')
+  if (process.env.PGROLE && process.env.PGROLE !== 'postgres')
+    throw new Error('PGROLE only supports the postgres maintenance role')
   // For a local Supabase DB container, the published host port maps to its internal 5432.
   const insideLocalDatabase = Boolean(container && localHost(database.hostname))
   const pg = {
@@ -101,7 +103,9 @@ export function configuration(args, action) {
     PGDATABASE: decodeURIComponent(database.pathname.slice(1)),
     PGSSLMODE: localHost(database.hostname) ? 'disable' : 'verify-full',
     PGCONNECT_TIMEOUT: '15',
-    PGOPTIONS: '-c statement_timeout=300000 -c lock_timeout=15000 -c timezone=UTC',
+    PGOPTIONS:
+      '-c statement_timeout=300000 -c lock_timeout=15000 -c timezone=UTC' +
+      (process.env.PGROLE === 'postgres' ? ' -c role=postgres' : ''),
   }
   if (process.env.PGSSLROOTCERT) pg.PGSSLROOTCERT = process.env.PGSSLROOTCERT
   return { api: api.origin, database, pg, container, key: process.env.SUPABASE_SERVICE_ROLE_KEY }

@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
-import { backupMetadata } from './backup.mjs'
+import { backupMetadata, configuration } from './backup.mjs'
 import { assertBucketConfiguration } from './restore.mjs'
 
 const expected = { fileSizeLimit: 10485760, allowedMimeTypes: ['image/jpeg', 'image/png'] }
@@ -12,6 +12,33 @@ const bucket = {
   file_size_limit: 10485760,
   allowed_mime_types: ['image/png', 'image/jpeg'],
 }
+
+test('maintenance role is explicit and allowlisted without weakening remote TLS', () => {
+  const fixture = {
+    SUPABASE_URL: 'https://abcdefghijklmnopqrst.supabase.co',
+    SUPABASE_DB_URL:
+      'postgresql://fixture:fixture@db.abcdefghijklmnopqrst.supabase.co:5432/postgres',
+    SUPABASE_SERVICE_ROLE_KEY: 'fixture-only',
+    PGROLE: 'postgres',
+  }
+  const saved = Object.fromEntries(Object.keys(fixture).map((name) => [name, process.env[name]]))
+  try {
+    Object.assign(process.env, fixture)
+    const args = { '--quiesced': true, '--remote': fixture.SUPABASE_URL }
+    const config = configuration(args, 'backup')
+    assert.equal(config.pg.PGSSLMODE, 'verify-full')
+    assert.match(config.pg.PGOPTIONS, / -c role=postgres$/)
+    process.env.PGROLE = 'postgres -c some_setting=unsafe'
+    assert.throws(() => configuration(args, 'backup'), /PGROLE only supports/)
+    delete process.env.PGROLE
+    assert.doesNotMatch(configuration(args, 'backup').pg.PGOPTIONS, /role=/)
+  } finally {
+    for (const [name, value] of Object.entries(saved)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+})
 
 test('equivalent MIME restriction sets restore regardless of ordering', () => {
   assert.doesNotThrow(() => assertBucketConfiguration(bucket, expected))
