@@ -11,6 +11,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/HARNESS.md`: engineering harness, validation, and multi-agent workflow.
 - `docs/design/RESTART_BRIEF.md`: current creative goals, design hypotheses, and prototype deliverable.
 - [Current frontend](../frontend/README.md): connected public, publishing, and visitor preview; local persistence and verification.
+- [Design study 04](design/studies/restart-04/README.md): modern visual version accepted as the initial release baseline, shared-application integration, references and local verification; production and real-account acceptance remain separate.
 - [Design study 01](design/studies/restart-01/README.md): three standalone interactive previews and feedback guidance.
 - [Design study 02](design/studies/restart-02/README.md): historical image-led preview; its abstract imagery was not accepted.
 - [Design study 03](design/studies/restart-03/README.md): preceding visual comparison with references, generated mockups, and functional details.
@@ -33,6 +34,7 @@ This repository uses a small documentation system that should grow only when the
 - `docs/decisions/0012-independent-frontend-and-rebuild-authority.md`: permission to rethink the old foundation and the current local frontend boundary.
 - `docs/decisions/0013-production-supabase-and-next.md`: real backend and website architecture, hosted services, data ownership, and free-tier constraints.
 - `docs/decisions/0014-single-author-notes.md`：单人发布、公开阅读的随记与增量迁移。
+- `docs/decisions/0015-modern-public-direction.md`：沿第四轮现代视觉方向继续开发，在共享前端中保留真实内容、发布、权限与路由；不以刻意建立个人辨识度为目标。
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

@@ -92,7 +92,7 @@ function LocalNote() {
       <span className="studio-local-dot" aria-hidden="true" />
       本机工作台
       <span className="studio-local-explanation">
-        内容保存在当前浏览器；发布后可在本机网站查看。联网发布将在后续接入。
+        内容保存在当前浏览器；发布后可在本机网站查看，不会同步到线上。
       </span>
     </p>
   )

@@ -26,6 +26,19 @@ const base: Omit<Entry, 'id' | 'title' | 'kind'> = {
 export const sampleEntries: Entry[] = [
   {
     ...base,
+    id: 'crop',
+    kind: 'project',
+    cover: './assets/sea.png',
+    title: '图像取景',
+    summary: '同一张图像，不同的观看方式。',
+    topics: ['图像', '交互'],
+    featured: true,
+    publishedAt: '2026-09-22T08:00:00.000Z',
+    body: '选择画幅，拖动图像，找到合适的构图。也可以选择自己的照片，在浏览器中裁切并保存图片。\n\n图片只在当前设备处理，不会上传。默认照片为 AI 生成的演示样图。',
+    discussion: false,
+  },
+  {
+    ...base,
     id: 'coast',
     kind: 'photo',
     title: '海与山',
@@ -109,7 +122,7 @@ export const sampleEntries: Entry[] = [
     topics: ['设计'],
     destination: 'https://github.com/myshkin451/myshkin451.com',
     artwork: 'site',
-    body: '这里是本次网站设计的项目样页，链接指向当前公开仓库。\n\n## 当前版本\n\n这一轮实现公开浏览、内容编辑和访客交流的前端体验。本机发布的内容仅保存在当前浏览器中。真实账号、邮件与多人留言将在后端接入后提供。\n\n## 继续修改\n\n可以在工作台新建文章、上传照片或添加项目，再回到首页查看。已有样例与自己的内容可以分开浏览。',
+    body: '这里是网站项目的演示页面，链接指向公开源代码仓库。\n\n## 写作与发布\n\n在工作台记录想法，保存草稿，准备好以后再发布。文章、照片、项目与短随记，可以在同一个网站里浏览。\n\n## 本机预览\n\n当前演示中的内容保存在浏览器里，不会同步到线上网站。样例与自己的内容可以分开浏览。',
   },
   ...[
     {

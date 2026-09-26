@@ -1,12 +1,15 @@
 import { SiteLink, currentRoute, replaceRoute, go } from '../navigation'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { usePlatform } from '../platform'
-import { EntryArtwork, EntryCard, Icon, PhotoViewer, Stream, TextBody, primaryHref } from '../ui'
+import { EntryArtwork, EntryCard, Icon, TextBody, primaryHref } from '../ui'
 import { entryLabel, formatDate, kindLabels, safeDestination } from '../types'
 import type { EntryKind } from '../types'
 import { Discussion } from './Community'
 import { Home } from './Home'
 import { Notes, NoteDetail } from './Notes'
+import { CropPlayground } from '../study/CropPlayground'
+import { PhotoSequence } from '../study/PhotoSequence'
+import { ReadingTools } from '../modern/ReadingTools'
 
 let lastCollection = '#/'
 const collectionStorageKey = 'myshkin-last-collection'
@@ -23,7 +26,7 @@ function safeCollection(value: string | null): string {
   return `#${path}`
 }
 
-function rememberCollection(value: string) {
+export function rememberCollection(value: string) {
   lastCollection = safeCollection(value)
   try {
     sessionStorage.setItem(collectionStorageKey, lastCollection)
@@ -129,7 +132,12 @@ function Collection({ path, params }: PageProps) {
                     return (
                       <SiteLink
                         key={kind}
-                        href={href}
+                        href={(() => {
+                          const next = new URLSearchParams(params)
+                          next.delete('kind')
+                          next.delete('selected')
+                          return href + (next.size ? `?${next}` : '')
+                        })()}
                         aria-current={selectedKind === kind ? 'page' : undefined}
                       >
                         {label}
@@ -192,6 +200,18 @@ function Collection({ path, params }: PageProps) {
                 ))}
               </div>
             )}
+            <div className="collection-result-count">
+              <span role="status">{filtered.length} 项内容</span>
+              {(query || topic) && (
+                <button
+                  onClick={() =>
+                    routeTopic ? go('/archive') : change({ q: '', topic: '', selected: '' })
+                  }
+                >
+                  清除筛选
+                </button>
+              )}
+            </div>
           </>
         )}
       </div>
@@ -250,7 +270,51 @@ function Collection({ path, params }: PageProps) {
           </div>
         ) : (
           <div className="full">
-            <Stream entries={visible} label={`${title}列表`} />
+            <div className="modern-collection-grid" aria-label={`${title}列表`}>
+              {visible.map((entry) => (
+                <article
+                  className={`modern-collection-item modern-collection-${entry.kind} ${entry.cover || entry.photos[0]?.src ? 'has-image' : ''}`}
+                  key={entry.id}
+                >
+                  {(entry.cover || entry.photos[0]?.src) && (
+                    <SiteLink
+                      className="modern-collection-image"
+                      href={`#/entry/${encodeURIComponent(entry.id)}`}
+                    >
+                      <img
+                        src={entry.cover || entry.photos[0].src}
+                        alt={entry.photos[0]?.alt || entry.title}
+                        loading="lazy"
+                      />
+                    </SiteLink>
+                  )}
+                  <div className="modern-collection-meta">
+                    <span>
+                      {kindLabels[entry.kind]}
+                      {entry.sample ? ' · 样例' : ''}
+                    </span>
+                    <time dateTime={entry.publishedAt}>{formatDate(entry.publishedAt)}</time>
+                  </div>
+                  <SiteLink
+                    className="modern-collection-title"
+                    href={`#/entry/${encodeURIComponent(entry.id)}`}
+                  >
+                    <h2>{entryLabel(entry)}</h2>
+                    <Icon name="arrow" size={19} />
+                  </SiteLink>
+                  {entry.summary && <p>{entry.summary}</p>}
+                  {entry.topics.length > 0 && (
+                    <div className="modern-collection-topics">
+                      {entry.topics.map((topic) => (
+                        <SiteLink href={`#/topics/${encodeURIComponent(topic)}`} key={topic}>
+                          {topic}
+                        </SiteLink>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
           </div>
         )
       ) : (
@@ -293,9 +357,7 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
   const entry = draft
     ? drafts.find((item) => item.id === id)
     : entries.find((item) => item.id === id && item.status === 'published')
-  const [viewerIndex, setViewerIndex] = useState<number | null>(null)
   const [largeType, setLargeType] = useState(false)
-  const [photoLayout, setPhotoLayout] = useState<'story' | 'overview'>('story')
   if (draft && remote && !authReady)
     return (
       <p className="community-notice" role="status">
@@ -367,35 +429,11 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
       </header>
       {entry.kind === 'writing' && (
         <div className="article-layout">
-          <aside className="reading-aside">
-            {headings.length > 0 && (
-              <nav aria-label="文章目录">
-                <span>本文目录</span>
-                {headings.map((heading, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      document.getElementById(`section-${index}`)?.scrollIntoView({
-                        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                          ? 'instant'
-                          : 'smooth',
-                        block: 'start',
-                      })
-                    }
-                  >
-                    {heading}
-                  </button>
-                ))}
-              </nav>
-            )}
-            <button
-              className={`reading-type ${largeType ? 'active' : ''}`}
-              aria-pressed={largeType}
-              onClick={() => setLargeType(!largeType)}
-            >
-              Aa<span>{largeType ? '标准字号' : '放大字号'}</span>
-            </button>
-          </aside>
+          <ReadingTools
+            headings={headings}
+            largeType={largeType}
+            onType={() => setLargeType(!largeType)}
+          />
           <div className={`article-copy ${largeType ? 'large-type' : ''}`}>
             {entry.cover && (
               <img className="article-cover" src={entry.cover} alt={entryLabel(entry)} />
@@ -407,65 +445,22 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
       )}
       {entry.kind === 'photo' && (
         <>
-          <div className="album-toolbar">
-            <span>{entry.photos.length} 张图像</span>
-            <div role="group" aria-label="影像排列">
-              <button
-                aria-pressed={photoLayout === 'story'}
-                onClick={() => setPhotoLayout('story')}
-              >
-                展开
-              </button>
-              <button
-                aria-pressed={photoLayout === 'overview'}
-                onClick={() => setPhotoLayout('overview')}
-              >
-                总览
-              </button>
-            </div>
-            <span className="album-hint">
-              点击查看大图
-              <Icon name="external" size={12} />
-            </span>
-          </div>
-          <div className={`album-photos ${photoLayout}`}>
-            {entry.photos.map((photo, index) => (
-              <figure key={photo.id}>
-                <button
-                  onClick={() => setViewerIndex(index)}
-                  aria-label={`查看大图：${photo.caption || photo.alt || `第 ${index + 1} 张`}`}
-                >
-                  <img src={photo.src} alt={photo.alt} loading={index === 0 ? 'eager' : 'lazy'} />
-                </button>
-                <figcaption>
-                  <span>
-                    {String(index + 1).padStart(2, '0')}
-                    <span>{photo.caption}</span>
-                  </span>
-                  <small>{photo.credit}</small>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <PhotoSequence title={entry.title} photos={entry.photos} />
           {entry.body && (
             <div className="album-description">
               <TextBody text={entry.body} />
             </div>
-          )}
-          {viewerIndex !== null && (
-            <PhotoViewer
-              photos={entry.photos}
-              index={viewerIndex}
-              onIndex={setViewerIndex}
-              onClose={() => setViewerIndex(null)}
-            />
           )}
         </>
       )}
       {entry.kind === 'project' && (
         <div className="project-content">
           <div className="project-hero">
-            <EntryArtwork entry={entry} />
+            {entry.sample && entry.id === 'crop' ? (
+              <CropPlayground />
+            ) : (
+              <EntryArtwork entry={entry} />
+            )}
           </div>
           <div className="project-description">
             <span className="eyebrow">项目说明</span>
@@ -474,29 +469,8 @@ function EntryPage({ id, draft }: { id: string; draft: boolean }) {
         </div>
       )}
       {entry.kind !== 'photo' && entry.photos.length > 0 && (
-        <div className="attached-photos album-photos overview">
-          {entry.photos.map((photo, index) => (
-            <figure key={photo.id}>
-              <button
-                onClick={() => setViewerIndex(index)}
-                aria-label={`查看大图：${photo.caption || photo.alt || `第 ${index + 1} 张`}`}
-              >
-                <img src={photo.src} alt={photo.alt} loading="lazy" />
-              </button>
-              <figcaption>
-                <span>{photo.caption}</span>
-                <small>{photo.credit}</small>
-              </figcaption>
-            </figure>
-          ))}
-          {viewerIndex !== null && (
-            <PhotoViewer
-              photos={entry.photos}
-              index={viewerIndex}
-              onIndex={setViewerIndex}
-              onClose={() => setViewerIndex(null)}
-            />
-          )}
+        <div className="attached-photos">
+          <PhotoSequence title={entry.title} photos={entry.photos} />
         </div>
       )}
       {!draft && entry.discussion && (

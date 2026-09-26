@@ -10,9 +10,9 @@ This repository intentionally does not continue an older blog architecture. The 
 
 ## Current Direction
 
-- Restart with design exploration, then build a small usable site, then deploy it.
-- Make the site personal, visually intentional, and enjoyable to explore and use.
-- Discover the visual direction through working examples; the previous console design is historical.
+- Develop the modern direction accepted for continued refinement in Study 04 on the existing platform.
+- Make the site coherent, visually intentional, and enjoyable to use; a distinctive personal visual identity is not required.
+- Refine through working examples and real publishing; the previous console and editorial designs are historical.
 - Start with home, writing, projects, and a small about surface. Let actual content justify expansion.
 - Reuse or replace the old foundation according to the publishing experience; prior code and design skills are not constraints.
 - Make the site usable with no published work and make routine writing, photo, and project updates easy.
@@ -29,6 +29,9 @@ The zero-content start and visitor interaction scope are recorded in
 permission to rethink the foundation and the independent frontend boundary.
 The owner-facing [design brief](docs/design/RESTART_BRIEF.md) separates confirmed goals from design
 hypotheses. Older platform-specific skills and references are context, not a fixed aesthetic brief.
+[Decision 0015](docs/decisions/0015-modern-public-direction.md) records the owner's authorization to
+continue the modern direction in the shared application. On September 27 the owner accepted the
+current version as the initial release baseline; production and real-account acceptance remain separate.
 
 [Decision 0014](docs/decisions/0014-single-author-notes.md) adds the public notes timeline and a title-free
 owner editor. See [notes usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md). The owner has deferred
@@ -70,6 +73,16 @@ Open `http://127.0.0.1:4323/`. The frontend includes public pages, a content wor
 labeled local visitor/message simulations. Its [README](frontend/README.md) explains persistence,
 commands, verification, and limits. `pnpm frontend:build` checks types and builds this frontend.
 
+The current connected design review runs on port `4333`:
+
+```bash
+pnpm frontend:dev --port 4333
+```
+
+Open [the full platform preview](http://127.0.0.1:4333/index.html?preview=sample). This explicit local
+preview URL enables labeled samples; the workspace still saves only to this browser's IndexedDB.
+The separate [study entry](http://127.0.0.1:4333/study.html) remains an exploration reference.
+
 To run the real backend locally, start Docker and use:
 
 ```bash
@@ -109,31 +122,27 @@ pnpm build
 
 ## Current Status
 
-Phase 1 publishing and Phase 2 public routes have a previously validated local baseline. The
-September 2026 restart reopens public design; the existing UI is not the accepted final experience.
+The publishing backend and public routes are implemented. The modern public design is now integrated
+into the shared application used by Vite and `site/`, including a data-driven homepage, search, reading,
+image viewing, accounts and the owner workspace. The owner has authorized this direction for continued
+development and has now accepted the current visual version for launch. This redesign is local and has
+not been deployed; the next stage is production rollout and real-account activation.
 
 For agent workflow and long-term handoff, see `AGENTS.md`, `progress.md`, and `docs/HARNESS.md`.
 
 The first product gate was the platform loop: create or update an article or project in the CMS/admin surface, publish it with media and a stable route, render it on the public site, and prove it with baseline checks.
 
-The current [design study](docs/design/studies/restart-03/README.md) compares two content-led layouts:
-[side-by-side browsing](docs/design/studies/restart-03/index.html) and an
-[index with previews](docs/design/studies/restart-03/catalog.html). Writing, projects, and images
-share the same six-item sample set, without a preferred medium. Both were implemented after reference
-research and generated mockups, with reading, image viewing, and a working color-sampling tool.
-The owner finds this third round substantially better and wants to explore varied personal work,
-classification, and richer details within a modern minimal design. The specific layout remains open;
-B's earlier relative preference did not establish a dark or abstract visual identity.
-No database is required for these previews. A
-[single-file offline copy](docs/design/studies/restart-03/offline.html) includes both layouts and their assets;
-use the local preview server while iterating, and rebuild the offline copy for portable review.
+[Study 04](docs/design/studies/restart-04/README.md) records the references, accepted continuation and
+integration boundary. Its design now uses actual published entries and settings, while preserving
+draft isolation, stable routes, moderation and server-rendered public HTML. The local crop demonstration
+also supports selecting an image from the device and exporting a PNG without uploading it.
 
-The current [frontend](frontend/README.md) extends this work into a connected page set: mixed browsing,
-reading, albums, projects, topics, a small color tool, visitor pages, and an owner workspace. Content
-can be drafted, previewed, and published into the current browser using IndexedDB. Local demo identities
-and comments do not represent a real account service. Old production routes remain unchanged.
+The [frontend](frontend/README.md) includes browsing, reading, albums, projects, topics, tools, visitor
+pages and an owner workspace. In Vite, content is drafted, previewed and published into the current
+browser using IndexedDB; local identities and comments are simulations. In `site/`, the same application
+uses the existing Supabase implementation. Historical studies remain available for comparison.
 
 The [production handoff](docs/operations/PRODUCTION_HANDOFF.md) defines the active delivery scope and
 acceptance. Real account, publishing, recovery, media, and moderation code is implemented under decision
-0013; current verification and cloud blockers are recorded in `progress.md`. The current visual design
-remains open to feedback. No public deployment should be inferred from a successful local build.
+0013; current verification and cloud blockers are recorded in `progress.md`. The accepted visual baseline
+can evolve through daily use. No public deployment should be inferred from a successful local build.

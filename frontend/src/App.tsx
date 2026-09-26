@@ -1,10 +1,10 @@
-import { entryLabel } from './types'
+import { entryLabel, kindLabels, type Entry, type EntryKind } from './types'
 import { SiteLink } from './navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { useRoute } from './navigation'
 import { usePlatform } from './platform'
 import { Icon } from './ui'
-import { PublicPage } from './pages/Public'
+import { PublicPage, rememberCollection } from './pages/Public'
 import { ColorLab } from './pages/ColorLab'
 import { CommunityPage } from './pages/Community'
 import { StudioPage } from './pages/Studio'
@@ -14,6 +14,19 @@ function PreviewDock() {
   const [pending, setPending] = useState(false)
   const [failure, setFailure] = useState('')
   const dialog = useRef<HTMLDialogElement>(null)
+  const appliedPreview = useRef(false)
+
+  useEffect(() => {
+    if (appliedPreview.current) return
+    appliedPreview.current = true
+    // The explicit preview URL opts into fixtures only in the local application.
+    // The remote application never mounts this dock or seeds sample content.
+    if (new URLSearchParams(window.location.search).get('preview') !== 'sample') return
+    if (state.mode === 'sample') return
+    void setMode('sample').catch((cause: unknown) => {
+      setFailure(cause instanceof Error ? cause.message : '样例未能打开，请重试。')
+    })
+  }, [setMode, state.mode])
 
   async function changeMode() {
     setPending(true)
@@ -81,49 +94,315 @@ function PreviewDock() {
   )
 }
 
+function SiteSearch({
+  entries,
+  onClose,
+  returnFocus,
+}: {
+  entries: Entry[]
+  onClose: () => void
+  returnFocus: HTMLElement | null
+}) {
+  const dialog = useRef<HTMLDialogElement>(null)
+  const input = useRef<HTMLInputElement>(null)
+  const headingId = useId()
+  const [query, setQuery] = useState('')
+  const [kind, setKind] = useState<EntryKind | ''>('')
+  const term = query.trim().toLocaleLowerCase()
+  const published = entries
+    .filter((entry) => entry.status === 'published')
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || b.id.localeCompare(a.id))
+  const found = published.filter(
+    (entry) =>
+      (!kind || entry.kind === kind) &&
+      (!term ||
+        `${entryLabel(entry)} ${entry.summary} ${entry.body} ${entry.topics.join(' ')}`
+          .toLocaleLowerCase()
+          .includes(term)),
+  )
+  const shown = found.slice(0, 12)
+  const queryParams = new URLSearchParams()
+  if (query.trim()) queryParams.set('q', query.trim())
+  if (kind) queryParams.set('kind', kind)
+  const allResults = '#/archive' + (queryParams.size ? `?${queryParams}` : '')
+
+  useEffect(() => {
+    const element = dialog.current
+    if (!element) return
+    const previousOverflow = document.body.style.overflow
+    element.showModal()
+    document.body.style.overflow = 'hidden'
+    input.current?.focus()
+    return () => {
+      element.close()
+      document.body.style.overflow = previousOverflow
+      if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true })
+    }
+  }, [returnFocus])
+
+  return (
+    <dialog
+      ref={dialog}
+      className="site-search-dialog"
+      aria-labelledby={headingId}
+      onCancel={(event) => {
+        event.preventDefault()
+        onClose()
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+      onKeyDown={(event) => {
+        if (event.nativeEvent.isComposing || event.altKey || event.ctrlKey || event.metaKey) return
+        const links = Array.from(
+          dialog.current?.querySelectorAll<HTMLAnchorElement>('[data-search-result]') || [],
+        )
+        const current = links.findIndex((link) => link === document.activeElement)
+        if (
+          links.length &&
+          (event.target === input.current || current >= 0) &&
+          ['ArrowDown', 'ArrowUp'].includes(event.key)
+        ) {
+          event.preventDefault()
+          const next =
+            event.key === 'ArrowDown'
+              ? (current + 1) % links.length
+              : current <= 0
+                ? links.length - 1
+                : current - 1
+          links[next]?.focus()
+        }
+        if (event.key === 'Enter' && event.target === input.current && links.length) {
+          event.preventDefault()
+          links[0].click()
+        }
+      }}
+    >
+      <div className="site-search-panel">
+        <header className="site-search-heading">
+          <h2 id={headingId}>搜索网站</h2>
+          <button
+            className="site-search-close"
+            type="button"
+            onClick={onClose}
+            aria-label="关闭搜索"
+          >
+            <span>关闭</span>
+            <Icon name="close" size={18} />
+          </button>
+        </header>
+        <label className="site-search-input">
+          <Icon name="search" size={22} />
+          <span className="sr-only">搜索公开内容</span>
+          <input
+            ref={input}
+            type="search"
+            placeholder="查找文章、影像、项目或随记"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </label>
+        <div className="site-search-filters" role="group" aria-label="搜索内容类型">
+          <button type="button" aria-pressed={!kind} onClick={() => setKind('')}>
+            全部
+          </button>
+          {(Object.keys(kindLabels) as EntryKind[]).map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={kind === value}
+              onClick={() => setKind(value)}
+            >
+              {kindLabels[value]}
+            </button>
+          ))}
+        </div>
+        <div className="site-search-results">
+          <p className="site-search-count" role="status">
+            {term || kind ? `${found.length} 项匹配内容` : '最近发布'}
+            {found.length > shown.length && <span>显示前 {shown.length} 项</span>}
+          </p>
+          <ul>
+            {shown.map((entry) => (
+              <li key={entry.id}>
+                <SiteLink
+                  href={`#/entry/${encodeURIComponent(entry.id)}`}
+                  data-search-result
+                  onClick={() => {
+                    rememberCollection(allResults)
+                    onClose()
+                  }}
+                >
+                  <span className="site-search-kind">
+                    {kindLabels[entry.kind]}
+                    {entry.sample && <small>样例</small>}
+                  </span>
+                  <span className="site-search-copy">
+                    <strong>{entryLabel(entry)}</strong>
+                    {entry.summary && <span>{entry.summary}</span>}
+                  </span>
+                  <Icon name="arrow" size={18} />
+                </SiteLink>
+              </li>
+            ))}
+          </ul>
+          {!shown.length && (
+            <p className="site-search-empty">
+              {published.length ? '没有找到相应内容，试试其他关键词或类型。' : '还没有公开的内容。'}
+            </p>
+          )}
+        </div>
+        <footer className="site-search-foot">
+          <span>↑ ↓ 选择 · Enter 打开 · Esc 关闭</span>
+          <SiteLink href={allResults} onClick={onClose}>
+            {term || kind ? '在内容页查看' : '全部内容'}
+            <Icon name="arrow" size={15} />
+          </SiteLink>
+        </footer>
+      </div>
+    </dialog>
+  )
+}
+
 function SiteHeader({ path }: { path: string }) {
   const { state, entries } = usePlatform()
-  const currentEntry = entries.find((entry) => path === '/entry/' + entry.id)
-  const kindActive = (kind: string, route: string) => path === route || currentEntry?.kind === kind
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [returnFocus, setReturnFocus] = useState<HTMLElement | null>(null)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const nav = useRef<HTMLElement>(null)
+  const navId = useId()
+  const closeSearch = useCallback(() => setSearchOpen(false), [])
+  const currentEntry = entries.find((entry) => path === '/entry/' + encodeURIComponent(entry.id))
   const links = [
-    { href: '/writing', title: '文章', active: kindActive('writing', '/writing') },
-    { href: '/photos', title: '影像', active: kindActive('photo', '/photos') },
     {
-      href: '/projects',
-      title: '项目',
-      active: kindActive('project', '/projects') || path.startsWith('/play'),
+      href: '/',
+      title: '作品',
+      active:
+        ['/', '/archive', '/writing', '/photos', '/projects'].includes(path) ||
+        path.startsWith('/topics/') ||
+        path.startsWith('/play/') ||
+        Boolean(currentEntry && currentEntry.kind !== 'note'),
     },
-    { href: '/notes', title: '随记', active: kindActive('note', '/notes') },
+    { href: '/notes', title: '随记', active: path === '/notes' || currentEntry?.kind === 'note' },
     { href: '/about', title: '关于', active: path === '/about' },
-    { href: '/guestbook', title: '留言', active: path === '/guestbook' },
   ]
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === 'k' &&
+        !document.querySelector('dialog[open]')
+      ) {
+        event.preventDefault()
+        setReturnFocus(
+          menuOpen
+            ? menuButton.current
+            : document.activeElement instanceof HTMLElement
+              ? document.activeElement
+              : null,
+        )
+        setSearchOpen(true)
+        setMenuOpen(false)
+      }
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false)
+        menuButton.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (menuOpen) nav.current?.querySelector('a')?.focus()
+  }, [menuOpen])
+
   return (
-    <header className="site-header">
-      <SiteLink className="site-brand" href="#/" aria-label={`${state.settings.name} 首页`}>
-        <span>{state.settings.name}</span>
-      </SiteLink>
-      <nav className="site-nav" aria-label="网站导航">
-        {links.map((link) => (
-          <SiteLink
-            key={link.href}
-            href={`#${link.href}`}
-            aria-current={link.active ? 'page' : undefined}
-          >
-            {link.title}
+    <>
+      <header className="site-header">
+        <SiteLink
+          className="site-brand"
+          href="#/"
+          aria-label={`${state.settings.name} 首页`}
+          title={state.settings.name}
+          onClick={() => setMenuOpen(false)}
+        >
+          {state.settings.name}
+        </SiteLink>
+        <nav
+          ref={nav}
+          id={navId}
+          className={`site-nav${menuOpen ? ' is-open' : ''}`}
+          aria-label="网站导航"
+          onClick={() => {
+            setMenuOpen(false)
+            document.getElementById('main')?.focus({ preventScroll: true })
+          }}
+        >
+          {links.map((link) => (
+            <SiteLink
+              key={link.href}
+              href={`#${link.href}`}
+              aria-current={link.active ? 'page' : undefined}
+            >
+              {link.title}
+            </SiteLink>
+          ))}
+          <SiteLink className="site-nav-secondary" href="#/archive">
+            全部内容
           </SiteLink>
-        ))}
-      </nav>
-      <SiteLink className="account-link" href={state.visitor ? '#/account' : '#/login'}>
-        {state.visitor ? (
-          <>
-            <span className="visitor-avatar">{state.visitor.nickname.slice(0, 1)}</span>
-            <span className="sr-only">我的账号</span>
-          </>
-        ) : (
-          '登录'
-        )}
-      </SiteLink>
-    </header>
+          <SiteLink className="site-nav-secondary" href="#/guestbook">
+            留言
+          </SiteLink>
+        </nav>
+        <div className="site-header-actions">
+          <button
+            className="site-search-trigger"
+            type="button"
+            aria-label="搜索网站"
+            aria-haspopup="dialog"
+            onClick={(event) => {
+              setReturnFocus(event.currentTarget)
+              setSearchOpen(true)
+              setMenuOpen(false)
+            }}
+          >
+            <Icon name="search" size={18} />
+            <span>搜索</span>
+            <kbd>⌘ K</kbd>
+          </button>
+          <SiteLink
+            className="account-link"
+            href={state.visitor ? '#/account' : '#/login'}
+            onClick={() => setMenuOpen(false)}
+          >
+            {state.visitor ? (
+              <>
+                <span className="visitor-avatar">{[...state.visitor.nickname][0]}</span>
+                <span className="sr-only">我的账号</span>
+              </>
+            ) : (
+              '登录'
+            )}
+          </SiteLink>
+          <button
+            ref={menuButton}
+            className="site-menu-trigger"
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls={navId}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? '关闭' : '菜单'}
+          </button>
+        </div>
+      </header>
+      {searchOpen && (
+        <SiteSearch entries={entries} onClose={closeSearch} returnFocus={returnFocus} />
+      )}
+    </>
   )
 }
 
@@ -237,7 +516,7 @@ export default function App() {
         </main>
       ) : (
         <>
-          <SiteHeader path={path} />
+          <SiteHeader key={path} path={path} />
           <main id="main" className={`public-main ${path === '/' ? 'is-home' : ''}`} tabIndex={-1}>
             {community ? (
               <CommunityPage key={path} path={path} params={params} />
@@ -248,17 +527,16 @@ export default function App() {
             )}
           </main>
           <footer className="site-footer">
-            <span>
-              © {new Date().getFullYear()} {state.settings.name}
-            </span>
+            <SiteLink className="site-footer-brand" href="#/">
+              {state.settings.name}
+            </SiteLink>
             <div className="site-footer-links">
-              <SiteLink href="#/archive">
-                全部内容
-                <Icon name="arrow" size={14} />
-              </SiteLink>
+              <SiteLink href="#/archive">全部内容</SiteLink>
               <SiteLink href="#/about">关于</SiteLink>
               <SiteLink href="#/guestbook">留言</SiteLink>
+              {(!remote || isOwner) && <SiteLink href="#/studio">管理</SiteLink>}
             </div>
+            <span>© {new Date().getFullYear()}</span>
           </footer>
           {!remote && <PreviewDock />}
         </>

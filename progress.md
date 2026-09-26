@@ -1,9 +1,32 @@
 # Progress
 
-Last updated: 2026-09-22
-Last implementation update: 2026-09-22 (automatic private note drafts and Chinese auth email templates)
+Last updated: 2026-09-27
+Last implementation update: 2026-09-27 (modern design integrated into the shared application; not deployed)
 
 ## Current Phase
+
+The owner has accepted the refined [Study 04](docs/design/studies/restart-04/README.md) version as the
+initial release baseline and asks to move toward real launch and account setup. A deliberately unique
+personal visual identity is not required. [Decision 0015](docs/decisions/0015-modern-public-direction.md)
+records this acceptance. The next phase is production rollout and real-account acceptance, not another
+round of basic visual exploration.
+
+The redesign is now implemented in the shared `frontend/src/` application used by Vite and Next.js
+`site/`, rather than only in a separate study. The homepage reads published entries and site settings;
+public search, reading, albums, notes, accounts and the owner workspace follow the new visual system.
+Draft isolation, permissions, discussions and existing public routes remain in place. The current
+review entry is `http://127.0.0.1:4333/index.html?preview=sample`; `study.html` is a reference.
+This work is local and has not been deployed. Backend configuration, cloud resources and production
+data were not changed. The publishing implementation below must be reused, not restarted.
+
+September 27 read-only refresh: the current Vercel `/health` returns `200 {"status":"ok"}`;
+home, login, registration and recovery return 200. Their public application configuration still has
+`emailEnabled=false` and `githubEnabled=false`, and the accepted modern homepage is not deployed.
+The email flag currently gates email login as well as registration/recovery. This check did not query
+private cloud accounts or owner grants; those remain unverified beyond the earlier recorded boundary.
+Remote `main` is `9b916f8`; the local Cursor commit `e264d44` and the modern refinement must be included
+in the release. The accepted source and this handoff are being retained as a local commit, without a push
+or automatic deployment in this design task.
 
 The owner explicitly deferred domain purchase on September 21 and asked to finish the remaining feature
 work first. Do not reopen domain shopping or treat the earlier `.com` selection as a current purchase
@@ -13,7 +36,7 @@ name; public identity and the final domain are open. Resend sending-domain activ
 templates, successful local Auth/Mailpit validation and concrete activation steps. No hosted SMTP
 or real owner account was activated by this preparation.
 
-Stage handoff: the real backend, website and single-author notes are implemented and deployed.
+Last recorded cloud handoff (September 22): the real backend, website and single-author notes are implemented and deployed.
 Notes PR #2 passed both CI workflows and merged as `b0dae87`; the production notes page was verified.
 The automatic-draft/email-template follow-up [PR #3](https://github.com/myshkin451/myshkin451.com/pull/3)
 also passed both workflows and merged as `e224415`. Production deployment
@@ -33,15 +56,10 @@ next candidate, not an activated replacement or an approved purchase. The offici
 `myshkin451/myshkin451.com` only. The Vercel Hobby project is connected to this repository and deploys
 `main` with Production-only variables; Preview is disabled. Real external email delivery is not verified.
 
-[Decision 0010](docs/decisions/0010-creator-first-restart.md) accepts the new order and creator-first
-goals. AWS study and old-domain recovery are no longer prerequisites. Public visual direction is
-reopened. B was only relatively better than the other first studies, not an accepted palette or
-identity. The second study's layout improved, but its abstract ring imagery had no meaningful link
-to the owner's content. Writing, projects, and images should coexist without a preferred medium.
-A third study provides two content-led layouts, built after reference research and generated mockups.
-The owner finds this round substantially better and wants to explore modern minimal design with richer
-details, varied personal work, and useful classification. The specific layout and extension proposal remain open.
-The deployed layout remains open to further owner feedback; final visual direction is not claimed.
+[Decision 0010](docs/decisions/0010-creator-first-restart.md) retains creator-first goals and removes
+AWS study and old-domain recovery as prerequisites. Earlier studies are historical design evidence;
+current direction is 0015. Writing, projects, images and notes should coexist without prescribing the
+owner's creative identity. The deployed older layout is not evidence that the local redesign is live.
 
 [Decision 0011](docs/decisions/0011-zero-content-start-and-visitor-interaction.md) accepts starting
 without existing work, convenient future publishing/editing, and visitor accounts/messages. The old
@@ -59,7 +77,8 @@ selective reuse and comparison; the new frontend does not claim production accep
 - Support an empty starting site; the owner does not need to prepare a portfolio before implementation.
 - Make routine publishing and edits possible in the management UI, with optional reusable layouts.
 - Include public visitor accounts and messages with explicit separation from owner management.
-- Find a distinctive visual and interactive direction through concrete working examples.
+- Refine the accepted modern direction through concrete browsing and publishing. Do not manufacture a
+  distinctive personal identity or keep reopening the basic direction without new owner feedback.
 - Use direct titles and functional labels. Avoid slogans, invented creator personas, decorative English,
   and repeated explanations. Keep design-process controls outside the proposed website.
 - Give writing, projects, and images equal initial standing. Use visuals that preview the content and
@@ -80,8 +99,8 @@ selective reuse and comparison; the new frontend does not claim production accep
   `/studio/notes` supports title-free writing, automatic private drafts, publishing, private revisions and withdrawal.
   After a 1.2-second pause it saves privately and retains a refreshable edit URL; only explicit publication
   changes the public copy. Chinese composition, slow saves, failed saves and consecutive notes are covered.
-  The homepage shows the latest note alongside longer work. The light background, serif type and blue
-  detail continue the current site design; owner visual feedback is still welcome.
+  The homepage shows recent notes alongside longer work. The shared application now applies the modern
+  sans-serif and cool-neutral presentation; deployed appearance remains separate from local source.
   [Usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md) records the exact completed checks and limits.
 
 - `site/` is the selected Next.js application and reuses the current Chinese page/editor components.
@@ -105,43 +124,30 @@ selective reuse and comparison; the new frontend does not claim production accep
   See [local acceptance](docs/operations/LOCAL_ACCEPTANCE.md), the [runbook](docs/operations/RUNBOOK.md)
   and [API contract](docs/operations/API_CONTRACT.md).
 
-### Independent local design preview
+### Shared modern frontend and local review
 
-- September 22 full visual replacement ("版面"): the owner said the prior rounds were still not the
-  platform they wanted and asked for a redesign against strong references. `frontend/` now uses one
-  two-column editorial grid on every page (narrow margin with vertical running head and date/kind
-  stamps, measured content column), a dated ledger home with one featured lead then strict date order,
-  Chinese-first serif for content, sans for UI, mono for stamps, and a warm-paper/ink/vermilion palette
-  where vermilion only marks position, featured items, and hover. Navigation points directly at the four
-  content kinds; the "内容" hub link is gone and the archive sits at the bottom of home and in the footer.
-  Legacy `.home-intro`/`.collection-*` rules were removed from `public.css` because load order let them
-  override the new layer. Hypotheses and references are in `docs/design/RESTART_BRIEF.md`. This is a
-  design proposal awaiting owner judgment, not accepted branding. Studio and account pages inherit the
-  tokens but still carry some older component styling.
-- September 21 visual revision: the owner rejected the generic M mark, repeated oversized name,
-  unnecessary copy, and template-like composition. The new home uses a compact wordmark, brief greeting,
-  direct type navigation, and at most three featured/recent entries. Zero content has no empty cards,
-  search controls, or zero counters. The layout is implemented for review, not accepted final branding.
-- A fresh browser starts with samples hidden; existing preferences/content are preserved. The preview
-  controls now expand from a corner. Search and layout selection live in the content index; legacy root
-  filter URLs remain usable. Text entries no longer get automatic duplicate title covers; photos keep
-  natural proportions. About and community copy addresses visitors without editor instructions.
-- The owner explicitly says the old personal-platform design skill is no longer important. Do not apply
-  its aesthetic assumptions to further iterations. Current feedback and actual browser results take priority.
-
-- [New frontend](frontend/README.md): React/Vite page suite with mixed browsing and an index, search,
-  type/topic filtering, article/album/project details, an actual gradient tool, about, guestbook,
-  local visitor pages, and an owner workspace. Start with `pnpm frontend:dev` on `127.0.0.1:4323`.
-- IndexedDB saves resolve after committed writes. Drafts remain separate from the public version;
-  partial drafts, preview, publish/update/unpublish, image upload/order, project links, settings,
-  featured items, and per-item discussion toggles work locally. Clearing browser data loses this content.
-- Ten optional labeled samples, including four notes, and two existing AI-generated images show populated layouts. Hiding samples
-  retains custom entries and allows a true empty start. No owner work or fake visitor conversations are seeded.
-- Visitor identities and messages are local simulations. They do not collect passwords or send email.
-  The workspace is intentionally available in this preview, not protected by a real admin permission boundary.
-- The Vite preview intentionally keeps simulated accounts and browser persistence. The real implementation
-  lives in `site/` with the remote platform adapter. Curated series and manual homepage ordering remain
-  outside this delivery. `frontend/README.md` explains the two modes.
+- [Decision 0015](docs/decisions/0015-modern-public-direction.md) authorizes continued development in the
+  Study 04 direction. `App`, `Home` and `Public` now use the modern presentation with the existing
+  platform adapters. Root tokens also align notes, account forms and the workspace. Production renders
+  the same source components; no additional frontend port or backend rewrite is required.
+- The homepage selects actual published entries, respects featured work and favors owner content over
+  optional samples. Empty content, one coverless article, notes alone and mixed UUID-based content are
+  covered. The local crop fixture does not become a required project or seed production data.
+- Search supports keywords, types, keyboard navigation and normal production links. Collections retain
+  topic/search/view state when switching types and returning from details. Reading retains the existing
+  body formats and adds active-section navigation, progress, size and link controls. Albums and attached
+  images use the shared accessible viewer; the crop demonstration accepts local images and exports PNG.
+- Publishing, private drafts, media upload/order, account gates, notes autosave, discussions and moderation
+  retain their existing implementations. The new visual layer does not introduce a second content store.
+- The connected review runs at `http://127.0.0.1:4333/index.html?preview=sample`. Its explicit preview
+  parameter enables labeled samples only in Vite; the choice is saved to that origin's IndexedDB.
+  Hiding samples preserves user entries. A fresh local origin without that parameter still starts with
+  samples hidden. Local identities/messages remain simulations and do not send email.
+- `study.html` remains an independent reference under `frontend/src/study/`, with no platform adapter or
+  IndexedDB writes. Reusable image/tool components and the data-driven homepage are shared where useful.
+  The live application remains the primary review surface. Neither entrypoint changes cloud state.
+- Curated series, manual homepage ordering and a universal page builder remain outside this delivery.
+  [Frontend documentation](frontend/README.md) explains the local, study and real-service boundaries.
 
 ### Historical application and design studies
 
@@ -178,20 +184,22 @@ selective reuse and comparison; the new frontend does not claim production accep
 
 ## Next Steps
 
-1. Get the owner's judgment on the September 22 "版面" redesign in `frontend/` (see the dated section
-   in `docs/design/RESTART_BRIEF.md`). If accepted, calibrate type sizes and margins on real content,
-   fold Studio/account pages into the same tokens, then port the system to `site/`. If rejected,
-   discuss which hypothesis failed rather than patching locally.
-2. Review the working notes feature and iterate on concrete owner feedback. The notes scope is implemented;
-   do not rebuild a second microblog service. Public code and cloud state should be checked against the
-   [notes acceptance](docs/operations/NOTES_ACCEPTANCE.md) before continuing.
-3. Identity and domain are being reconsidered by the owner. Keep Myshkin 451 as the working name.
-   When they choose the name and resume purchase, recheck availability/prices; then configure
-   DNS, HTTPS, canonical origin, Auth redirects and Resend SMTP. Do not repeat Brevo phone verification.
-   The prior research is a dated reference, not a purchase or an activated mail service.
-4. Verify actual confirmation/recovery delivery before enabling registration. Configure cloud mail rate
-   limits through the dashboard or Management API, not CLI config push. The verified real account then
-   needs an explicit owner grant. Complete the owner's first real note/article/photo and moderation loop.
+1. Start a focused production-and-account task from the latest local `main`, including the accepted
+   modern source; remote `main` alone does not yet contain it. Review the release diff, synchronize it
+   through GitHub checks and deploy to the existing Vercel project. Verify the deployed source and
+   public/mobile pages. Keep samples out of production and unverified email features closed.
+2. Recheck the actual email provider/session state and complete sending-domain, SMTP, Chinese templates,
+   precise redirects and limits. Verify real confirmation/recovery delivery before opening the email
+   flows. Configure cloud mail limits through Dashboard or Management API, not CLI config push.
+   Do not repeat the failed Brevo phone-verification path or describe the Resend candidate as activated.
+3. Complete the owner's real email/password account, explicit verified-UUID owner grant and login.
+   No default administrator exists, and provider-console accounts are not website identities. The owner
+   enters passwords/codes through secure provider/site screens. Validate an independent visitor and
+   owner-only permissions, then the first real note/article/photo and moderation loop. Reuse the existing
+   backend and [notes implementation](docs/operations/NOTES_ACCEPTANCE.md).
+4. Public identity/domain remain open and purchase is still deferred. Keep the working name and Vercel
+   URL unless the owner changes that decision. Distinguish a required sending-domain decision from a
+   website-brand/domain change; prepare any purchase or unavoidable personal step concretely first.
 5. Verify real content persistence across redeployment and arrange durable private backups. Existing local
    restore tests remain evidence for the supported email/password identities, not a real owner's cloud
    acceptance. Do not add OAuth casually without addressing its identity/restore boundary.
@@ -204,8 +212,14 @@ domain purchase, or provider account is authorized by implication; prepare those
 
 ### Active local handoff
 
-The current daily-use slice uses managed worktree `notes-daily-use` on `codex/notes-daily-use`.
-Its isolated `4327` browser-preview fixtures and `4328` sanitized email previews were used only for QA;
+The connected review entry is `http://127.0.0.1:4333/index.html?preview=sample`; the independent
+`http://127.0.0.1:4333/study.html` is an exploration reference. The Vite server is handed off for owner
+review; restart with `pnpm frontend:dev --port 4333` if needed. This origin's local content and sample
+preference are separate from `4323`, `localhost`, Supabase and production. Keep the same origin for
+continued use and stop the review server when no longer needed. No cloud configuration changed.
+
+The last recorded September 22 daily-use handoff used managed worktree `notes-daily-use` on
+`codex/notes-daily-use`. Its isolated `4327` browser-preview fixtures and `4328` sanitized email previews were used only for QA;
 both servers and their browser tabs are closed. The source Supabase stack (`55421/55422`) is stopped
 with data volumes preserved after the 186 API assertions and mail-template acceptance. Synthetic
 mail-test accounts were removed; original local data was not changed by fixture cleanup.
@@ -214,27 +228,39 @@ handoff check; their browser-local data was not touched. The prior restore stack
 `55621/55622`) remain outside this work slice. Restart previews explicitly when needed, and never use
 these local fixtures or identities as production seed data.
 
-Earlier temporary archives were removed by the computer restart. A fresh private recovery archive,
-binding verification script, JSON evidence and private target configurations are under
+At that earlier handoff, temporary archives had been removed by a computer restart. The replacement
+private recovery archive, binding verification script, JSON evidence and private target configurations
+were recorded under
 `/private/tmp/myshkin451-recovery-Qpm4GZ`. This temporary path is a restart aid, not long-term backup
 storage. Do not print or commit its private contents; the preserved Docker volumes are the local data source.
 
 ## Open Decisions
 
-- Final visual/interaction direction after prototype feedback.
 - Any paid budget or upgrade beyond the selected free initial hosting combination.
 - Final domain and any public identity change beyond the current working name.
 
+The current modern visual version is accepted under 0015; production and real-account acceptance remain open.
 The old AWS launch-timing decision is superseded by 0010 and removed. Resolve each remaining item
 with a matching decision record and remove it here in the same change.
 
 ## Validation And Known Limits
 
+- Current modern integration: 83 frontend tests, lint, root/site type checks and both frontend/site builds
+  passed. The new regression coverage checks real-content home selection, empty/notes-only states,
+  server rendering without browser globals, private-content exclusion and type-filter preservation.
+  Chromium checked 12 routes at 320/390/780/1440 widths (48 combinations), with no horizontal overflow
+  or new runtime errors. Actual new/edit article screens were also checked at all four widths. Browser
+  acceptance passed search/menu navigation, reading tools, gallery controls/focus, local-image crop and
+  a decoded PNG export. An isolated `localhost:4333` UI check proved private draft → publish → refresh
+  persistence → private revision isolation; its sole test entry was then deleted through the UI. Details
+  and remaining limits are in [Study 04](docs/design/studies/restart-04/README.md). These are local checks,
+  not production deployment, real-owner acceptance or an external email test.
+
 - September 22 frontend redesign checks: format, lint, frontend type check and 75 frontend tests passed
   after the visual replacement. Playwright measured no horizontal overflow on ten routes at 320, 390 and
   1440px, and full-page desktop/mobile screenshots of home, archive, writing, notes and about were
-  reviewed in both empty and sample-populated states. Owner aesthetic acceptance is not established; the
-  deployed `site/` still uses the earlier design until the owner accepts a direction and it is ported.
+  reviewed in both empty and sample-populated states. This historical design was subsequently rejected.
+  Its results do not establish acceptance or deployment of the current modern source.
 
 - September 22 daily-use checks: 75 frontend tests, 186 real API assertions, format, lint, root/site type checks and both builds passed. Browser checks
   cover automatic private drafts, focus, refresh recovery, separate new notes and the 320px editor.
@@ -348,19 +374,23 @@ the current branch cleanliness or restart direction:
 
 ## Handoff
 
+- The September 27 design slice is complete and visually accepted. A fresh task is recommended for the
+  production/account scope in [production handoff](docs/operations/PRODUCTION_HANDOFF.md). Start from
+  the latest local `main` commit, not the older remote ref; do not recreate the backend or reopen design.
 - September 21: the owner requests a new task with very high/maximum reasoning to finish the platform,
   leaving primarily purchases, registrations, and unavoidable personal operations to them. The
   [production handoff](docs/operations/PRODUCTION_HANDOFF.md) defines execution and acceptance without
   selecting a provider or claiming a completed backend. Architecture decisions must follow evidence.
-- The resumed frontend slice passed final checks. Clean delivery origin is `127.0.0.1:4323`;
-  QA writes are isolated at `localhost:4323`. A design or backend task can use this board and `frontend/README.md`
+- The earlier September frontend slice used `127.0.0.1:4323` for delivery and
+  `localhost:4323` for isolated QA writes. A design or backend task can use this board and `frontend/README.md`
   to recover the current boundary without inheriting the full design conversation.
-- Current authority: README, this board, decisions 0010–0013, the runbook, and the restart design brief.
+- Current authority: README, this board, decisions 0010–0015, the runbook, and the restart design brief.
 - Decisions 0006/0007 and `PUBLIC_SITE_EXPERIENCE.md` are historical visual context.
 - Decision 0009 and the manual AWS runbook are historical, inactive deployment context.
 - Reuse valid engineering and publishing behavior; revisit aesthetic rules instead of inheriting them by default.
-- Current review entry: `frontend/`, served by `pnpm frontend:dev` on loopback port 4323. It needs no
-  database or secrets. Keep the same origin to retain browser content. Stop its process when review ends.
+- Current review entry: `frontend/index.html?preview=sample` on loopback port 4333, started with
+  `pnpm frontend:dev --port 4333`. It needs no database or secrets. Keep the same origin to retain browser
+  content. Port 4323 remains the default development command; it is a different local content origin.
 - The earlier `restart-03` static preview (port 4321 in its delivered session) remains comparison material.
   `offline.html` is its portable snapshot; regenerate it with
   `python3 docs/design/studies/restart-03/build_offline.py` after source edits. Its embedded assets remove

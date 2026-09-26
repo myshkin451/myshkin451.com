@@ -6,6 +6,8 @@ import { ConfirmProvider } from './Confirm'
 import './global.css'
 import './public.css'
 import './site-shell.css'
+import './modern-shell.css'
+import './modern-public.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
