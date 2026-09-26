@@ -1,8 +1,10 @@
 # 发布与互动 API
 
-实现：`supabase/migrations/202609210001_platform.sql`。前端通过 Supabase Auth、PostgREST
+实现：`supabase/migrations/202609210001_platform.sql`、`202609210002_notes.sql` 和
+`202609270001_accounts.sql`。前端通过 Supabase Auth、PostgREST
 和 Storage API 访问本协议。公开浏览使用匿名 publishable/anon key；浏览器不得持有 service
-role key。此文记录代码和本地验证，不代表已有线上服务。
+role key。账号迁移已于 2026-09-27 部署生产；账号 UI 尚未发布、生产真实账号为 0。
+下述本地验证不代表真实云端账号验收。
 
 ## 数据与读取权限
 
@@ -16,7 +18,7 @@ role key。此文记录代码和本地验证，不代表已有线上服务。
 | `entry_drafts` | `id: uuid, data: Entry` | 无权限 | 无可见行 | 全部草稿 |
 | `site_settings` | `id: true, data: Settings` | 单行设置 | 同匿名 | 同匿名 |
 | `profiles` | `id: auth.users.id, nickname` | 无权限 | 仅自己 | 仅自己 |
-| `site_owners` | `user_id: auth.users.id` | 无权限 | 仅自己的角色行；普通访客无记录 | 自己的角色行 |
+| `site_owners` | `user_id: auth.users.id` | 无权限 | 普通访客无可见行 | 仅有效站主自己的角色行 |
 | `messages` | 留言及审核状态，见下文 | 公开讨论中的 approved 留言 | 另可见自己所有状态的留言 | 全部留言 |
 
 `Entry` 字段与 `frontend/src/types.ts` 一致。公开版本和草稿是两个独立物理副本；保存新草稿
@@ -55,7 +57,8 @@ role key。此文记录代码和本地验证，不代表已有线上服务。
 | `moderate_message(message_id: uuid, status: text)` | 站主 | void；调整审核状态 |
 
 所有权限函数固定空 `search_path` 并使用完整 schema 名。站主身份实时查询 `site_owners`；
-留言权限实时检查 `auth.users.email_confirmed_at`，即使客户端仍持旧 JWT 也不能跳过验证。
+有效权限还实时检查邮箱验证、Auth ban 和本站限制，即使客户端仍持旧 JWT 也不能跳过验证。
+上述已验证用户与站主均要求未被 Auth 封禁、未受本站限制；受限用户仍可读取自己的账号和留言。
 `private` schema 不对 PostgREST 暴露；辅助函数没有可利用的公开写入口。
 
 回复必须指向同一目标、尚未删除且已审核的留言。不能回复其他页面的留言或尚未审核的内容。
@@ -113,7 +116,7 @@ node scripts/production/api-test.mjs
 所需环境变量：`SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY`、
 `SUPABASE_TEST_DB_CONTAINER`。不要在聊天、提交或日志中输出实际 key。
 
-2026-09-21：本地 Supabase 真实 Auth/PostgREST/Storage API 完成 155 项断言，覆盖匿名、站主、
+2026-09-27：本地 Supabase 真实 Auth/PostgREST/Storage API 完成 186 项断言，覆盖匿名、站主、
 两个普通访客、邮箱未验证身份，以及独立限流身份。已验证草稿/图片隔离、公开更新、撤下、
 直接 DML 拒绝、角色及作者伪造拒绝、个人资料隔离、回复目标、审核、删除标记、撤下后本人删除、
 并发分钟限流和滚动日限流。测试用户、内容和图片已清理，网站设置还原。此脚本通过管理员
@@ -129,3 +132,56 @@ node scripts/production/api-test.mjs
 随记允许空标题，发布要求正文非空，草稿与公开正文都限制 5,000 个 Unicode 码点。
 现有文章、影像、项目校验不变；管理者校验先于内容处理，匿名与访客没有写权限。
 修改与再次发布保留 `publishedAt`，撤下仍保留私有草稿。备份无需增加新表。
+
+
+## 账号与权限（2026-09-27）
+
+迁移 `202609270001_accounts.sql` 新增两张不对浏览器开放的私有表：
+
+- `private.account_access(user_id uuid PK, restricted boolean)`：缺少记录等同于未限制。
+  `user_id` 引用 Auth 用户并随用户删除级联清理。
+- `private.account_access_events(id uuid PK, actor_id uuid, target_id uuid, old_owner boolean,
+  new_owner boolean, old_restricted boolean, new_restricted boolean, created_at timestamptz)`：
+  记录实际发生的权限变更；不使用级联删除的用户外键，保留历史操作标识。无变化请求不写事件。
+
+两表均启用 RLS，浏览器无直接读写权限。私密备份与恢复范围必须包含两表，不能仅备份公开
+业务表；脚本覆盖不等同于长期备份已验收。
+
+| RPC | 调用者 | 返回值 / 行为 |
+| --- | --- | --- |
+| `account_status()` | 已登录用户，包括受限用户 | 仅本人的 `{id,email,email_confirmed_at,role,restricted,created_at}` |
+| `list_accounts(page_number: integer = 0)` | 有效站主 | `{accounts: Account[],has_more:boolean}`；每页 50 条，0 起页码，按创建时间与 UUID 倒序 |
+| `set_account_access(target_id: uuid, owner: boolean, restricted: boolean)` | 有效站主 | void；事务内更新角色与本站限制，并记录审计 |
+
+`Account` 在本人状态字段基础上增加 `nickname,last_sign_in_at`。`role` 仅为 `owner` 或
+`visitor`，表示显式角色记录；不单独证明该角色当前有效。`restricted` 是本站限制或当前
+Auth ban 的合并结果。查询从不返回密码哈希、token、用户 metadata 或完整 Auth 用户行。
+`list_accounts` 页码限 0–100000，空页返回 `accounts: []`。
+
+`set_account_access` 要求非空 UUID 与布尔参数；目标不存在、未验证或被封禁时不能授予站主。
+`owner=true,restricted=true` 无效。限制原站主时应显式传 `owner=false,restricted=true`。
+恢复本站写入不自动授予原角色。当前 Auth ban 无法通过此 RPC 清除；请求恢复时返回中文错误，
+指引授权运维先在认证控制台解除。
+
+所有变更使用同一事务 advisory lock，获取锁后重新检查调用者。禁止本人降为访客或限制本人，
+并检查至少保留一位邮箱已验证、未封禁、未限制的站主。并发互相撤权不能让两个请求都成功。
+这些规则只保护网站 RPC，不约束供应商管理员直接删除 Auth 用户、修改角色表或其他特权运维。
+
+首次站主仍须核实本人的已验证 Auth UUID 后，经受保护的管理员操作显式授予；无默认密码、
+无首个注册自动站主。站主与访客共用 Auth；供应商控制台账号不是网站身份。
+
+本站限制不禁止 Auth 登录；它禁止资料/留言写入和有效站主权限，包括草稿读取、私有媒体新签名
+与下载。旧签名 URL 可能在有效期内继续工作，既有下载无法收回。媒体公开引用规则不变。
+
+本地执行（自动安全注入本机配置）：
+
+```bash
+node scripts/production/local-run.mjs node scripts/production/accounts-test.mjs
+```
+
+76 项断言通过，包括匿名与访客拒绝、自锁保护、未验证站主、已有 JWT 被限制/封禁后的草稿与
+媒体拒绝、恢复、并发互相撤权、字段投影和审计。测试仅接受 loopback 与指定本机容器，清理
+本次合成账号、草稿、媒体和审计；不会重置已有数据库，不得改为生产执行。
+
+生产迁移已部署不等于账号流程已验收。真实注册、外部收信、找回密码、首个站主授权与登录、
+独立访客会话仍需后续证据。本人操作参见 [账号与权限使用说明](ACCOUNT_GUIDE.md)。

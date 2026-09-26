@@ -18,6 +18,8 @@ import { newEntry, type StoredState } from './types'
 const fixture = vi.hoisted(() => ({
   user: null as null | { id: string; user_metadata?: Record<string, unknown> },
   owner: false,
+  restricted: false,
+  confirmed: true,
   failing: '',
   authError: null as null | { name?: string; code?: string; message: string; status?: number },
   messages: [] as unknown[],
@@ -63,12 +65,30 @@ beforeEach(() => {
   vi.clearAllMocks()
   fixture.user = null
   fixture.owner = false
+  fixture.restricted = false
+  fixture.confirmed = true
   fixture.failing = ''
   fixture.authError = null
   fixture.messages = []
   fixture.drafts = []
   fixture.entries = []
-  fixture.rpc.mockResolvedValue({ error: null, data: null })
+  fixture.rpc.mockImplementation(async (name: string) => ({
+    error:
+      name === 'account_status' && fixture.failing === 'account_status'
+        ? { message: 'Network unavailable' }
+        : null,
+    data:
+      name === 'account_status' && fixture.user
+        ? {
+            id: fixture.user.id,
+            email: 'fixture@example.test',
+            email_confirmed_at: fixture.confirmed ? '2026-09-01' : null,
+            role: fixture.owner ? 'owner' : 'visitor',
+            restricted: fixture.restricted,
+            created_at: '2026-09-01',
+          }
+        : null,
+  }))
   fixture.upload.mockResolvedValue({ error: null, data: {} })
   fixture.signup.mockResolvedValue({ error: null, data: { session: null } })
   fixture.signed.mockImplementation(async (path: string) => ({
@@ -118,6 +138,22 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('shared platform boundaries', () => {
+  it.each(['restricted', 'unverified'])(
+    'removes owner access when account becomes %s',
+    async (reason) => {
+      fixture.user = { id: 'owner' }
+      fixture.owner = true
+      fixture.drafts = [{ id: 'draft', data: { ...newEntry(), title: '私有草稿' } }]
+      const { result } = renderHook(() => useRemotePlatform(config))
+      await waitFor(() => expect(result.current.isOwner).toBe(true))
+      if (reason === 'restricted') fixture.restricted = true
+      else fixture.confirmed = false
+      await act(() => result.current.refresh!())
+      expect(result.current.isOwner).toBe(false)
+      expect(result.current.drafts).toEqual([])
+    },
+  )
+
   it('sends a title-free note through the real adapter while preserving article validation', async () => {
     fixture.user = { id: 'owner' }
     fixture.owner = true
@@ -147,7 +183,7 @@ describe('shared platform boundaries', () => {
     expect(result.current.isOwner).toBe(false)
     expect(fixture.from).not.toHaveBeenCalledWith('entry_drafts')
     await expect(result.current.saveDraft(newEntry())).rejects.toThrow('站主')
-    expect(fixture.rpc).not.toHaveBeenCalled()
+    expect(fixture.rpc.mock.calls.every(([name]) => name === 'account_status')).toBe(true)
   })
 
   it('preserves server-rendered public content and reports load failure instead of claiming an empty site', async () => {
@@ -161,7 +197,7 @@ describe('shared platform boundaries', () => {
     expect(result.current.drafts).toEqual([])
   })
 
-  it.each(['site_owners', 'published_entries', 'auth'])(
+  it.each(['account_status', 'published_entries', 'auth'])(
     'keeps verified owner and unsaved editor mounted when %s refresh is unavailable',
     async (table) => {
       fixture.user = { id: 'owner' }
@@ -237,6 +273,8 @@ describe('shared platform boundaries', () => {
     const { result } = renderHook(() => useRemotePlatform(config))
     await waitFor(() => expect(result.current.isOwner).toBe(true))
     fixture.owner = false
+    fixture.restricted = false
+    fixture.confirmed = true
     fixture.failing = 'published_entries'
     await act(async () => {
       await expect(result.current.refresh!()).rejects.toThrow('连接服务')
@@ -351,6 +389,8 @@ describe('shared platform boundaries', () => {
     expect(JSON.stringify(saved)).not.toContain('token=')
     expect(fixture.upload).not.toHaveBeenCalled()
     fixture.owner = false
+    fixture.restricted = false
+    fixture.confirmed = true
     await act(() => result.current.signOut())
     expect(result.current.isOwner).toBe(false)
     expect(result.current.state.visitor).toBeNull()

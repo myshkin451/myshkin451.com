@@ -30,6 +30,8 @@
     "site:start": "next start site -p 4325 -H 127.0.0.1",
     "site:typecheck": "tsc --noEmit -p site/tsconfig.json",
     "site:test:api": "node scripts/production/local-run.mjs node scripts/production/api-test.mjs",
+    "site:test:accounts": "node scripts/production/local-run.mjs node scripts/production/accounts-test.mjs",
+    "site:test:backup": "node --test scripts/production/backup.test.mjs scripts/production/linked-backup.test.mjs",
     "site:local:configure": "node scripts/production/configure-local.mjs",
     "site:db:start": "supabase start -x studio,imgproxy,realtime,edge-runtime,logflare,vector,supavisor"
   },

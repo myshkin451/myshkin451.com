@@ -1,4 +1,5 @@
 import { useUnsavedWork } from '../useUnsavedWork'
+import { AccountsPage } from './Accounts'
 import { NoteWorkspace } from './NoteWorkspace'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useConfirm } from '../Confirm'
@@ -58,6 +59,7 @@ function StudioHeader({ path }: { path: string }) {
           href="#/studio"
           aria-current={
             !path.startsWith('/studio/settings') &&
+            !path.startsWith('/studio/accounts') &&
             !path.startsWith('/studio/comments') &&
             !path.startsWith('/studio/notes')
               ? 'page'
@@ -77,6 +79,12 @@ function StudioHeader({ path }: { path: string }) {
           aria-current={path === '/studio/settings' ? 'page' : undefined}
         >
           设置
+        </SiteLink>
+        <SiteLink
+          href="#/studio/accounts"
+          aria-current={path === '/studio/accounts' ? 'page' : undefined}
+        >
+          账号
         </SiteLink>
       </nav>
       <SiteLink className="studio-visit" href="#/">
@@ -1277,6 +1285,8 @@ export function StudioPage({ path, params }: { path: string; params: URLSearchPa
           </div>
         ) : path === '/studio/notes' || (path === '/studio/new' && kind === 'note') ? (
           <NoteWorkspace params={params} />
+        ) : path === '/studio/accounts' ? (
+          <AccountsPage />
         ) : path === '/studio/settings' ? (
           <SettingsPage />
         ) : path === '/studio/comments' ? (

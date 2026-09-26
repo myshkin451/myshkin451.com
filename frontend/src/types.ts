@@ -50,7 +50,21 @@ export type StoredState = {
   settings: Settings
   visitor: Visitor | null
 }
+export type AccountStatus = {
+  id: string
+  email: string | null
+  email_confirmed_at: string | null
+  role: 'owner' | 'visitor'
+  restricted: boolean
+  created_at: string
+}
+export type ManagedAccount = AccountStatus & { nickname: string; last_sign_in_at: string | null }
 export type Platform = {
+  account?: AccountStatus | null
+  accounts?: {
+    list: (page: number) => Promise<{ accounts: ManagedAccount[]; has_more: boolean }>
+    setAccess: (id: string, owner: boolean, restricted: boolean) => Promise<void>
+  }
   remote?: boolean
   isOwner?: boolean
   authReady?: boolean
@@ -61,6 +75,7 @@ export type Platform = {
     recoveryPending: boolean
     login: (email: string, password: string) => Promise<void>
     register: (email: string, password: string, nickname: string) => Promise<void>
+    resendConfirmation: (email: string) => Promise<void>
     recover: (email: string) => Promise<void>
     updatePassword: (password: string) => Promise<void>
     signInWithGithub: (destination: string) => Promise<void>

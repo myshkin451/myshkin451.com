@@ -20,9 +20,10 @@ const titles: Record<string, string> = {
   '/guestbook': '留言',
   '/login': '登录',
   '/register': '注册',
-  '/recover': '找回账号',
+  '/recover': '找回密码',
   '/account': '我的账号',
   '/studio': '工作台',
+  '/studio/accounts': '账号与权限',
   '/studio/notes': '随记',
   '/play/color': '色彩练习',
 }

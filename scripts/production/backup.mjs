@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Application recovery archive. Not a full Supabase platform clone; see RUNBOOK.md.
-import { spawn } from 'node:child_process'
+import { execFile, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream } from 'node:fs'
 import { access, lstat, mkdir, readFile, readdir, realpath, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pipeline } from 'node:stream/promises'
+import { promisify } from 'node:util'
 
 export const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 export const tables = [
@@ -19,7 +20,30 @@ export const tables = [
   'public.site_settings',
   'public.messages',
   'private.message_events',
+  'private.account_access',
+  'private.account_access_events',
 ]
+
+const executeFile = promisify(execFile)
+
+export async function backupMetadata(config) {
+  let git = { commit: null, dirty: null }
+  try {
+    const { stdout: commit } = await executeFile('git', ['rev-parse', 'HEAD'], { cwd: repository })
+    const { stdout: status } = await executeFile('git', ['status', '--porcelain'], {
+      cwd: repository,
+    })
+    if (/^[a-f0-9]{40,64}$/.test(commit.trim())) {
+      git = { commit: commit.trim(), dirty: Boolean(status.trim()) }
+    }
+  } catch {
+    // Source archives may not contain Git metadata. Never save command errors or paths.
+  }
+  const postgres = await query(config, `SELECT to_json(current_setting('server_version'));`)
+  const pgDump = await pgTool(config, 'pg_dump', ['--version'])
+  const psql = await pgTool(config, 'psql', ['--version'])
+  return { git, tools: { node: process.version, pgDump, psql }, postgres }
+}
 
 export function options(argv, valueNames, flagNames = ['--quiesced', '--help']) {
   const result = {}
@@ -285,6 +309,7 @@ async function backup() {
   const before = await fingerprints(config)
   const objects = await mediaObjects(config)
   const migrationFiles = await migrations()
+  const runtime = await backupMetadata(config)
   await mkdir(output, { mode: 0o700 }) // No recursive/overwrite: each backup must be new.
   await mkdir(path.join(output, 'objects'), { mode: 0o700 })
   const dataFile = path.join(output, 'database.sql')
@@ -335,6 +360,7 @@ async function backup() {
     format: 'myshkin451-email-password-backup',
     version: 1,
     createdAt: new Date().toISOString(),
+    runtime,
     source: { api: config.api, databaseHost: config.database.hostname },
     tables,
     columns,

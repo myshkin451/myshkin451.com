@@ -22,6 +22,8 @@ jobs:
       - run: pnpm site:db:start > /tmp/myshkin-supabase-start.log 2>&1
       - run: pnpm site:local:configure
       - run: pnpm site:test:api
+      - run: pnpm site:test:accounts
+      - run: pnpm site:test:backup
       - run: pnpm frontend:test
       - run: pnpm site:build
       - run: pnpm site:typecheck

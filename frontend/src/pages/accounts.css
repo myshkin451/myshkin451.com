@@ -1,0 +1,51 @@
+.accounts-list {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+}
+.account-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.account-card h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+.account-card p {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.account-card code {
+  overflow-wrap: anywhere;
+}
+.account-card details {
+  font-size: 12px;
+  margin-top: 12px;
+}
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 260px;
+}
+.accounts-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .account-card {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 18px;
+  }
+  .account-actions {
+    max-width: none;
+  }
+}

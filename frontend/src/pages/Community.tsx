@@ -12,7 +12,7 @@ const memoryDrafts = new Map<string, { body: string; parentId: string | null }>(
 function returnPath(value: string | null): string {
   if (!value || /[\\\s#]/.test(value)) return '/guestbook'
   const path = value.split('?')[0]
-  return /^\/(?:|guestbook|account|studio(?:\/(?:new|notes|settings|comments|edit\/[^/]+))?|archive|notes|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
+  return /^\/(?:|guestbook|account|studio(?:\/(?:new|notes|settings|comments|accounts|edit\/[^/]+))?|archive|notes|writing|photos|projects|about|play\/color|(?:entry|topics)\/[^/]+)$/.test(
     path,
   )
     ? value
@@ -703,7 +703,7 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
               </form>
             )}
             {!auth.emailEnabled && !updatePassword && (
-              <p className="form-notice">邮箱注册与找回暂未开放。</p>
+              <p className="form-notice">邮箱登录、注册与找回暂未开放。</p>
             )}
             {auth.githubEnabled && !recover && (
               <button
@@ -716,6 +716,28 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
               </button>
             )}
           </>
+        )}
+        {auth.emailEnabled && !recover && !callback && (
+          <button
+            type="button"
+            className="button quiet"
+            disabled={pending || !email.trim()}
+            onClick={async () => {
+              setPending(true)
+              setError('')
+              setNotice('')
+              try {
+                await auth.resendConfirmation(email)
+                setNotice('如果该邮箱需要验证，确认邮件将发送到邮箱。请在当前浏览器打开链接。')
+              } catch (cause) {
+                setError(errorText(cause))
+              } finally {
+                setPending(false)
+              }
+            }}
+          >
+            重新发送验证邮件
+          </button>
         )}
         {error && (
           <p className="form-error" role="alert" tabIndex={-1} ref={errorRef}>
@@ -909,7 +931,7 @@ function Account() {
     return (
       <div className="community-auth-page">
         <section className="community-auth-panel community-signed-out">
-          <span className="eyebrow">访客账号</span>
+          <span className="eyebrow">{platform.isOwner ? '站主账号' : '访客账号'}</span>
           <h1>我的账号</h1>
           <p>登录后，可以在这里查看自己的留言。</p>
           <SiteLink href={`#${authLink('login', '/account')}`} className="button">
@@ -922,8 +944,8 @@ function Account() {
   return (
     <div className="community-page community-account">
       <header className="community-account-heading">
-        <span className="eyebrow">访客账号</span>
-        <h1 className="page-heading">{visitor.nickname}</h1>
+        <span className="eyebrow">{platform.isOwner ? '站主账号' : '访客账号'}</span>
+        <h1 className="page-heading">我的账号</h1>
         <p className="community-local-note">
           {platform.remote
             ? '管理昵称和自己的留言。待审核、已隐藏的留言仅本人和站主可见。'
@@ -933,6 +955,17 @@ function Account() {
       <div className="community-account-layout">
         <section className="community-profile" aria-labelledby="community-profile-title">
           <h2 id="community-profile-title">个人资料</h2>
+          {platform.account && (
+            <div className="community-local-note">
+              <p>{platform.account.email || '未绑定邮箱'}</p>
+              <p>
+                {platform.account.email_confirmed_at ? '邮箱已验证' : '邮箱未验证'} ·{' '}
+                {platform.account.role === 'owner' ? '站主' : '访客'} ·{' '}
+                {platform.account.restricted ? '本站写入受限' : '本站写入正常'}
+              </p>
+            </div>
+          )}
+
           <form onSubmit={save}>
             <div className="field">
               <label className="field-label" htmlFor={fieldId}>

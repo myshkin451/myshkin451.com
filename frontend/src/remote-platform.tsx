@@ -2,7 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { initialState as emptyState, saveDraft, updateSettings } from './model'
 import { defaultSettings } from './seed'
-import { safeDestination, type Entry, type Message, type Platform, type StoredState } from './types'
+import {
+  safeDestination,
+  type AccountStatus,
+  type Entry,
+  type Message,
+  type Platform,
+  type StoredState,
+} from './types'
 
 export type RemoteConfig = {
   url: string
@@ -160,6 +167,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
   const [ready, setReady] = useState(Boolean(initial))
   const [authReady, setAuthReady] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
+  const [account, setAccount] = useState<AccountStatus | null>(null)
   const [error, setError] = useState('')
   const [recoveryPending, setRecoveryPending] = useState(false)
   const generation = useRef(0)
@@ -173,6 +181,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
     uploads.current.clear()
     setRecoveryPending(false)
     setIsOwner(false)
+    setAccount(null)
     setState((previous) => ({
       ...previous,
       drafts: [],
@@ -194,24 +203,44 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       if (!user || (verifiedUserId.current && verifiedUserId.current !== user.id))
         clearPrivateState()
       let owner = false
+      let accountStatus: AccountStatus | null = null
       let visitor: StoredState['visitor'] = null
       if (user) {
         const [ownerResult, profileResult] = await Promise.all([
-          client.from('site_owners').select('user_id').eq('user_id', user.id).maybeSingle(),
+          client.rpc('account_status'),
           client.from('profiles').select('id,nickname').eq('id', user.id).maybeSingle(),
         ])
         if (current !== generation.current) return
-        if (ownerResult.error) throw ownerResult.error
-        if (!ownerResult.data) {
+        if (ownerResult.error) {
+          if (ownerResult.error.code === '42501' || rejectedSession(ownerResult.error))
+            clearPrivateState()
+          throw ownerResult.error
+        }
+        accountStatus = ownerResult.data as AccountStatus | null
+        if (!accountStatus || accountStatus.id !== user.id) {
+          clearPrivateState()
+          throw new Error('账号状态无法验证，请重新登录。')
+        }
+        owner =
+          accountStatus.role === 'owner' &&
+          Boolean(accountStatus.email_confirmed_at) &&
+          !accountStatus.restricted
+        setAccount(accountStatus)
+        if (!owner) {
           // A successful owner lookup with no row confirms revoked permission.
           // A failed lookup, by contrast, must not unmount an active editor.
           setIsOwner(false)
-          setState((previous) => (previous.drafts.length ? { ...previous, drafts: [] } : previous))
+          setState((previous) => ({
+            ...previous,
+            drafts: [],
+            messages: previous.messages.filter(
+              (message) => message.status === 'approved' || message.authorId === user.id,
+            ),
+          }))
           previews.current.clear()
           uploads.current.clear()
         }
         if (profileResult.error) throw profileResult.error
-        owner = Boolean(ownerResult.data)
         visitor = { id: user.id, nickname: profileResult.data?.nickname || '访客' }
       }
       const [entries, settingsResult, messages, draftRows] = await Promise.all([
@@ -379,6 +408,20 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       ready,
       authReady,
       isOwner,
+      account,
+      accounts: {
+        list: async (page) => {
+          requireOwner()
+          const result = await client.rpc('list_accounts', { page_number: page })
+          if (result.error) throw failure(result.error)
+          return result.data
+        },
+        setAccess: async (id, owner, restricted) => {
+          requireOwner()
+          if (id === state.visitor?.id) throw new Error('不能修改自己的站主权限或限制自己的账号。')
+          await rpc('set_account_access', { target_id: id, owner, restricted })
+        },
+      },
       error,
       state,
       entries: state.entries,
@@ -436,6 +479,15 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
           if (result.error) throw failure(result.error)
           await refresh()
         },
+        resendConfirmation: async (email) => {
+          if (config.emailEnabled === false) throw new Error('邮箱验证暂未开放。')
+          const result = await client.auth.resend({
+            type: 'signup',
+            email: email.trim(),
+            options: { emailRedirectTo: callbackUrl('/auth/callback') },
+          })
+          if (result.error) throw failure(result.error)
+        },
         recover: async (email) => {
           const result = await client.auth.resetPasswordForEmail(email.trim(), {
             redirectTo: callbackUrl('/recover'),
@@ -465,6 +517,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       },
     }
   }, [
+    account,
     authReady,
     client,
     config.emailEnabled,

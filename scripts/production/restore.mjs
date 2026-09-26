@@ -29,6 +29,24 @@ const defaultSettings = { name: 'Myshkin 451', intro: '', about: '', homeView: '
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right)
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
 
+export function assertBucketConfiguration(bucket, expected) {
+  if (bucket.public !== false) throw new Error('Target media bucket must be private')
+  const mimeTypes = (value) => {
+    if (value == null) return null
+    if (!Array.isArray(value) || value.some((item) => typeof item !== 'string'))
+      throw new Error('Invalid media bucket MIME restrictions')
+    return [...new Set(value)].sort()
+  }
+  if (
+    (bucket.file_size_limit ?? null) !== (expected.fileSizeLimit ?? null) ||
+    !same(mimeTypes(bucket.allowed_mime_types), mimeTypes(expected.allowedMimeTypes))
+  ) {
+    throw new Error(
+      'Target media bucket limits differ from backup; configure the isolated target first',
+    )
+  }
+}
+
 async function archiveFile(directory, relative) {
   const location = path.resolve(directory, relative)
   if (!location.startsWith(directory + path.sep))
@@ -214,7 +232,7 @@ async function restore() {
     throw new Error('Target table columns differ; use matching Supabase and migration versions')
   await pgTool(config, 'psql', ['-X', '-q', '-v', 'ON_ERROR_STOP=1'], { input: emptyCheckSQL() })
   const bucket = await (await request(config, '/storage/v1/bucket/media')).json()
-  if (bucket.public !== false) throw new Error('Target media bucket must be private')
+  assertBucketConfiguration(bucket, manifest.bucket)
   if ((await mediaObjects(config)).length) throw new Error('Target media bucket is not empty')
   // Check API emptiness too: detect a DB/API configuration pointing at different populated projects.
   const authPage = await (await request(config, '/auth/v1/admin/users?page=1&per_page=1')).json()
