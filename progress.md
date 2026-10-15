@@ -1,9 +1,28 @@
 # Progress
 
-Last updated: 2026-09-27
+Last updated: 2026-10-15
 Last implementation update: 2026-09-27 (modern design deployed; account access management and backup safeguards added)
 
-## Current Phase
+## October 15: embedded study room
+
+The existing Supabase project had paused. It was resumed without a paid upgrade, and the public
+homepage and `/health` were verified working again. No existing content or account was migrated.
+
+The navigation now includes **学习**, opening `/study` inside this personal platform. That static
+page embeds the existing authenticated philosophy service and does not depend on the personal
+site database or require a second personal-site account. Both sites allow only their intended
+embedding counterpart. Public labels and metadata use neutral study wording. Decision 0017 records
+the module boundary; the existing publishing/account work below remains separately scoped.
+
+Deployment `dpl_EEUmkuCgpwLM3GqiMMFfNERs3Scm` is Ready at `https://myshkin451.vercel.app`.
+Verification: 89 frontend tests, targeted formatting/lint, site type check and production build passed.
+The live home navigation and embedded login screen were checked in Chrome; at 390px the document
+width remained 390px. The owner confirmed learning-account recovery and login; learning records
+are still authenticated by the separate study service. Mobile camera upload remains unverified.
+The original personal-site publishing account and external email acceptance below are not completed
+by this integration, and are not required to use the study room.
+
+## Current Phase (September 27 release history)
 
 The accepted modern visual baseline `2a7e304`, including Cursor's `e264d44`, and the account-management
 release `766781a` are deployed at [myshkin451.vercel.app](https://myshkin451.vercel.app).

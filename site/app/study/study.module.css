@@ -1,0 +1,102 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 360px;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  flex-shrink: 0;
+  gap: 24px;
+  width: 100%;
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  width: fit-content;
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 580;
+  letter-spacing: -0.7px;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-self: stretch;
+  gap: 28px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.nav a:hover,
+.nav a[aria-current] {
+  color: var(--ink);
+}
+
+.nav a[aria-current] {
+  border-bottom-color: var(--ink);
+}
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.open:hover {
+  color: var(--ink);
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+}
+
+.frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+@media (max-width: 760px) {
+  .header {
+    grid-template-columns: 1fr auto;
+    gap: 0 16px;
+    min-height: 100px;
+    padding-top: 4px;
+  }
+
+  .brand {
+    font-size: 18px;
+  }
+
+  .nav {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-content: center;
+    gap: 30px;
+  }
+}

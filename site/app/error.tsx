@@ -8,6 +8,9 @@ export default function ErrorPage({ reset }: { reset: () => void }) {
         <button className="button" onClick={reset}>
           重试
         </button>
+        <a className="button quiet" href="/study">
+          打开学习室
+        </a>
       </section>
     </main>
   )

@@ -1,5 +1,19 @@
 # 云端上线与验收
 
+## 2026-10-15 — learning page integration
+
+Production `dpl_EEUmkuCgpwLM3GqiMMFfNERs3Scm` adds `/study`, a neutral navigation link,
+and an independent study entry on the content-service error page. The existing Supabase project
+was resumed; the home page and `/health` returned normally. No database migration, seed content,
+paid upgrade or account change was performed.
+
+The built route is static and does not fetch the content database. Live desktop and 390px Chrome
+checks showed the embedded study login page; the 390px document had no horizontal overflow.
+The learning service permits the precise personal-site origin, while the parent permits only that
+study iframe. Targeted lint/format, site types/build and all 89 frontend tests passed. The owner
+confirmed learning login; personal-site publishing/email acceptance remains a separate open item.
+
+
 ## 2026-09-27：已认可视觉与账号权限增量
 
 - 正式地址仍为 [myshkin451.vercel.app](https://myshkin451.vercel.app)。本轮先将本地已认可

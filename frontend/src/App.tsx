@@ -265,7 +265,7 @@ function SiteSearch({
 }
 
 function SiteHeader({ path }: { path: string }) {
-  const { state, entries } = usePlatform()
+  const { state, entries, remote } = usePlatform()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [returnFocus, setReturnFocus] = useState<HTMLElement | null>(null)
@@ -350,6 +350,7 @@ function SiteHeader({ path }: { path: string }) {
               {link.title}
             </SiteLink>
           ))}
+          <a href={remote ? '/study' : 'https://myshkin451.vercel.app/study'}>学习</a>
           <SiteLink className="site-nav-secondary" href="#/archive">
             全部内容
           </SiteLink>
