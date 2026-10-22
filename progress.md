@@ -41,15 +41,22 @@ CNAME records, plus a non-enforcing `_dmarc.auth` TXT, were added to Vercel and 
 authoritative nameserver. No receiving MX or tracking subdomain was added; Resend shows tracking
 as unconfigured. Use the actual Forge CNAME records, not an older Amazon SES MX/SPF example.
 
-**Next required step:** a Resend key creation form is prepared, not submitted: name
-`myshkin451-supabase-auth`, Sending access, only `auth.myshkin451.com`. The owner has a pending
-action-time confirmation for creating this persistent credential and saving it into the existing
-Supabase SMTP configuration. Do not create it before that answer. The SMTP form has sender
-`Myshkin 451 <noreply@auth.myshkin451.com>`, host `smtp.resend.com`, port 465 and username `resend`
-filled as an unsaved draft; SMTP is not enabled in production yet. Keep a generated key only in the
-protected transfer and Supabase, never in chat, screenshots, repository files or logs. Then apply the
-Chinese hosted templates, verify actual confirmation/recovery delivery and owner signup, and only
-then enable the public email flag and complete real publishing acceptance.
+The owner approved creation and storage of `myshkin451-supabase-auth`: Sending access, only
+`auth.myshkin451.com`. One key was created, but its transfer did not succeed; reloading Supabase
+confirmed custom SMTP remained disabled and the configuration had not persisted. Resend shows zero
+uses. The one-time key view has been closed, and the clipboard cleared; no key was saved in project
+files. An attempted duplicate creation was blocked by automatic approval review before submission.
+
+**Next required step:** explicit replacement approval is pending to revoke this unused key and
+create one replacement with the same name and scope, leaving only one active credential. The old
+key's deletion confirmation is prepared but not submitted. Do not create another key or revoke the
+existing one before that answer. During the replacement, keep its one-time view open until protected
+transfer and a reload of the saved SMTP configuration both succeed. Intended settings remain
+`Myshkin 451 <noreply@auth.myshkin451.com>`, `smtp.resend.com`, port 465, username `resend`.
+The unsaved SMTP draft was cancelled. Keep a generated key only in the protected transfer and
+Supabase, never in chat, screenshots, repository files or logs. Then apply the Chinese hosted
+templates, verify actual confirmation/recovery delivery and owner signup, and only then enable the
+public email flag and complete real publishing acceptance.
 
 The learning task was notified of registration; its service now permits the exact new origin and the
 old Vercel origin. Native Chrome visually verified the embedded login page at the new `/study`, plus
