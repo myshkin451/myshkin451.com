@@ -489,6 +489,10 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
   const callback = path === '/auth/callback' && !recover
   const updatePassword = recover && Boolean(platform.state.visitor)
   const destination = returnPath(params.get('return'))
+  const ownerIntent = /^\/studio(?:\/|\?|$)/.test(destination)
+  const signedIn =
+    platform.authReady && path === '/login' && !recover && Boolean(platform.state.visitor)
+  const continuation = ownerIntent && !platform.isOwner ? '/' : destination
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
@@ -551,37 +555,56 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
         ? '邮箱验证'
         : register
           ? '注册访客账号'
-          : '登录'
+          : signedIn
+            ? '已登录'
+            : ownerIntent
+              ? '站主登录'
+              : '登录'
   return (
     <div className="community-auth-page">
       <section className="community-auth-panel" aria-labelledby={`${fieldId}-title`}>
-        <SiteLink className="community-back" href={destination}>
+        <SiteLink className="community-back" href={signedIn ? continuation : destination}>
           ← 返回
         </SiteLink>
         <header>
           <h1 id={`${fieldId}-title`}>{title}</h1>
           <p>
-            {register
-              ? '验证邮箱后即可留言，昵称会显示在留言旁。'
-              : recover
-                ? '请使用注册时的邮箱。邮件链接仅在有效期内可用。'
-                : callback
-                  ? '正在确认账号状态。'
-                  : '公开阅读无需账号。登录后可以留言和管理自己的留言。'}
+            {signedIn
+              ? ownerIntent && !platform.isOwner
+                ? '当前账号没有工作台权限，可以继续浏览公开内容。'
+                : platform.isOwner
+                  ? '可以继续浏览，或进入工作台发布和管理内容。'
+                  : '可以继续浏览，或管理自己的留言。'
+              : !auth.emailEnabled && !updatePassword && !callback
+                ? ownerIntent
+                  ? '工作台用于发布和管理内容。学习室使用独立的学习账号。'
+                  : '公开内容无需登录。学习室使用独立的学习账号。'
+                : register
+                  ? '验证邮箱后即可留言，昵称会显示在留言旁。'
+                  : updatePassword
+                    ? '为本站账号设置新密码。'
+                    : recover
+                      ? '请使用注册时的邮箱。邮件链接仅在有效期内可用。'
+                      : callback
+                        ? '查看邮箱验证结果。'
+                        : ownerIntent
+                          ? '使用已获授权的站主账号，继续发布和管理内容。'
+                          : '公开阅读无需账号。登录后可以留言和管理自己的留言。'}
           </p>
         </header>
         {!platform.authReady ? (
           <p role="status">正在确认登录状态…</p>
-        ) : callback ? (
+        ) : callback || signedIn ? (
           platform.state.visitor ? (
             <div>
               <p className="form-notice" role="status">
-                验证完成，已登录为 {platform.state.visitor.nickname}。
+                {callback ? '验证完成，已登录为 ' : '已登录为 '}
+                {platform.state.visitor.nickname}。
               </p>
-              <SiteLink className="button" href={destination}>
-                继续浏览
+              <SiteLink className="button" href={continuation}>
+                {ownerIntent && platform.isOwner ? '进入工作台' : '继续浏览'}
               </SiteLink>
-              {platform.isOwner && (
+              {platform.isOwner && !ownerIntent && (
                 <SiteLink className="button secondary" href="/studio">
                   进入工作台
                 </SiteLink>
@@ -591,11 +614,8 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
             <div>
               <p className="form-error" role="alert">
                 {platform.error ||
-                  '没有可用的验证会话。链接可能已失效，或不是在申请邮件的浏览器打开。请返回登录或重新申请邮件。'}
+                  '没有可用的验证会话。链接可能已失效，或不是在申请邮件的浏览器打开。请返回登录。'}
               </p>
-              <SiteLink className="button" href="/login">
-                返回登录
-              </SiteLink>
             </div>
           )
         ) : (
@@ -717,7 +737,7 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
             )}
           </>
         )}
-        {auth.emailEnabled && !recover && !callback && (
+        {auth.emailEnabled && !recover && !callback && !signedIn && (
           <button
             type="button"
             className="button quiet"
@@ -750,13 +770,19 @@ function RemoteAuthPanel({ path, params }: { path: string; params: URLSearchPara
           </p>
         )}
         <div className="community-auth-links">
-          <SiteLink
-            href={authLink(register || recover || callback ? 'login' : 'register', destination)}
-          >
-            {register || recover || callback ? '返回登录' : '注册账号'}
-          </SiteLink>
-          {!register && !recover && !callback && (
-            <SiteLink href={authLink('recover', destination)}>忘记密码</SiteLink>
+          {register || recover || callback ? (
+            <SiteLink href={authLink('login', destination)}>返回登录</SiteLink>
+          ) : auth.emailEnabled && !signedIn ? (
+            <>
+              <SiteLink href={authLink('register', destination)}>注册账号</SiteLink>
+              <SiteLink href={authLink('recover', destination)}>忘记密码</SiteLink>
+            </>
+          ) : null}
+          {!auth.emailEnabled && !updatePassword && !signedIn && (
+            <>
+              <SiteLink href="/">返回首页</SiteLink>
+              <SiteLink href="/study">进入学习室</SiteLink>
+            </>
           )}
         </div>
       </section>

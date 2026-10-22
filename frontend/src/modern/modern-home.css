@@ -354,6 +354,38 @@
 .modern-notes-preview {
   margin-top: 95px;
 }
+.modern-home > .modern-notes-preview {
+  margin-top: 12px;
+  margin-bottom: 48px;
+}
+.home-owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding: 12px 0 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.home-owner-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.home-owner-actions .home-write-note {
+  padding: 0 16px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: white;
+}
+.home-study-link {
+  margin-left: auto;
+}
+.home-owner-actions + .modern-empty-home {
+  padding-top: 36px;
+}
 .modern-section-heading {
   padding-bottom: 26px;
 }
@@ -377,6 +409,15 @@
   font-size: 12px;
   padding-top: 5px;
   font-variant-numeric: tabular-nums;
+}
+.modern-note-date {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--mh-muted);
+}
+.modern-note-date small {
+  font-size: 11px;
 }
 .modern-note-row p {
   font-size: 16px;
@@ -658,8 +699,13 @@
     gap: 12px 18px;
     padding: 23px 0;
   }
-  .modern-note-row time {
+  .modern-note-date {
     grid-column: 1/-1;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .modern-note-row time {
     padding: 0;
   }
   .modern-note-row p {

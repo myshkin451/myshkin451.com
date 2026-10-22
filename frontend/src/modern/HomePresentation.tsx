@@ -102,13 +102,40 @@ export function HomePresentation({
 
   return (
     <div className="modern-home" onClick={onVisit}>
-      <div className="modern-home-top">
-        <h1>{lead?.featured ? '精选' : '最近发布'}</h1>
-        <SiteLink href="#/archive" className="modern-inline-link">
-          全部内容
-          <Icon name="arrow" />
-        </SiteLink>
-      </div>
+      {notes.length ? (
+        <h1 className="sr-only">作品与记录</h1>
+      ) : (
+        <div className="modern-home-top">
+          <h1>{lead?.featured ? '精选' : '最近发布'}</h1>
+          <SiteLink href="#/archive" className="modern-inline-link">
+            全部内容
+            <Icon name="arrow" />
+          </SiteLink>
+        </div>
+      )}
+      {notes.length > 0 && (
+        <section className={`modern-notes-preview ${!lead ? 'modern-notes-only' : ''}`}>
+          <div className="modern-section-heading">
+            <h2>最近的随记</h2>
+            <SiteLink className="modern-inline-link" href="#/notes">
+              查看全部
+              <Icon name="arrow" />
+            </SiteLink>
+          </div>
+          <div>
+            {notes.map((entry) => (
+              <SiteLink className="modern-note-row" key={entry.id} href={entryHref(entry)}>
+                <span className="modern-note-date">
+                  <DisplayDate entry={entry} />
+                  {entry.sample && <small>样例</small>}
+                </span>
+                <p>{noteExcerpt(entry.body, 280)}</p>
+                <Icon name="arrow" />
+              </SiteLink>
+            ))}
+          </div>
+        </section>
+      )}
       {lead && (
         <article
           className={`modern-hero modern-hero-${lead.kind} ${crop ? 'modern-hero-interactive' : ''} ${!cover && !crop ? 'modern-hero-text' : ''}`}
@@ -208,26 +235,6 @@ export function HomePresentation({
           {more.map((entry) => (
             <EntryLine key={entry.id} entry={entry} />
           ))}
-        </section>
-      )}
-      {notes.length > 0 && (
-        <section className={`modern-notes-preview ${!lead ? 'modern-notes-only' : ''}`}>
-          <div className="modern-section-heading">
-            <h2>最近的随记</h2>
-            <SiteLink className="modern-inline-link" href="#/notes">
-              查看全部
-              <Icon name="arrow" />
-            </SiteLink>
-          </div>
-          <div>
-            {notes.map((entry) => (
-              <SiteLink className="modern-note-row" key={entry.id} href={entryHref(entry)}>
-                <DisplayDate entry={entry} />
-                <p>{noteExcerpt(entry.body, 160)}</p>
-                <Icon name="arrow" />
-              </SiteLink>
-            ))}
-          </div>
         </section>
       )}
     </div>

@@ -134,7 +134,27 @@ select {
   display: flex;
   align-items: center;
   justify-self: end;
-  gap: 20px;
+  gap: 16px;
+}
+
+.site-compose-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 40px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.site-compose-link:hover {
+  background: var(--ink-2);
+  color: #fff;
 }
 
 .site-search-trigger,
@@ -927,6 +947,14 @@ select {
 }
 
 @media (max-width: 600px) {
+  .site-compose-link {
+    padding: 0;
+    min-width: 34px;
+  }
+
+  .site-compose-link span {
+    display: none;
+  }
   .site-header-actions {
     gap: 6px;
   }

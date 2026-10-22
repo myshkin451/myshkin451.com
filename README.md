@@ -19,7 +19,7 @@ This repository intentionally does not continue an older blog architecture. The 
 - Keep immediate thoughts alongside longer work: public notes, published only by the owner.
 - Include visitor accounts and a small message/comment experience, with owner management kept separate.
 - Prefer low-maintenance hosting suited to a small personal site. AWS study is no longer a launch requirement.
-- Keep Myshkin 451 as a working name. The expired domain is not a dependency; the final domain is open.
+- Keep Myshkin 451 and the registered `myshkin451.com` domain as the current identity.
 
 The restart is accepted in [decision 0010](docs/decisions/0010-creator-first-restart.md).
 The zero-content start and visitor interaction scope are recorded in
@@ -34,8 +34,10 @@ continue the modern direction in the shared application. On September 27 the own
 current version as the initial release baseline; production and real-account acceptance remain separate.
 
 [Decision 0014](docs/decisions/0014-single-author-notes.md) adds the public notes timeline and a title-free
-owner editor. See [notes usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md). The owner has deferred
-domain purchase; the existing Vercel address remains the deployment target.
+owner editor. See [notes usage and acceptance](docs/operations/NOTES_ACCEPTANCE.md). The owner registered
+`myshkin451.com` on October 23; it serves the existing website over HTTPS, with `www` redirecting to the
+root domain. The existing Vercel address remains active during migration. Email login and real-owner
+publishing still require activation; see the [daily-use review and launch steps](docs/operations/DAILY_USE_LAUNCH.md).
 
 ## Engineering Stance
 

@@ -265,7 +265,8 @@ function SiteSearch({
 }
 
 function SiteHeader({ path }: { path: string }) {
-  const { state, entries, remote } = usePlatform()
+  const { state, entries, remote, isOwner } = usePlatform()
+  const { params } = useRoute()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [returnFocus, setReturnFocus] = useState<HTMLElement | null>(null)
@@ -277,15 +278,19 @@ function SiteHeader({ path }: { path: string }) {
   const links = [
     {
       href: '/',
-      title: '作品',
+      title: '首页',
+      active: path === '/',
+    },
+    { href: '/notes', title: '随记', active: path === '/notes' || currentEntry?.kind === 'note' },
+    {
+      href: '/archive',
+      title: '内容',
       active:
-        ['/', '/archive', '/writing', '/photos', '/projects'].includes(path) ||
+        ['/archive', '/writing', '/photos', '/projects'].includes(path) ||
         path.startsWith('/topics/') ||
         path.startsWith('/play/') ||
         Boolean(currentEntry && currentEntry.kind !== 'note'),
     },
-    { href: '/notes', title: '随记', active: path === '/notes' || currentEntry?.kind === 'note' },
-    { href: '/about', title: '关于', active: path === '/about' },
   ]
 
   useEffect(() => {
@@ -351,14 +356,20 @@ function SiteHeader({ path }: { path: string }) {
             </SiteLink>
           ))}
           <a href={remote ? '/study' : 'https://myshkin451.vercel.app/study'}>学习</a>
-          <SiteLink className="site-nav-secondary" href="#/archive">
-            全部内容
+          <SiteLink href="#/about" aria-current={path === '/about' ? 'page' : undefined}>
+            关于
           </SiteLink>
           <SiteLink className="site-nav-secondary" href="#/guestbook">
             留言
           </SiteLink>
         </nav>
         <div className="site-header-actions">
+          {(!remote || isOwner) && path !== '/' && (
+            <SiteLink className="site-compose-link" href="#/studio/notes" aria-label="写随记">
+              <Icon name="plus" size={17} />
+              <span>写随记</span>
+            </SiteLink>
+          )}
           <button
             className="site-search-trigger"
             type="button"
@@ -376,7 +387,16 @@ function SiteHeader({ path }: { path: string }) {
           </button>
           <SiteLink
             className="account-link"
-            href={state.visitor ? '#/account' : '#/login'}
+            href={
+              state.visitor
+                ? '#/account'
+                : '#/login?return=' +
+                  encodeURIComponent(
+                    ['/login', '/register', '/recover', '/auth/callback'].includes(path)
+                      ? '/account'
+                      : path + (params.size ? '?' + params.toString() : ''),
+                  )
+            }
             onClick={() => setMenuOpen(false)}
           >
             {state.visitor ? (

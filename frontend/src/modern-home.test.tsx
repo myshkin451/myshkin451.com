@@ -74,6 +74,31 @@ afterEach(() => {
 })
 
 describe('modern home with published owner content', () => {
+  it('keeps the writing shortcuts and private draft count exclusive to the owner', () => {
+    setContent([], [makeEntry({ status: 'draft', body: 'PRIVATE_DRAFT' })])
+    const view = render(<Page />)
+    expect(screen.queryByRole('navigation', { name: '我的创作' })).toBeNull()
+    fixture.platform.isOwner = true
+    view.rerender(<Page />)
+    const actions = within(screen.getByRole('navigation', { name: '我的创作' }))
+    expect(actions.getByRole('link', { name: '写随记' }).getAttribute('href')).toBe('/studio/notes')
+    expect(actions.getByRole('link', { name: '工作台 · 1 份草稿' })).toBeTruthy()
+    expect(document.body.textContent).not.toContain('PRIVATE_DRAFT')
+    fixture.platform.isOwner = false
+    view.rerender(<Page />)
+    expect(screen.queryByRole('navigation', { name: '我的创作' })).toBeNull()
+  })
+
+  it('puts recent notes before featured work so daily updates remain visible', () => {
+    const note = makeEntry({ kind: 'note', title: '', body: '今天的随记正文' })
+    const work = makeEntry({ title: '较早的精选文章', featured: true })
+    setContent([work, note])
+    const { container } = render(<Page />)
+    const links = [...container.querySelectorAll('a[href^="/entry/"]')]
+    expect(links[0].getAttribute('href')).toBe(`/entry/${note.id}`)
+    expect(screen.getByRole('heading', { name: work.title })).toBeTruthy()
+  })
+
   it('starts empty with the configured identity and usable production links', () => {
     render(<Page />)
     expect(screen.getByText(settings.name)).toBeTruthy()

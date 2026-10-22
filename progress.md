@@ -1,7 +1,73 @@
 # Progress
 
-Last updated: 2026-10-15
-Last implementation update: 2026-09-27 (modern design deployed; account access management and backup safeguards added)
+Last updated: 2026-10-23
+Last implementation update: 2026-10-22 (daily-use entry points and save reliability improved locally; not deployed)
+
+## October 23: domain registered and connected; email activation in progress
+
+The owner explicitly authorized buying `myshkin451.com` through Vercel, with payment completed by the
+owner, followed by domain connection, email login configuration and website deployment. Do not request
+the same deployment/configuration approval again within this agreed scope. Paid hosting upgrades or
+additional paid services are not included.
+
+The owner completed payment. The existing `myshkin451` Hobby team's domain list and registration
+details confirm `myshkin451.com`, expiring 2027-10-23, with auto-renew enabled and Vercel nameservers.
+The root domain is connected to the existing personal-site project; `www.myshkin451.com` redirects
+to it with 308. Both show Valid Configuration, and Chrome opened the existing website over HTTPS at
+the root domain. No paid hosting upgrade or new database was created. No billing/contact data is
+stored in this repository. Registration proof is in ignored `output/playwright/domain-registered.png`;
+connection proof is `domain-connected.png` in the same directory.
+
+Production `SITE_URL` is not yet changed: Vercel requires an email verification code before editing
+the existing config value. A code was requested and the owner was asked to enter it directly in the
+retained Vercel page. Supabase has signed out and awaits the owner's existing-account login; Resend
+is at its login page and awaits an existing or new free account. Automatic approval denied initiating
+an unconfirmed GitHub identity flow and opening Gmail to retrieve a verification code. Do not work
+around those denials; the owner is handling the login and code entry. SMTP, hosted templates,
+new-domain Auth redirects, real email delivery and the public email flag remain pending.
+
+The learning task has been notified that registration is complete and asked to preserve the existing
+service while allowing the exact new parent origin. This repository has not changed learning code.
+The October 22 implementation and validation remain ready locally; production code rollout is pending.
+
+## October 22: daily use and domain activation
+
+The owner now wants frequent public short notes, articles and personal learning, and has selected
+`myshkin451.com`. Decision [0018](docs/decisions/0018-daily-use-and-domain.md) resolves the domain
+choice; registration and connection are now complete as recorded above, while SMTP and code rollout remain pending. Earlier domain-deferral statements
+below are historical. [The review and launch steps](docs/operations/DAILY_USE_LAUNCH.md) contain
+current findings, official references and the concrete activation sequence.
+
+Local changes: clearer home/content navigation; owner-only direct writing, draft and learning links;
+recent notes before featured work; safe return to the current page/filter after login; useful exits
+when email is closed; and a brief learning-account explanation. Content saves now merge the committed
+server result instead of refreshing every article, message and draft. Other committed writes with a
+failed refresh explicitly warn about stale display instead of reporting a failed write. Session changes
+and confirmed permission loss prevent late saves from restoring private data.
+
+Live read-only checks: the home remains empty, email login/registration/recovery are visibly closed,
+`/health` returned 200, and the existing embedded philosophy login page loads. No new SQL account count
+was obtained; September's zero-account observation must not be treated as a fresh count.
+
+Learning direction: public learning functions with per-account private records are the owner's intended
+target, not an implemented multi-user claim. The active philosophy task owns its newly requested dynamic
+learning routes, exercises and daily Codex handoff. The owner authorized sharing the domain/embedding
+and privacy requirements with that task, and they were sent. This repository did not change the learning
+project. IELTS currently has planning documents only; no fictitious working entry was added.
+
+Validation: 113 frontend tests, full lint, root typecheck, frontend build and production site build passed;
+changed application files pass formatting and the diff is clean. Browser checks covered empty/populated
+home, narrow 320/390px layouts, desktop 1280px, mobile menu/filter/login return, and a synthetic local
+note's autosave, reload recovery, publish, stable reading link, edit return and withdrawal. No cloud content
+was created. Save failure/session races are covered with mocked service tests, not a new live API drill;
+database policies/migrations were unchanged. External email, real-owner publishing, phone image upload,
+new-domain embedding and unproxied mobile network performance remain unverified.
+
+The independent QA origins were `127.0.0.1:4334` (browser-local fixtures) and `127.0.0.1:4335` (built study
+shell). Their servers and test tabs are closed at handoff. The local study iframe is intentionally blocked
+by the learning service's exact parent-origin policy; its shell check does not imply the new domain is allowed.
+Screenshots are in ignored `output/playwright/daily-home-{desktop,mobile}.png`; local QA data is unrelated
+to existing preview origins or production. The pre-existing README introduction was preserved.
 
 ## October 15: embedded study room
 
@@ -174,15 +240,17 @@ older sections below retain historical evidence only.
 
 ## Next Steps
 
-1. Retain the deployed account-management release and `2a7e304` as the accepted visual rollback baseline.
-   Do not recreate backend resources or seed data. Domain work remains deferred by the owner.
-2. When domain work resumes, select and verify a sending domain and SMTP,
-   apply the versioned Chinese templates and precise redirects/rate limits, then prove external delivery.
-   Keep email features closed until that succeeds; do not retry Brevo phone verification.
-3. The owner creates and verifies their website account through secure screens, then the maintainer
-   grants the verified UUID explicitly. Passwords and codes are never requested in chat. Prove real
-   owner/visitor boundaries and owner-approved publishing, photos, moderation and redeploy persistence.
-4. Maintain a weekly quiet-window backup plus a backup after important publishing. The first production
+1. Complete the owner-selected `myshkin451.com` purchase and verify ownership. Connect it to the existing
+   Vercel project using its actual DNS records and HTTPS. Retain the existing deployment as rollback;
+   do not recreate backend resources or import preview fixtures.
+2. Verify a sending subdomain and SMTP, apply the Chinese templates and exact new-domain redirects,
+   prove external confirmation/recovery delivery, then activate email and deploy the verified local changes.
+   Follow [the concrete sequence](docs/operations/DAILY_USE_LAUNCH.md); do not retry Brevo phone verification.
+3. The owner creates/verifies their account through secure screens; grant the verified UUID explicitly.
+   Prove owner/visitor boundaries and real short-note/article/photo publishing. Coordinate the philosophy
+   service's exact new parent origin with its active task and verify the learning entry on the final domain.
+   Passwords and codes are never requested in chat. Test ordinary Wi-Fi and unproxied phone access.
+4. Maintain the existing backup arrangements and a backup after important publishing. The first production
    archive has no real accounts/content/media; repeat recovery acceptance when those exist. An independent
    encrypted copy remains a separate storage choice; do not upload to a new destination implicitly.
 5. Use real populated-site measurements before discussing paid capacity. Current website URL, working
@@ -222,7 +290,8 @@ storage. Do not print or commit its private contents; the preserved Docker volum
 ## Open Decisions
 
 - Any paid budget or upgrade beyond the selected free initial hosting combination.
-- Final domain and any public identity change beyond the current working name.
+- Any public identity change beyond the current working name. The domain choice is resolved by 0018;
+  purchase and activation are execution steps, not an open naming decision.
 
 The current modern visual version is accepted under 0015; production and real-account acceptance remain open.
 The old AWS launch-timing decision is superseded by 0010 and removed. Resolve each remaining item

@@ -17,6 +17,7 @@ This repository uses a small documentation system that should grow only when the
 - [Design study 03](design/studies/restart-03/README.md): preceding visual comparison with references, generated mockups, and functional details.
 - `docs/design/PUBLIC_SITE_EXPERIENCE.md`: historical Phase 2 design; not the current visual target.
 - [账号与权限指南](operations/ACCOUNT_GUIDE.md)：登录、验证、站主授权与账号写入限制。
+- [日常使用审查与上线步骤](operations/DAILY_USE_LAUNCH.md)：2026-10-22 体验与保存可靠性修复、正式域名接入顺序、学习平台协作边界。
 - [Runbook](operations/RUNBOOK.md): current publishing, account setup, deployment, backup, restore, and rollback instructions.
 - [Local acceptance](operations/LOCAL_ACCEPTANCE.md): actual separate-target account/media restore, restart and permission evidence, with remaining verification boundaries.
 - [2026-09-27 备份恢复验收](operations/RELEASE_RESTORE_2026-09-27.md)：当前账号权限版本的隔离恢复证据及生产归档边界。
@@ -38,6 +39,8 @@ This repository uses a small documentation system that should grow only when the
 - `docs/decisions/0014-single-author-notes.md`：单人发布、公开阅读的随记与增量迁移。
 - `docs/decisions/0015-modern-public-direction.md`：沿第四轮现代视觉方向继续开发，在共享前端中保留真实内容、发布、权限与路由；不以刻意建立个人辨识度为目标。
 - `docs/decisions/0016-account-access-management.md`：最小账号管理、有效站主保护和权限审计。
+- `docs/decisions/0017-embedded-study-room.md`：独立学习室的内嵌与账号边界。
+- `docs/decisions/0018-daily-use-and-domain.md`：日常发布入口、`myshkin451.com` 选择与学习功能公开/记录私有的接入方向。
 - `docs/decisions/_template.md`: template for new decision records.
 
 ## Documentation Rules

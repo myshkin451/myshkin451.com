@@ -21,19 +21,23 @@ export default function StudyPage() {
           Myshkin 451
         </Link>
         <nav className={styles.nav} aria-label="网站导航">
-          <Link href="/">作品</Link>
+          <Link href="/">首页</Link>
           <Link href="/notes">随记</Link>
-          <Link href="/about">关于</Link>
+          <Link href="/archive">内容</Link>
           <Link href="/study" aria-current="page">
             学习
           </Link>
+          <Link href="/about">关于</Link>
         </nav>
         <a className={styles.open} href={studyUrl} target="_blank" rel="noopener noreferrer">
           独立打开 <span aria-hidden="true">↗</span>
         </a>
       </header>
       <main id="study-content" className={styles.main} tabIndex={-1}>
-        <h1 className="sr-only">哲学学习室</h1>
+        <div className={styles.context}>
+          <h1>哲学学习室</h1>
+          <p>使用学习室账号查看个人作答与进度。加载或登录遇到问题时，可独立打开。</p>
+        </div>
         <iframe
           className={styles.frame}
           src={studyUrl}

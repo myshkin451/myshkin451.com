@@ -174,9 +174,12 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
   const previews = useRef(new Map<string, string>())
   const uploads = useRef(new Map<string, string>())
   const verifiedUserId = useRef<string | null>(null)
+  const ownerAccess = useRef({ id: null as string | null, version: 0 })
+  const contentRevision = useRef(0)
 
   const clearPrivateState = useCallback(() => {
     verifiedUserId.current = null
+    ownerAccess.current = { id: null, version: ownerAccess.current.version + 1 }
     previews.current.clear()
     uploads.current.clear()
     setRecoveryPending(false)
@@ -192,6 +195,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
 
   const refresh = useCallback(async () => {
     const current = ++generation.current
+    const revision = contentRevision.current
     try {
       const userResult = await client.auth.getUser()
       if (current !== generation.current) return
@@ -230,6 +234,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
           // A successful owner lookup with no row confirms revoked permission.
           // A failed lookup, by contrast, must not unmount an active editor.
           setIsOwner(false)
+          ownerAccess.current = { id: null, version: ownerAccess.current.version + 1 }
           setState((previous) => ({
             ...previous,
             drafts: [],
@@ -259,7 +264,9 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       const drafts = await Promise.all(
         draftRows.map((row) => signedDraft(client, row.data, previews.current)),
       )
-      if (current !== generation.current) return
+      // A read begun before a successful save must not replace the newer local copy.
+      // Account checks above still apply even when the content snapshot is stale.
+      if (current !== generation.current || revision !== contentRevision.current) return
       const visibleMessages: Message[] = messages
         .map((message) => ({
           id: message.id,
@@ -277,6 +284,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
             left.createdAt.localeCompare(right.createdAt) || left.id.localeCompare(right.id),
         )
       verifiedUserId.current = user?.id || null
+      ownerAccess.current.id = owner ? user!.id : null
       setState({
         version: 1,
         mode: 'empty',
@@ -292,7 +300,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       setReady(true)
       setError('')
     } catch (cause) {
-      if (current !== generation.current) return
+      if (current !== generation.current || revision !== contentRevision.current) return
       const problem = failure(cause)
       setError(problem.message)
       // Keep the last verified identity and mounted editor during a transient
@@ -309,9 +317,16 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
 
   useEffect(() => {
     let live = true
-    const { data } = client.auth.onAuthStateChange((event) => {
+    const { data } = client.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') setRecoveryPending(true)
       if (event === 'SIGNED_OUT') {
+        cancelRefresh()
+        clearPrivateState()
+      } else if (
+        session?.user.id &&
+        verifiedUserId.current &&
+        session.user.id !== verifiedUserId.current
+      ) {
         cancelRefresh()
         clearPrivateState()
       }
@@ -338,12 +353,20 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
 
   return useMemo<Platform>(() => {
     const requireOwner = () => {
-      if (!authReady || !isOwner) throw new Error('请使用站主账号登录后再操作。')
+      if (!authReady || !isOwner || !ownerAccess.current.id)
+        throw new Error('请使用站主账号登录后再操作。')
     }
     const rpc = async (name: string, args: Record<string, unknown>) => {
       const result = await client.rpc(name, args)
       if (result.error) throw failure(result.error)
-      await refresh()
+      try {
+        await refresh()
+      } catch {
+        // The write already committed. Report stale presentation separately so
+        // callers do not invite another submission (especially a new message).
+        setError('操作已保存，但页面刷新未完成，请刷新查看。无需重复提交。')
+      }
+      return result.data
     }
     const storeImage = async (src: string, storagePath?: string): Promise<string> => {
       if (!src) return ''
@@ -367,6 +390,7 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
     }
     const writeEntry = async (incoming: Entry, publish: boolean) => {
       requireOwner()
+      const access = { ...ownerAccess.current }
       const cleaned = saveDraft(
         state,
         [],
@@ -387,18 +411,48 @@ export function useRemotePlatform(config: RemoteConfig, initial?: StoredState): 
       if (cleaned.destination.trim() && !safeDestination(cleaned.destination))
         throw new Error('项目地址只支持 http、https 或本站页面地址。')
       const originalPhotos = cleaned.photos
+      const originalCover = cleaned.cover
+      const displaySources = new Map<string, string>()
       cleaned.photos = []
       // Serialize uploads to keep memory and storage request pressure bounded on mobile.
       for (const photo of originalPhotos) {
         const { storagePath, ...rest } = photo
-        cleaned.photos.push({ ...rest, src: await storeImage(photo.src, storagePath) })
+        const src = await storeImage(photo.src, storagePath)
+        displaySources.set(src, photo.src)
+        cleaned.photos.push({ ...rest, src })
       }
       const coverPhoto = originalPhotos.findIndex((photo) => photo.src === cleaned.cover)
       cleaned.cover =
         coverPhoto >= 0 ? cleaned.photos[coverPhoto].src : await storeImage(cleaned.cover)
+      if (cleaned.cover) displaySources.set(cleaned.cover, originalCover)
       cleaned.sample = false
       delete cleaned.artwork
-      await rpc('save_entry', { entry: cleaned, publish })
+      const result = await client.rpc('save_entry', { entry: cleaned, publish })
+      if (result.error) throw failure(result.error)
+      // The committed RPC result is authoritative. A separate read/signing failure
+      // must not turn a successful save into a failure or reload every draft.
+      if (access.id !== ownerAccess.current.id || access.version !== ownerAccess.current.version)
+        return
+      const saved = result.data as Entry
+      const draft: Entry = {
+        ...saved,
+        cover: displaySources.get(saved.cover) || saved.cover,
+        photos: saved.photos.map((photo) => ({
+          ...photo,
+          src: displaySources.get(photo.src) || photo.src,
+          storagePath: photo.src,
+        })),
+      }
+      contentRevision.current++
+      setState((previous) => ({
+        ...previous,
+        entries: publish
+          ? [...previous.entries.filter((entry) => entry.id !== saved.id), saved]
+          : previous.entries,
+        drafts: publish
+          ? previous.drafts.filter((entry) => entry.id !== saved.id)
+          : [...previous.drafts.filter((entry) => entry.id !== saved.id), draft],
+      }))
     }
     const saveProfile = async (nickname: string) => {
       await rpc('save_profile', { nickname: nickname.trim() })
