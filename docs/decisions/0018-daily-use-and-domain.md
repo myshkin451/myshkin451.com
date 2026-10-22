@@ -1,6 +1,6 @@
 # 0018：日常发布与正式域名接入
 
-Status: Accepted direction; local improvements implemented, production activation pending
+Status: Accepted; domain and daily-use code active, email activation pending
 
 Date: 2026-10-22
 

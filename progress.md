@@ -1,7 +1,7 @@
 # Progress
 
 Last updated: 2026-10-23
-Last implementation update: 2026-10-22 (daily-use entry points and save reliability improved locally; not deployed)
+Last implementation update: 2026-10-23 (daily-use changes deployed; domain live; email activation pending)
 
 ## October 23: domain registered and connected; email activation in progress
 
@@ -18,23 +18,52 @@ the root domain. No paid hosting upgrade or new database was created. No billing
 stored in this repository. Registration proof is in ignored `output/playwright/domain-registered.png`;
 connection proof is `domain-connected.png` in the same directory.
 
-Production `SITE_URL` is not yet changed: Vercel requires an email verification code before editing
-the existing config value. A code was requested and the owner was asked to enter it directly in the
-retained Vercel page. Supabase has signed out and awaits the owner's existing-account login; Resend
-is at its login page and awaits an existing or new free account. Automatic approval denied initiating
-an unconfirmed GitHub identity flow and opening Gmail to retrieve a verification code. Do not work
-around those denials; the owner is handling the login and code entry. SMTP, hosted templates,
-new-domain Auth redirects, real email delivery and the public email flag remain pending.
+The owner explicitly authorized reading the email needed for this setup. The requested Vercel code
+was accepted, and the domain-contact verification email was completed with Vercel's success notice.
+The earlier mailbox-access and unconfirmed-identity approval blocks are resolved: GitHub identity
+`myshkin451` was checked before using the existing Supabase sign-in, and both control panels are now
+accessible. Do not request the same mailbox or existing-account permission again within this setup.
 
-The learning task has been notified that registration is complete and asked to preserve the existing
-service while allowing the exact new parent origin. This repository has not changed learning code.
-The October 22 implementation and validation remain ready locally; production code rollout is pending.
+Commit `63e0032` is pushed to `main`; both GitHub CI and Production platform passed. Production
+deployment `dpl_CvQrQSSJvXp1AkzaukcZArNQfNJn` is Ready with the new `SITE_URL`. Public checks confirmed
+the new navigation and login return path, primary-domain canonical, HTTP 200 `/health` with `ok`,
+the primary-domain sitemap, and preservation of `/notes` through the `www` redirect. No cloud test
+content, website account or database migration was introduced. Existing README introduction changes
+remain unstaged, outside this release.
+
+Supabase Auth Site URL is now `https://myshkin451.com`; exact `/auth/callback` and `/recover` URLs for
+both the new and old origins are saved. Email confirmation remains enabled, anonymous sign-in remains
+disabled, and the minimum password length was visually confirmed as 12. No full local config was pushed.
+
+Resend is logged in on Free: 3,000 transactional emails/month and 100/day; paid extras remain off.
+`auth.myshkin451.com` is verified in Tokyo (`ap-northeast-1`). Its generated DKIM TXT and two Forge
+CNAME records, plus a non-enforcing `_dmarc.auth` TXT, were added to Vercel and read back from its
+authoritative nameserver. No receiving MX or tracking subdomain was added; Resend shows tracking
+as unconfigured. Use the actual Forge CNAME records, not an older Amazon SES MX/SPF example.
+
+**Next required step:** a Resend key creation form is prepared, not submitted: name
+`myshkin451-supabase-auth`, Sending access, only `auth.myshkin451.com`. The owner has a pending
+action-time confirmation for creating this persistent credential and saving it into the existing
+Supabase SMTP configuration. Do not create it before that answer. The SMTP form has sender
+`Myshkin 451 <noreply@auth.myshkin451.com>`, host `smtp.resend.com`, port 465 and username `resend`
+filled as an unsaved draft; SMTP is not enabled in production yet. Keep a generated key only in the
+protected transfer and Supabase, never in chat, screenshots, repository files or logs. Then apply the
+Chinese hosted templates, verify actual confirmation/recovery delivery and owner signup, and only
+then enable the public email flag and complete real publishing acceptance.
+
+The learning task was notified of registration; its service now permits the exact new origin and the
+old Vercel origin. Native Chrome visually verified the embedded login page at the new `/study`, plus
+the direct entry. This repository did not change learning code or read private learning records.
+Cross-origin frame snapshots initially showed `about:blank`; the native window screenshot confirmed
+the actual rendered login, so do not infer a broken iframe from that snapshot alone. Ignored evidence
+includes `domain-live-home.png`, `domain-live-study.png`, `domain-contact-verified.png`,
+`email-domain-verified.png` and `email-key-scope-review.png` under `output/playwright/`.
 
 ## October 22: daily use and domain activation
 
 The owner now wants frequent public short notes, articles and personal learning, and has selected
 `myshkin451.com`. Decision [0018](docs/decisions/0018-daily-use-and-domain.md) resolves the domain
-choice; registration and connection are now complete as recorded above, while SMTP and code rollout remain pending. Earlier domain-deferral statements
+choice; registration, connection and code rollout are complete as recorded above, while SMTP remains pending. Earlier domain-deferral statements
 below are historical. [The review and launch steps](docs/operations/DAILY_USE_LAUNCH.md) contain
 current findings, official references and the concrete activation sequence.
 
@@ -61,7 +90,7 @@ home, narrow 320/390px layouts, desktop 1280px, mobile menu/filter/login return,
 note's autosave, reload recovery, publish, stable reading link, edit return and withdrawal. No cloud content
 was created. Save failure/session races are covered with mocked service tests, not a new live API drill;
 database policies/migrations were unchanged. External email, real-owner publishing, phone image upload,
-new-domain embedding and unproxied mobile network performance remain unverified.
+and unproxied mobile network performance remain unverified; the new-domain embedding was verified on October 23.
 
 The independent QA origins were `127.0.0.1:4334` (browser-local fixtures) and `127.0.0.1:4335` (built study
 shell). Their servers and test tabs are closed at handoff. The local study iframe is intentionally blocked

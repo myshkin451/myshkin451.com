@@ -1,5 +1,28 @@
 # 云端上线与验收
 
+## 2026-10-23：正式域名与日常发布改进
+
+- 本人完成域名付款；Vercel 团队 `myshkin451` 已确认注册，2027-10-23 到期，自动续费开启。
+  注册人联系邮箱验证已完成。正式地址为 [myshkin451.com](https://myshkin451.com)，`www` 以
+  308 跳转根域；两者均有自动续期证书，旧 Vercel 地址在迁移期保留。
+- 提交 `63e0032c1c264c7c5cc6a1ba3b23623978668660` 已推送；
+  [CI](https://github.com/myshkin451/myshkin451.com/actions/runs/39830368329) 与
+  [Production platform](https://github.com/myshkin451/myshkin451.com/actions/runs/39830368469) 均成功。
+  首次代码部署 `dpl_2Wv4eidwHhDbkMS9DtRtp7rHVPeL` Ready；随后应用正式 `SITE_URL` 的
+  [生产部署](https://vercel.com/myshkin451/myshkin451/CvQrQSSJvXp1AkzaukcZArNQfNJn) Ready。
+- 浏览器确认新版首页导航、登录返回位置及根域 canonical。HTTP 实测 `/health` 为
+  `200 {"status":"ok"}`，sitemap 使用根域，`www` 的 `/notes` 跳转后保留路径与正确 canonical。
+  新域 `/study` 在原生 Chrome 中显示学习室登录页；学习记录仍受独立账号保护。本轮没有
+  修改学习项目、数据库结构、权限政策或导入测试内容。
+- Supabase Auth Site URL 使用新域，迁移期保留新旧域各自的精确 `/auth/callback` 和
+  `/recover`，没有通配符。邮箱确认开启、匿名登录关闭、最低密码长度 12 均已核查。
+- Resend Free 已核实额度且付费超额发送关闭。`auth.myshkin451.com`（Tokyo）已验证，
+  实际 DKIM/Forge CNAME/初始 DMARC 已在权威 DNS 读回，未配置邮件跟踪或接收 MX。
+
+待完成：仅限认证域发信的密钥创建正等待本人确认，SMTP 只有未保存的表单；云端中文模板、
+真实确认/恢复邮件、本人设置网站密码、站主授权和日常发布均未验收。生产邮箱功能开关仍关闭。
+域名及公开网站已上线，不代表上述真实账号流程已完成。
+
 ## 2026-10-15 — learning page integration
 
 Production `dpl_EEUmkuCgpwLM3GqiMMFfNERs3Scm` adds `/study`, a neutral navigation link,
