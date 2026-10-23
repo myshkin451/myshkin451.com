@@ -1,6 +1,6 @@
 # 0018：日常发布与正式域名接入
 
-Status: Accepted; domain and daily-use code active, email activation pending
+Status: Accepted; domain, daily-use code and email active; first owner authorized; publishing acceptance pending
 
 Date: 2026-10-22
 
@@ -31,8 +31,8 @@ Date: 2026-10-22
 
 ## 影响与边界
 
-这项决定解决“最终域名”选择，费用预算与任何付费升级仍需单独确定。未迁移生产数据，
-未改变账号权限或放宽 CSP。日常学习动态更新留给正在进行的哲学任务；主站不把学习规则
-或私有 Git 仓库内容当作可公开网站素材。
+这项决定解决“最终域名”选择，费用预算与任何付费升级仍需单独确定。未迁移生产数据或
+放宽权限政策/CSP；10 月 23 日按本人明确授权完成首位已验证账号的站主授予。日常学习动态更新
+留给正在进行的哲学任务；主站不把学习规则或私有 Git 仓库内容当作可公开网站素材。
 
 本次优化、发现、参考及上线顺序见 [日常使用审查与上线步骤](../operations/DAILY_USE_LAUNCH.md)。

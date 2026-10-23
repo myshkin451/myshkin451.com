@@ -1,14 +1,13 @@
 # Myshkin 451 使用与维护
 
-更新：2026-09-27。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
+更新：2026-10-23。本指南对应 `site/` + Supabase；`frontend/` 的 IndexedDB 预览仍独立保留。
 实际验收和上线状态以 [progress.md](../../progress.md) 为准，本文的操作步骤不代表云端已经完成。
 
-当前正式地址：[myshkin451.vercel.app](https://myshkin451.vercel.app)。公开浏览已上线；
-邮件和首次站主账号仍在接续，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。
-Brevo 手机验证反复失败，停止该流程。Myshkin 451 目前仍是工作名，域名暂缓；
-Resend 接入准备、中文模板和待本人参与的环节见 [认证邮件接续](EMAIL_SETUP.md)。
-目前仅完成本机邮件验证，正式 SMTP 尚未启用。新版视觉已上线；账号与权限操作见
-[账号指南](ACCOUNT_GUIDE.md)。域名和真实收信仍由本人明确留待下一步。
+当前正式地址：[myshkin451.com](https://myshkin451.com)，旧 Vercel 地址在迁移期保留。
+正式 Resend SMTP、中文模板及邮箱入口已启用，邀请与恢复信已实际送达；本人账号已验证，
+经明确批准获得站主权限，真实恢复会话可进入工作台。本人密码保存、密码登录和日常发布仍待
+完成，具体证据见 [云端验收](CLOUD_ACCEPTANCE.md)。不重试此前失败的 Brevo 手机验证。
+维护设置见 [认证邮件接续](EMAIL_SETUP.md)，日常操作见 [账号指南](ACCOUNT_GUIDE.md)。
 
 ## 日常使用
 
@@ -30,19 +29,19 @@ Resend 接入准备、中文模板和待本人参与的环节见 [认证邮件�
 数据库运维步骤加入 `public.site_owners`。不能根据昵称、浏览器数据或自行提交的用户 metadata 授权。
 日常发布和审核不需要改代码、SQL 或登录云控制台。
 
-## 本人一次完成的账号步骤
+## 服务账号与当前状态
 
 以下服务均选择免费套餐，不添加收费组件。价格与限制按 2026-09-21 官方页面核查；
 若注册页面要求支付、改套餐或购买资源，停在那一步重新确认，不默认购买。
 
-| 服务 | 用途、计划和已知限制 | 本人要做的事 |
+| 服务 | 用途、计划和已知限制 | 当前状态 |
 | --- | --- | --- |
-| [Supabase](https://supabase.com/dashboard) | Free，$0/月；数据库 500 MB、文件 1 GB；没有可依赖的自动备份，低活动约一周可暂停。[官方价格](https://supabase.com/pricing) | 注册/登录、验证邮箱，创建 Free 项目；把数据库密码保存在密码管理器。区域在实际网络检查后确认。 |
-| [Vercel](https://vercel.com/new) | Hobby，$0，适用于个人非商业站点；超额可能暂时停用相应功能。[官方限制](https://vercel.com/docs/plans/hobby) | 注册/登录，授权此 GitHub 仓库。使用默认 `*.vercel.app` 地址即可。 |
-| [Resend](https://resend.com/) | 候选 Free，$0/月、3,000 封/月、100 封/日；需要验证自有发件域名。[官方价格](https://resend.com/pricing) | 名字与域名确定后注册并完成本人验证；未开户、未产生费用。技术设置见邮件接续。 |
+| [Supabase](https://supabase.com/dashboard) | Free，$0/月；数据库 500 MB、文件 1 GB；没有可依赖的自动备份，低活动约一周可暂停。[官方价格](https://supabase.com/pricing) | 原有项目继续使用，SMTP 与首位真实站主已配置，不重新建项目。 |
+| [Vercel](https://vercel.com/new) | Hobby，$0，适用于个人非商业站点；超额可能暂时停用相应功能。[官方限制](https://vercel.com/docs/plans/hobby) | 原有网站已接入本人购买的 `myshkin451.com`，域名年费独立于免费托管。 |
+| [Resend](https://resend.com/) | Free，$0/月、3,000 封/月、100 封/日；需要验证自有发件域名。[官方价格](https://resend.com/pricing) | 已登录，认证子域已验证并接入，付费超额发送未开启。 |
 
-Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表中这两项额度是 2026-09-21 的
-核实记录，Resend 于 2026-09-27 复核。最终名字尚未决定，当前无需本人重复注册或购买。
+三个服务均已建立，不重复注册。表中 Supabase/Vercel 额度是 2026-09-21 的历史核实记录，
+并非本次全面复核；Resend Free 额度于 2026-10-23 从控制台读回。费用和限额以实际页面为准。
 
 密码、验证码、数据库连接串、SMTP 密钥和 service-role key 不发在聊天里。
 本人在服务商登录界面和受保护的环境变量/密码管理器中填写；维护者接续配置与测试。
@@ -64,12 +63,13 @@ Supabase/Vercel 的开户与首次部署已经完成，不重新建项目。表�
 3. 用真实分配的 HTTPS 地址配置 `SITE_URL`，Supabase Auth 的 Site URL 与精确允许的回调/恢复地址。
    本地应用端口为 `127.0.0.1:4325`；旧的 `127.0.0.1:4323` 留作设计预览。
 4. Supabase Auth 启用邮箱确认、最低密码长度 12、邮件间隔 60 秒、每小时邮件上限 30，保留其余速率限制并按
-   [认证邮件接续](EMAIL_SETUP.md)配置 Resend SMTP、中文模板和已验证的发件域。此步骤待发件域就绪后执行，不要求先确定网站品牌。
+   [认证邮件接续](EMAIL_SETUP.md)维护 Resend SMTP、中文模板和已验证的发件域。当前生产已完成此配置。
    默认 Supabase 邮件仅适合团队地址测试，不能承担公开注册；参见 [Supabase SMTP 限制](https://supabase.com/docs/guides/auth/auth-smtp)。
    CLI 2.117.0 的 `config push` 明确不管理 `auth.rate_limit.email_sent`；该值必须通过
    Dashboard 或 Management API 配置并读回，不能仅凭本机 TOML 或 push 成功声称已设置。
 5. 实测非项目团队邮箱注册、确认、登录、退出、恢复；检查发件人显示、回跳地址、实际收件和邮件配额。
-   确认通过后才开放邮箱注册入口。不要把邮件测试收件箱或默认邮件服务的成功当成生产送达证明。
+   当前入口在本人邀请邮件实际送达后开启，并已验证生产恢复邮件；公开注册确认仍需单独补齐
+   实际证据。不要把邮件测试收件箱、模板预览或邀请信当成注册确认信的送达证明。
 6. 授予本人站主身份，用匿名、两个独立访客和站主分别验证权限，再检查 `/health`、
    `/robots.txt`、`/sitemap.xml`、作品直链、桌面/手机布局、重启及重新部署后的内容与图片。
    生产保留真实空首页，不发布验收用假作品或测试账号。

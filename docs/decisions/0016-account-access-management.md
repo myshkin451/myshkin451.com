@@ -1,6 +1,6 @@
 # 0016: Minimal Account and Owner Access Management
 
-Status: Accepted; database migration and account UI deployed, real-account acceptance pending
+Status: Accepted; first real owner verified and authorized, password and publishing acceptance pending
 
 Date: 2026-09-27
 
@@ -49,8 +49,14 @@ was no product interface for inspecting accounts or changing their access.
 
 The migration `202609270001_accounts.sql` has been applied to production by the lead operator.
 At that verification point production had zero real Auth accounts. The account UI is deployed in `766781a`;
-real registration, email delivery, first-owner bootstrap,
-owner login and independent visitor acceptance remain unproven.
+real-account acceptance had not yet begun.
+
+On October 23, the real owner's invited account completed email verification and established a
+session through the website's recovery email. The owner explicitly approved first-owner membership;
+the administrative table write was read back, and a fresh production `/studio` page opened the owner
+workspace. This bootstrap does not invoke the audited role-change RPC. Password setting/sign-in,
+real publishing and independent production visitor acceptance remain pending. See the current
+[cloud acceptance](../operations/CLOUD_ACCEPTANCE.md) for the delivery evidence and limits.
 
 Local Supabase checks passed: 76 account-permission assertions and 186 existing API assertions.
 Account coverage includes anonymous/visitor denial, self-protection, concurrent cross-revocation,

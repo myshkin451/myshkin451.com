@@ -1,9 +1,9 @@
 # Progress
 
 Last updated: 2026-10-23
-Last implementation update: 2026-10-23 (daily-use changes deployed; domain live; email activation pending)
+Last implementation update: 2026-10-23 (domain and email active; first owner authorized; password and publishing acceptance pending)
 
-## October 23: domain registered and connected; email activation in progress
+## October 23: domain and email active; first owner can enter the workspace
 
 The owner explicitly authorized buying `myshkin451.com` through Vercel, with payment completed by the
 owner, followed by domain connection, email login configuration and website deployment. Do not request
@@ -27,9 +27,9 @@ accessible. Do not request the same mailbox or existing-account permission again
 Commit `63e0032` is pushed to `main`; both GitHub CI and Production platform passed. Production
 deployment `dpl_CvQrQSSJvXp1AkzaukcZArNQfNJn` is Ready with the new `SITE_URL`. Public checks confirmed
 the new navigation and login return path, primary-domain canonical, HTTP 200 `/health` with `ok`,
-the primary-domain sitemap, and preservation of `/notes` through the `www` redirect. No cloud test
-content, website account or database migration was introduced. Existing README introduction changes
-remain unstaged, outside this release.
+the primary-domain sitemap, and preservation of `/notes` through the `www` redirect. That code release
+introduced no cloud test content, website account or database migration. The real owner account was
+subsequently created as recorded below. Existing README introduction changes remain unstaged.
 
 Supabase Auth Site URL is now `https://myshkin451.com`; exact `/auth/callback` and `/recover` URLs for
 both the new and old origins are saved. Email confirmation remains enabled, anonymous sign-in remains
@@ -41,22 +41,36 @@ CNAME records, plus a non-enforcing `_dmarc.auth` TXT, were added to Vercel and 
 authoritative nameserver. No receiving MX or tracking subdomain was added; Resend shows tracking
 as unconfigured. Use the actual Forge CNAME records, not an older Amazon SES MX/SPF example.
 
-The owner approved creation and storage of `myshkin451-supabase-auth`: Sending access, only
-`auth.myshkin451.com`. One key was created, but its transfer did not succeed; reloading Supabase
-confirmed custom SMTP remained disabled and the configuration had not persisted. Resend shows zero
-uses. The one-time key view has been closed, and the clipboard cleared; no key was saved in project
-files. An attempted duplicate creation was blocked by automatic approval review before submission.
+The owner approved revoking the unused key and creating its replacement. Resend now has one
+`myshkin451-supabase-auth` credential, with Sending access restricted to `auth.myshkin451.com`.
+Supabase custom SMTP was saved and persisted after reload: `Myshkin 451 <noreply@auth.myshkin451.com>`,
+`smtp.resend.com`, port 465, username `resend`. The protected password is stored; no key is in project
+files or screenshots. The one-time key view was closed and clipboard cleared after persistence was
+verified. A Dashboard promotional banner had covered Save; dismissing it resolved the failed save.
 
-**Next required step:** explicit replacement approval is pending to revoke this unused key and
-create one replacement with the same name and scope, leaving only one active credential. The old
-key's deletion confirmation is prepared but not submitted. Do not create another key or revoke the
-existing one before that answer. During the replacement, keep its one-time view open until protected
-transfer and a reload of the saved SMTP configuration both succeed. Intended settings remain
-`Myshkin 451 <noreply@auth.myshkin451.com>`, `smtp.resend.com`, port 465, username `resend`.
-The unsaved SMTP draft was cancelled. Keep a generated key only in the protected transfer and
-Supabase, never in chat, screenshots, repository files or logs. Then apply the Chinese hosted
-templates, verify actual confirmation/recovery delivery and owner signup, and only then enable the
-public email flag and complete real publishing acceptance.
+Hosted confirmation and recovery templates now use the repository's Chinese bodies and subjects.
+Email limits were read back as 30/hour and a 60-second per-user interval. A real invitation reached
+the owner's Gmail Inbox from the configured sender and verified the real account. Production
+`NEXT_PUBLIC_EMAIL_AUTH_ENABLED=true` was then deployed from `99c1034` in Ready deployment
+`dpl_J6DDeTLv1Dyimu2ow2uvkYPBraJq`. The public recovery form sent the Chinese recovery email to the
+same Inbox, and its PKCE link established a session and opened the real set-password form. Gmail
+showed the authentication subdomain as signed-by and TLS transport. This verifies actual invitation
+and recovery delivery; the hosted signup confirmation template has preview evidence only.
+
+The owner explicitly approved first-owner membership for that verified real account. The single
+`public.site_owners` row was saved and read back; a fresh `/studio` page then displayed the real
+owner workspace and its content/account navigation. No synthetic account or public content was
+created. Owner bootstrap through the administrative table is separate from the application's audited
+role-change RPC. The real email and UUID are intentionally omitted from public documentation.
+
+**Next required step:** the owner enters, confirms and submits a new website password in the reopened
+`https://myshkin451.com/recover` tab. Do not re-register the account or repeat the owner grant.
+Password sign-in, real note/article/photo publishing, independent production visitor checks and
+phone upload remain unverified. Recovery-session access to the workspace is proven; it does not
+prove a password was saved. The password form and verified workspace are handed off in Chrome.
+Ignored evidence includes `email-smtp-configured.png`, `email-confirmation-template.png`,
+`email-recovery-template.png`, `owner-workspace-live.png` and `owner-password-reopened.png` under
+`output/playwright/`.
 
 The learning task was notified of registration; its service now permits the exact new origin and the
 old Vercel origin. Native Chrome visually verified the embedded login page at the new `/study`, plus
@@ -70,8 +84,9 @@ includes `domain-live-home.png`, `domain-live-study.png`, `domain-contact-verifi
 
 The owner now wants frequent public short notes, articles and personal learning, and has selected
 `myshkin451.com`. Decision [0018](docs/decisions/0018-daily-use-and-domain.md) resolves the domain
-choice; registration, connection and code rollout are complete as recorded above, while SMTP remains pending. Earlier domain-deferral statements
-below are historical. [The review and launch steps](docs/operations/DAILY_USE_LAUNCH.md) contain
+choice; registration, connection, code rollout and SMTP activation are complete as recorded above.
+Earlier domain-deferral statements below are historical.
+[The review and launch steps](docs/operations/DAILY_USE_LAUNCH.md) contain
 current findings, official references and the concrete activation sequence.
 
 Local changes: clearer home/content navigation; owner-only direct writing, draft and learning links;
@@ -81,7 +96,7 @@ server result instead of refreshing every article, message and draft. Other comm
 failed refresh explicitly warn about stale display instead of reporting a failed write. Session changes
 and confirmed permission loss prevent late saves from restoring private data.
 
-Live read-only checks: the home remains empty, email login/registration/recovery are visibly closed,
+October 22 read-only checks: the home was empty, email login/registration/recovery were visibly closed,
 `/health` returned 200, and the existing embedded philosophy login page loads. No new SQL account count
 was obtained; September's zero-account observation must not be treated as a fresh count.
 
@@ -276,21 +291,19 @@ older sections below retain historical evidence only.
 
 ## Next Steps
 
-1. Complete the owner-selected `myshkin451.com` purchase and verify ownership. Connect it to the existing
-   Vercel project using its actual DNS records and HTTPS. Retain the existing deployment as rollback;
-   do not recreate backend resources or import preview fixtures.
-2. Verify a sending subdomain and SMTP, apply the Chinese templates and exact new-domain redirects,
-   prove external confirmation/recovery delivery, then activate email and deploy the verified local changes.
-   Follow [the concrete sequence](docs/operations/DAILY_USE_LAUNCH.md); do not retry Brevo phone verification.
-3. The owner creates/verifies their account through secure screens; grant the verified UUID explicitly.
-   Prove owner/visitor boundaries and real short-note/article/photo publishing. Coordinate the philosophy
-   service's exact new parent origin with its active task and verify the learning entry on the final domain.
-   Passwords and codes are never requested in chat. Test ordinary Wi-Fi and unproxied phone access.
+1. Finish the real owner's password setting in the handed-off secure page, then verify password sign-in.
+   Domain, SMTP, Chinese templates, email entry, real mailbox verification and first-owner authorization
+   are complete; do not repeat account creation, credential replacement or the owner grant.
+2. Complete real short-note/article/photo publishing and independent visitor acceptance. Hosted signup
+   confirmation still needs actual external delivery evidence; do not mistake its preview or the owner
+   invitation for that test. Follow [the current acceptance record](docs/operations/CLOUD_ACCEPTANCE.md).
+3. Test ordinary Wi-Fi and unproxied phone access, including image upload. The new-domain philosophy
+   embedding is already verified; future public learning/per-account privacy work stays in its own project.
 4. Maintain the existing backup arrangements and a backup after important publishing. The first production
    archive has no real accounts/content/media; repeat recovery acceptance when those exist. An independent
    encrypted copy remains a separate storage choice; do not upload to a new destination implicitly.
-5. Use real populated-site measurements before discussing paid capacity. Current website URL, working
-   name, free hosting and owner-accepted visual design remain in place.
+5. Use real populated-site measurements before discussing paid capacity. Current website URL,
+   identity, free hosting and owner-accepted visual design remain in place.
 
 ### Active local handoff
 
@@ -298,7 +311,8 @@ The September 27 account UI test server on `4326` and its browser sessions are c
 named synthetic accounts and their audit events were removed; the two prior local accounts remain.
 The source Supabase stack (`myshkin451-production`, API `55421`) is stopped with volumes preserved.
 The separate recovery environments and their cleanup state are recorded in the September 27 restore record.
-The production project remains empty and was only changed by the reviewed account migration.
+That September handoff had no production accounts or content. The October 23 real owner bootstrap
+and current remaining acceptance are recorded at the top of this board.
 
 The connected review entry is `http://127.0.0.1:4333/index.html?preview=sample`; the independent
 `http://127.0.0.1:4333/study.html` is an exploration reference. The Vite server is handed off for owner
